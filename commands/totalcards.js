@@ -13,11 +13,6 @@ module.exports = {
                 var totalCards = ''
 
                 Object.values(cards).forEach(item => {
-                    console.log(item);
-                    console.log(item.username);
-                    console.log(item.provisional);
-                    console.log(item.confirmed);
-
                     totalCards += item.username + ' - ' + item.provisional + ' nominations, ' + item.confirmed + ' confirmed. \n';
                 });
 

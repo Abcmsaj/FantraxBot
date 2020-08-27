@@ -5,6 +5,7 @@ const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION']
 
 // Read from JSON files
 const cards = JSON.parse(fs.readFileSync("./cards.json", "utf8"));
+const ssn = JSON.parse(fs.readFileSync("./ssn.json", "utf8"));
 
 // Login
 client.login(token);
@@ -159,9 +160,9 @@ client.on('message', message => {
     }
 });
 
-// ----------------
-// Red Card Counter
-// ----------------
+// --------------------
+// Message Reaction Add
+// --------------------
 client.on('messageReactionAdd', async (reaction, message, user) => {
     // console.log(message.content);
 
@@ -177,6 +178,9 @@ client.on('messageReactionAdd', async (reaction, message, user) => {
         };
     };
 
+    // ----------------
+    // Red Card Counter
+    // ----------------
     // Conditional arg for adding red cards to messages
     if (reaction.emoji.name === '🟥') {
         // Only trigger this if statement if the card is the FIRST given - don't count duplicates
@@ -270,8 +274,38 @@ client.on('messageReactionAdd', async (reaction, message, user) => {
         } else {
             console.log(`Reaction count is ${reaction.count} - no need to post again`);
         }
+    }
+
+    // ----------------
+    // SSN Counter
+    // ----------------
+
+    if (reaction.emoji.name === 'ssn') {
+        // Only trigger this if statement if the SSN is the FIRST given - don't count duplicates
+        // Also don't trigger if someone SSN a bot
+        if (reaction.count === 1 && !reaction.message.author.bot) {
+            // If this was the first time that a red card was given then follow this route
+            console.log(`${reaction.message.author.tag}'s message "${reaction.message.content}" gained a SSN at ${dateTime}!`);
+
+            // Add user data to ssn.json if they don't exist
+            if (!ssn[reaction.message.author.id]) ssn[reaction.message.author.id] = {
+                username: reaction.message.author.username,
+                SSN: 0
+            };
+
+            // Increment the value of SSN and write to the JSON file
+            const ssnData = ssn[reaction.message.author.id];
+            ssnData.SSN++;
+            console.log(ssnData);
+            fs.writeFileSync('./ssn.json', JSON.stringify(ssn), (err) => {
+                if (err) console.error(err);
+            });
+        } else if (reaction.message.author.bot) {
+            console.log(`Not registering SSN as it was added to a bot`);
+        } else {
+            console.log(`SSN count is ${reaction.count} - no need to track again`);
+        }
     } else {
         return 0;
     }
-
 });
