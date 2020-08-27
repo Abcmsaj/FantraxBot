@@ -5,6 +5,7 @@ const { prefix, token, redCardChannel, approverId } = require('./config.json');
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
 client.login(token);
 const cards = JSON.parse(fs.readFileSync("./cards.json", "utf8"));
+const reacts = JSON.parse(fs.readFileSync("./reacts.json", "utf8"));
 
 
 // Create date
@@ -166,5 +167,35 @@ client.on('message', message => {
                 message.channel.send('**Total cards**:\n```json\n' + totalCards + '\n```');
             }
         });
+    }
+
+    // Polls
+    if (message.content.startsWith(prefix + 'poll')) {
+        // Remove !Poll from the start
+        var input = message.content.slice(prefix.length + 5);
+
+        // Split the message by semicolon to separate out the vars
+        var fields = input.split(';');
+
+        // Set the vars for title, optionsArray, and a timeout
+        var title = fields[0];
+        var options = fields[1];
+        if (options) {
+            var optionsArray = options.split(',');
+        }
+        if ((fields[2] % 1) === 0) {
+            // If the timeout is a whole int then set it
+            var timeout = fields[2];
+        } else {
+            // Otherwise default to 10 mins
+            var timeout = 600;
+        }
+
+        // Send the poll message to the channel
+        if (!title || !options || !timeout) {
+            message.channel.send('📊 Poll is missing attributes. Format is title;**option1**,option2,**option3**,etc;timeout');
+        } else {
+            pollEmbed(message, title, optionsArray, timeout)
+        }
     }
 })
