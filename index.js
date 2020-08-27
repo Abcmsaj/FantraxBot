@@ -1,4 +1,5 @@
 const Discord = require('discord.js');
+const pollEmbed = require('discord.js-poll-embed');
 const fs = require('fs');
 const { prefix, token, redCardChannel, approverId } = require('./config.json');
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
