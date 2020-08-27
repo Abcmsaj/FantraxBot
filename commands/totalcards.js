@@ -1,6 +1,7 @@
 module.exports = {
     name: 'totalcards',
     description: 'Sends a message to channel displaying all card totals',
+    cooldown: 60,
     execute(message, args) {
         const fs = require('fs');
         const cards = JSON.parse(fs.readFileSync("./cards.json", "utf8"));

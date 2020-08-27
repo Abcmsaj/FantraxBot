@@ -1,6 +1,7 @@
 module.exports = {
     name: 'cards',
     description: 'Sends a message to the user that requested the command, letting them know their card numbers',
+    cooldown: 10,
     execute(message, args) {
         const fs = require('fs');
         const cards = JSON.parse(fs.readFileSync("./cards.json", "utf8"));
