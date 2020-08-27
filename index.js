@@ -35,6 +35,56 @@ client.once('ready', () => {
 
 });
 
+// -----------------------------------------------
+// Send messages based on triggers from JSON file
+// -----------------------------------------------
+client.on('message', message => {
+    // Read from the reactions file
+    const reacts = JSON.parse(fs.readFileSync("./reacts.json", "utf8"));
+
+    // If the reaction comes from a bot then don't trigger - might end up in an infinite loop
+    if (message.author.bot) {
+        return 0;
+    } else {
+        // Read the file
+        fs.readFile('./reacts.json', (err) => {
+            if (err) {
+                throw err;
+            } else {
+                // Iterate through all the keys in the reacts.json file
+                Object.keys(reacts).forEach(item => {
+                    if (message.content.toLowerCase().includes(item.toLowerCase())) {
+                        console.log('yes')
+                    }
+                    // If any of the keys match with the message when both lower case, we need to check case sensitvitity
+                    if (item.toLowerCase() === message.content.toLowerCase()) {
+                        // Store all the vals as vars
+                        var matchedKey = reacts[item]
+                        var reply = matchedKey['reply']
+                        var caseSensitivity = matchedKey['caseSensitivity']
+                        var usedAnywhere = matchedKey['usedAnywhere']
+
+                        // Now we need to check case sensitivity
+                        if (caseSensitivity === 1) {
+                            // If they match exactly, send the message
+                            if (item === message.content) {
+                                message.channel.send(reply);
+                                console.log('Bot replied to ' + item + '. Case-sensitivity = 1')
+                            } else {
+                                return 0;
+                            }
+                        } else {
+                            // If case sens doesn't matter, we follow this route
+                            message.channel.send(reply);
+                            console.log('Bot replied to ' + item + '. Case-sensitivity = 0')
+                        }
+                    }
+                });
+            }
+        });
+    }
+});
+
 // ---------------------------------
 // Send responses based on messages
 // ---------------------------------
