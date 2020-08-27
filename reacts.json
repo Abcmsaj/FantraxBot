@@ -1,1 +1,67 @@
-{}
+{
+    "joeman": {
+        "reply": "https://imgur.com/J5gKMVv",
+        "caseSensitivity": 0,
+        "usedAnywhere": 0
+    },
+    "racist": {
+        "reply": "https://i.imgur.com/6SY2Dst.jpg",
+        "caseSensitivity": 0,
+        "usedAnywhere": 1
+    },
+    "homophobe": {
+        "reply": "https://i.imgur.com/6SY2Dst.jpg",
+        "caseSensitivity": 0,
+        "usedAnywhere": 1
+    },
+    "king": {
+        "reply": "https://i.imgur.com/0E5RKUq.jpg",
+        "caseSensitivity": 0,
+        "usedAnywhere": 0
+    },
+    "phil": {
+        "reply": "https://i.redd.it/5quki5zbdij21.jpg",
+        "caseSensitivity": 0,
+        "usedAnywhere": 0
+    },
+    "tommey": {
+        "reply": "https://i.imgur.com/c40jekK.png",
+        "caseSensitivity": 0,
+        "usedAnywhere": 0
+    },
+    "rory": {
+        "reply": "https://i.imgur.com/ZMMX2eI.jpg",
+        "caseSensitivity": 0,
+        "usedAnywhere": 0
+    },
+    "ben tommey": {
+        "reply": "https://i.imgur.com/6Pz1mGp.jpg",
+        "caseSensitivity": 0,
+        "usedAnywhere": 0
+    },
+    "raptor toy": {
+        "reply": "I love Raptor Toy - put another dime in my Raptor, baby <:raptor:550429358146191381>",
+        "caseSensitivity": 0,
+        "usedAnywhere": 0
+    },
+    "obsessed": {
+        "reply": "https://i.imgur.com/rz7Iza6.jpg",
+        "caseSensitivity": 0,
+        "usedAnywhere": 1
+    },
+    "troy and abed": {
+        "reply": "https://gfycat.com/thatelegantgentoopenguin",
+        "caseSensitivity": 0,
+        "usedAnywhere": 1
+    },
+    "the real one": {
+        "reply": "https://i.imgur.com/XG2n8iQ.png",
+        "caseSensitivity": 0,
+        "usedAnywhere": 0
+    },
+    "mike": {
+        "reply": "https://i.imgur.com/OUiheeg.jpg",
+        "caseSensitivity": 0,
+        "usedAnywhere": 0
+    }
+}

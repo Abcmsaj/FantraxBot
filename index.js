@@ -53,30 +53,60 @@ client.on('message', message => {
             } else {
                 // Iterate through all the keys in the reacts.json file
                 Object.keys(reacts).forEach(item => {
-                    if (message.content.toLowerCase().includes(item.toLowerCase())) {
-                        console.log('yes')
-                    }
                     // If any of the keys match with the message when both lower case, we need to check case sensitvitity
-                    if (item.toLowerCase() === message.content.toLowerCase()) {
-                        // Store all the vals as vars
+                    if (message.content.toLowerCase().includes(item.toLowerCase())) {
+                        // Store all the vals from JSON as vars
                         var matchedKey = reacts[item]
                         var reply = matchedKey['reply']
                         var caseSensitivity = matchedKey['caseSensitivity']
                         var usedAnywhere = matchedKey['usedAnywhere']
 
-                        // Now we need to check case sensitivity
-                        if (caseSensitivity === 1) {
-                            // If they match exactly, send the message
-                            if (item === message.content) {
+                        // Get other vars from message content
+                        if (item.toLowerCase() === message.content.toLowerCase()) {
+                            // And "exact phrase" is where the key matches the message exactly, regardless of casing
+                            var exactPhrase = 1
+                        } else {
+                            var exactPhrase = 0
+                        }
+
+                        if (message.content.includes(item)) {
+                            // Case match
+                            var casesMatch = 1
+                        } else {
+                            var casesMatch = 0
+                        }
+
+                        console.log('Does the phrase match: ' + exactPhrase)
+                        console.log('Do cases match: ' + casesMatch)
+
+                        if (caseSensitivity === 1 && casesMatch === 1) {
+                            //Case sens matters and cases match, proceed
+                            if (usedAnywhere === 1) {
+                                // Phrase can be used anywhere so send
                                 message.channel.send(reply);
-                                console.log('Bot replied to ' + item + '. Case-sensitivity = 1')
-                            } else {
-                                return 0;
+                                console.log('Bot replied to ' + item + '. Case-sensitivity = 1, Used Anywhere = 1')
+                            } else if (usedAnywhere === 0 && exactPhrase === 1) {
+                                // Phrase can't be used anywhere so has to be an exact match
+                                // If it is, we can send it
+                                message.channel.send(reply);
+                                console.log('Bot replied to ' + item + '. Case-sensitivity = 1, Used Anywhere = 0')
+                            }
+                        } else if (caseSensitivity === 0) {
+                            //Cases don't matter, proceed
+                            if (usedAnywhere === 1) {
+                                // Phrase can be used anywhere so send
+                                message.channel.send(reply);
+                                console.log('Bot replied to ' + item + '. Case-sensitivity = 0, Used Anywhere = 1')
+                            } else if (usedAnywhere === 0 && exactPhrase === 1) {
+                                // Phrase can't be used anywhere so has to be an exact match
+                                // If it is, we can send it
+                                message.channel.send(reply);
+                                console.log('Bot replied to ' + item + '. Case-sensitivity = 0, Used Anywhere = 0')
                             }
                         } else {
-                            // If case sens doesn't matter, we follow this route
-                            message.channel.send(reply);
-                            console.log('Bot replied to ' + item + '. Case-sensitivity = 0')
+                            // Cases DO matter, end
+                            console.log('Bot did not reply to ' + item + '. Case-sensitivity did not match')
+                            return 0;
                         }
                     }
                 });
@@ -163,9 +193,10 @@ client.on('messageReactionAdd', async (reaction, message, user) => {
                 .setThumbnail('https://imgur.com/2ceCkDk.jpg')
                 .addFields(
                     { name: 'Message', value: `${reaction.message.content}` },
-                    { name: '\u200B', value: '\u200B' },
                     { name: 'Offence committed by', value: `${reaction.message.author}`, inline: true },
-                    { name: 'Channel', value: `${reaction.message.channel}`, inline: true }
+                    { name: '\u200B', value: '\u200B' },
+                    { name: 'Channel', value: `${reaction.message.channel}`, inline: true },
+                    { name: 'Link', value: `https://discordapp.com/channels/${reaction.message.guild.id}/${reaction.message.channel.id}/${reaction.message.id}`, inline: true }
                 )
                 .setTimestamp();
 
@@ -234,6 +265,8 @@ client.on('messageReactionAdd', async (reaction, message, user) => {
                             };
                         });
                 });
+        } else if (reaction.message.author.bot) {
+            console.log(`Not registering card as it was added to a bot`);
         } else {
             console.log(`Reaction count is ${reaction.count} - no need to post again`);
         }

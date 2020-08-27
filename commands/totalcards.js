@@ -6,7 +6,7 @@ module.exports = {
         const fs = require('fs');
         const cards = JSON.parse(fs.readFileSync("./cards.json", "utf8"));
 
-        fs.readFile('./cards.json', (err, data) => {
+        fs.readFile('./cards.json', (err) => {
             if (err) {
                 throw err;
             } else {
