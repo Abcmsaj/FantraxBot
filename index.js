@@ -1,12 +1,26 @@
 const Discord = require('discord.js');
-const pollEmbed = require('discord.js-poll-embed');
 const fs = require('fs');
 const { prefix, token, redCardChannel, approverId } = require('./config.json');
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
-client.login(token);
-const cards = JSON.parse(fs.readFileSync("./cards.json", "utf8"));
-const reacts = JSON.parse(fs.readFileSync("./reacts.json", "utf8"));
 
+// Read from JSON files
+const cards = JSON.parse(fs.readFileSync("./cards.json", "utf8"));
+
+// Login
+client.login(token);
+
+// Import commands from folder
+client.commands = new Discord.Collection();
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+
+for (const file of commandFiles) {
+    const command = require(`./commands/${file}`);
+
+    // set a new item in the Collection
+    // with the key as the command name and the value as the exported module
+    client.commands.set(command.name, command);
+    console.log(command)
+};
 
 // Create date
 var today = new Date();
@@ -19,7 +33,28 @@ client.once('ready', () => {
 
 });
 
-// Reaction collector
+// ---------------------------------
+// Send responses based on messages
+// ---------------------------------
+client.on('message', message => {
+    if (!message.content.startsWith(prefix) || message.author.bot) return;
+
+    const args = message.content.slice(prefix.length).trim().split(/ +/);
+    const command = args.shift().toLowerCase(); // command can be any casing
+
+    if (!client.commands.has(command)) return;
+
+    try {
+        client.commands.get(command).execute(message, args);
+    } catch (error) {
+        console.error(error);
+        message.reply('there was an error trying to execute that command!');
+    }
+});
+
+// ----------------
+// Red Card Counter
+// ----------------
 client.on('messageReactionAdd', async (reaction, message, user) => {
     // console.log(message.content);
 
@@ -32,8 +67,8 @@ client.on('messageReactionAdd', async (reaction, message, user) => {
             console.log('Something went wrong when fetching the message: ', error);
             // Return as `reaction.message.author` may be undefined/null
             return;
-        }
-    }
+        };
+    };
 
     // Conditional arg for adding red cards to messages
     if (reaction.emoji.name === '🟥') {
@@ -64,27 +99,27 @@ client.on('messageReactionAdd', async (reaction, message, user) => {
             client.channels.cache.get(redCardChannel).send(cardEmbed)
                 .then(message => {
                     // Send message
-                    console.log('Message sent to Channel')
+                    console.log('Message sent to Channel');
 
                     // Add checkmark emoji for appprover to confirm
                     message.react('✅')
                         .then(() => {
-                            message.react('❌')
-                            console.log('Confirmation buttons added')
+                            message.react('❌');
+                            console.log('Confirmation buttons added');
 
                             // Add user data to cards.json if they don't exist
                             if (!cards[reaction.message.author.id]) cards[reaction.message.author.id] = {
                                 username: reaction.message.author.username,
                                 provisional: 0,
                                 confirmed: 0
-                            }
+                            };
 
                             // Increment the value of provisional cards and write to the JSON file
                             const cardData = cards[reaction.message.author.id];
                             cardData.provisional++;
-                            console.log(cardData)
+                            console.log(cardData);
                             fs.writeFileSync('./cards.json', JSON.stringify(cards), (err) => {
-                                if (err) console.error(err)
+                                if (err) console.error(err);
                             });
                         })
 
@@ -96,16 +131,16 @@ client.on('messageReactionAdd', async (reaction, message, user) => {
                             // If Green, else if Red...
                             if (approvalReaction.emoji.name === '✅') {
                                 // If accepted, increment the counter for approved and remove a provisional 
-                                console.log('Approved')
-                                console.log(`${reaction.message.author.tag}'s message "${reaction.message.content}" gained a confirmed red card at ${dateTime}!`);
+                                console.log('Approved');
+                                console.log(`${reaction.message.author.tag}'s message "${reaction.message.content}" gained a confirmed red card from ${dateTime}!`);
 
                                 // Add one to confirmed value and take away a provisional card
                                 const cardData = cards[reaction.message.author.id];
                                 cardData.confirmed++;
                                 cardData.provisional--;
-                                console.log(cardData)
+                                console.log(cardData);
                                 fs.writeFileSync('./cards.json', JSON.stringify(cards), (err) => {
-                                    if (err) console.error(err)
+                                    if (err) console.error(err);
                                 });
 
                             } else {
@@ -122,80 +157,10 @@ client.on('messageReactionAdd', async (reaction, message, user) => {
                         });
                 });
         } else {
-            console.log(`Reaction count is ${reaction.count} - no need to post again`)
+            console.log(`Reaction count is ${reaction.count} - no need to post again`);
         }
     } else {
         return 0;
     }
 
 });
-
-// Read back the Red Card data
-client.on('message', message => {
-    // Commands to read red card info
-    if (!message.content.startsWith(prefix)) return;
-
-    const cardData = cards[message.author.id];
-    if (message.content.startsWith(prefix + 'cards')) {
-        if (cardData.provisional === 1 && cardData.confirmed === 1) {
-            message.reply(`you currently have ${cardData.provisional} nominated red card, and ${cardData.confirmed} confirmed red card.`);
-        } else if (cardData.provisional === 1) {
-            message.reply(`you currently have ${cardData.provisional} nominated red card, and ${cardData.confirmed} confirmed red cards.`);
-        } else if (cardData.confirmed === 1) {
-            message.reply(`you currently have ${cardData.provisional} nominated red cards, and ${cardData.confirmed} confirmed red card.`);
-        } else {
-            message.reply(`you currently have ${cardData.provisional} nominated red cards, and ${cardData.confirmed} confirmed red cards.`);
-        }
-    }
-
-    if (message.content.startsWith(prefix + 'totalcards')) {
-        fs.readFile('./cards.json', (err, data) => {
-            if (err) {
-                throw err;
-            } else {
-                var totalCards = ''
-
-                Object.values(cards).forEach(item => {
-                    console.log(item);
-                    console.log(item.username)
-                    console.log(item.provisional)
-                    console.log(item.confirmed)
-
-                    totalCards += item.username + ' - ' + item.provisional + ' nominations, ' + item.confirmed + ' confirmed. \n'
-                });
-
-                message.channel.send('**Total cards**:\n```json\n' + totalCards + '\n```');
-            }
-        });
-    }
-
-    // Polls
-    if (message.content.startsWith(prefix + 'poll')) {
-        // Remove !Poll from the start
-        var input = message.content.slice(prefix.length + 5);
-
-        // Split the message by semicolon to separate out the vars
-        var fields = input.split(';');
-
-        // Set the vars for title, optionsArray, and a timeout
-        var title = fields[0];
-        var options = fields[1];
-        if (options) {
-            var optionsArray = options.split(',');
-        }
-        if ((fields[2] % 1) === 0) {
-            // If the timeout is a whole int then set it
-            var timeout = fields[2];
-        } else {
-            // Otherwise default to 10 mins
-            var timeout = 600;
-        }
-
-        // Send the poll message to the channel
-        if (!title || !options || !timeout) {
-            message.channel.send('📊 Poll is missing attributes. Format is title;**option1**,option2,**option3**,etc;timeout');
-        } else {
-            pollEmbed(message, title, optionsArray, timeout)
-        }
-    }
-})
