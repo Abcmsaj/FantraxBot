@@ -3,9 +3,28 @@ const fs = require('fs');
 const { prefix, token, redCardChannel, approverId } = require('./config.json');
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
 
-// Read from JSON files
-const cards = JSON.parse(fs.readFileSync("./cards.json", "utf8"));
-const ssn = JSON.parse(fs.readFileSync("./ssn.json", "utf8"));
+//Create files if they don't exist
+
+function checkFile(filename) {
+    fs.readFile(filename, 'utf-8', function (err, data) {
+        if (err) {
+            console.log(filename + ' does not exist')
+            fs.writeFile(filename, '{}', { flag: 'w' }, function (err) {
+                if (err) {
+                    console.log('Attempted to create ' + filename + ' but was unsuccessful')
+                } else {
+                    console.log(filename + ' was created.')
+                }
+            })
+        } else {
+            console.log(filename + ' already exists.')
+        }
+    })
+}
+
+checkFile('cards.json')
+checkFile('ssn.json')
+checkFile('reacts.json')
 
 // Login
 client.login(token);
@@ -25,20 +44,25 @@ for (const file of commandFiles) {
 
 // Add cooldowns
 const cooldowns = new Discord.Collection();
+
 // Create date
 var today = new Date();
 var date = today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
 var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
 var dateTime = date + ' ' + time;
 
+
+// ----------------
+// Ready
+// ----------------
 client.once('ready', () => {
     console.log('Ready!');
 
 });
 
-// -----------------------------------------------
-// Send messages based on triggers from JSON file
-// -----------------------------------------------
+// -----------------------------------------------------
+// Send messages based on triggers from Reacts JSON file
+// -----------------------------------------------------
 client.on('message', message => {
     // Read from the reactions file
     const reacts = JSON.parse(fs.readFileSync("./reacts.json", "utf8"));
@@ -117,7 +141,7 @@ client.on('message', message => {
 });
 
 // ---------------------------------
-// Send responses based on messages
+// Send responses based on !commands
 // ---------------------------------
 client.on('message', message => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
@@ -165,6 +189,10 @@ client.on('message', message => {
 // --------------------
 client.on('messageReactionAdd', async (reaction, message, user) => {
     // console.log(message.content);
+
+    // Read from JSON files
+    const cards = JSON.parse(fs.readFileSync("./cards.json", "utf8"));
+    const ssn = JSON.parse(fs.readFileSync("./ssn.json", "utf8"));
 
     // Pull in partial messages from before the bot was active
     if (reaction.partial) {
