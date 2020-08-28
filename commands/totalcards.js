@@ -10,10 +10,10 @@ module.exports = {
             if (err) {
                 throw err;
             } else {
-                var totalCards = ''
+                var totalCards = 'User │ Nominations │ Confirmed\n'
 
                 Object.values(cards).forEach(item => {
-                    totalCards += item.username + ' - ' + item.provisional + ' nominations, ' + item.confirmed + ' confirmed. \n';
+                    totalCards += item.username + ' │ ' + item.provisional + ' │ ' + item.confirmed + '\n';
                 });
 
                 message.channel.send('**Total cards**:\n```json\n' + totalCards + '\n```');
