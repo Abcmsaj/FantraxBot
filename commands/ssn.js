@@ -10,10 +10,10 @@ module.exports = {
             if (err) {
                 throw err;
             } else {
-                var totalSSN = ''
+                var totalSSN = 'User │ SSN received \n'
 
                 Object.values(ssn).forEach(item => {
-                    totalSSN += item.username + ' - ' + item.SSN + ' SSN received. \n';
+                    totalSSN += item.username + ' │ ' + item.SSN + '\n';
                 });
 
                 message.channel.send('**Total SSN**:\n```json\n' + totalSSN + '\n```');
