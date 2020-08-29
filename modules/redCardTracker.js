@@ -4,7 +4,7 @@ const fs = require('fs');
 // Read from JSON files
 const cards = JSON.parse(fs.readFileSync("./cards.json", "utf8"));
 
-function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApproverId, dateTime) {
+function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApproverId) {
     // ----------------
     // Red Card Counter
     // ----------------
@@ -15,7 +15,7 @@ function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApprove
         // Also don't trigger if someone red cards a bot
         if (reaction.count === 1 && !reaction.message.author.bot) {
             // If this was the first time that a red card was given then follow this route
-            console.log(`${reaction.message.author.tag}'s message "${reaction.message.content}" gained a provisional red card at ${dateTime}!`);
+            console.log(`${reaction.message.author.tag}'s message "${reaction.message.content}" gained a provisional red card.`);
 
             // Generate a pretty embedded post
             const cardEmbed = new Discord.MessageEmbed()
@@ -73,7 +73,7 @@ function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApprove
                             if (approvalReaction.emoji.name === '✅') {
                                 // If accepted, increment the counter for approved and remove a provisional 
                                 console.log('Approved');
-                                console.log(`${reaction.message.author.tag}'s message "${reaction.message.content}" gained a confirmed red card from ${dateTime}!`);
+                                console.log(`${reaction.message.author.tag}'s message "${reaction.message.content}" gained a confirmed red card!`);
 
                                 // Add one to confirmed value and take away a provisional card
                                 const cardData = cards[reaction.message.author.id];

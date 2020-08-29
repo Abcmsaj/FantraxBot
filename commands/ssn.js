@@ -10,9 +10,23 @@ module.exports = {
             if (err) {
                 throw err;
             } else {
-                var totalSSN = 'User │ SSN received \n'
+                // Create new array to sort values
+                var sortedArray = [];
 
+                // Populate it with each item
                 Object.values(ssn).forEach(item => {
+                    sortedArray.push(item);
+                })
+
+                // Actually sort the array in descending order
+                sortedArray.sort(function (a, b) {
+                    return b.SSN - a.SSN;
+                });
+
+                var totalSSN = 'User │ SSN received \n';
+
+                // Loop through the sorted array to get each username and SSN val, now in desc order
+                Object.values(sortedArray).forEach(item => {
                     totalSSN += item.username + ' │ ' + item.SSN + '\n';
                 });
 
