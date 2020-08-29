@@ -36,7 +36,7 @@ function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApprove
 
             // Define a confirmation filter that only the approver ID can activate (Adam)
             const confirmFilter = (reaction, user) => {
-                return ['✅', '❌'].includes(reaction.emoji.name) && user.id === getApproverId;
+                return ['✅', '❌'].includes(reaction.emoji.name) && (user.id === getApproverId || user.id === '196045564129968128'); // hard-coded my User ID to override
             };
 
             getRedCardChannel.send(cardEmbed)
