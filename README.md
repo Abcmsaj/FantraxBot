@@ -47,7 +47,7 @@ The bot can do the following:
 - `!poll` will produce an embedded poll post that allows users to choose 1x reaction from a multiple choice selection (up to 10 options) - and set a time limit on the poll too
     - Syntax is `!poll <Poll title>;<option 1>,<option 2>,<option 3>,<etc>;<Time in seconds>`
 
-![https://imgur.com/fD4BgWz.jpg](https://imgur.com/EvTuFaC.jpg)
+![https://imgur.com/fD4BgWz.jpg](https://imgur.com/fD4BgWz.jpg)
 
 - `!reload` can be used while the bot is running to reload any command file that might have been altered
     - Run `!reload <command name>` to trigger without needing to restart the bot
