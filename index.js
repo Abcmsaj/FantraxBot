@@ -11,6 +11,7 @@ const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION']
 checkFile.checkFile('cards.json')
 checkFile.checkFile('reacts.json')
 checkFile.checkFile('ssn.json')
+checkFile.checkFile('ssnGiver.json')
 
 // Login
 client.login(token);
@@ -43,7 +44,7 @@ client.on('message', message => {
 // --------------------------------------------------------------------
 // Message Reaction Add - SSN and Red Card Tracker
 // --------------------------------------------------------------------
-client.on('messageReactionAdd', async (reaction) => {
+client.on('messageReactionAdd', async (reaction, user) => {
     // Pull in partial messages from before the bot was active
     if (reaction.partial) {
         // If the message this reaction belongs to was removed the fetching might result in an API error, which we need to handle
@@ -62,8 +63,8 @@ client.on('messageReactionAdd', async (reaction) => {
     // Get ApproverId
     const getApproverId = approverId
 
-    redCardTrackerFunction.redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApproverId);
+    redCardTrackerFunction.redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApproverId, user);
 
-    ssnTrackerFunction.ssnTrackerFunction(reaction)
+    ssnTrackerFunction.ssnTrackerFunction(reaction, user)
 
 });

@@ -1,12 +1,12 @@
 module.exports = {
-    name: 'ssn',
-    description: 'Shows a leaderboard of SSN',
+    name: 'ssngiver',
+    description: 'Shows a leaderboard of people who have given out SSN',
     cooldown: 60,
     execute(message, args) {
         const fs = require('fs');
-        const ssn = JSON.parse(fs.readFileSync("./ssn.json", "utf8"));
+        const ssnGiver = JSON.parse(fs.readFileSync("./ssnGiver.json", "utf8"));
 
-        fs.readFile('./ssn.json', (err) => {
+        fs.readFile('./ssnGiver.json', (err) => {
             if (err) {
                 throw err;
             } else {
@@ -14,23 +14,23 @@ module.exports = {
                 var sortedArray = [];
 
                 // Populate it with each item
-                Object.values(ssn).forEach(item => {
+                Object.values(ssnGiver).forEach(item => {
                     sortedArray.push(item);
                 })
 
                 // Actually sort the array in descending order
                 sortedArray.sort(function (a, b) {
-                    return b.SSN - a.SSN;
+                    return b.ssnGiven - a.ssnGiven;
                 });
 
-                var totalSSN = 'User │ SSN received \n';
+                var totalSSNGiven = 'User │ SSN given out \n';
 
                 // Loop through the sorted array to get each username and SSN val, now in desc order
                 Object.values(sortedArray).forEach(item => {
-                    totalSSN += item.username + ' │ ' + item.SSN + '\n';
+                    totalSSNGiven += item.username + ' │ ' + item.ssnGiven + '\n';
                 });
 
-                message.channel.send('**Total SSN**:\n```json\n' + totalSSN + '\n```');
+                message.channel.send('**Total SSN Given**:\n```json\n' + totalSSNGiven + '\n```');
             };
         });
     },

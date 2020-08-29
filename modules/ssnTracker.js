@@ -3,8 +3,9 @@ const fs = require('fs');
 
 // Read from JSON files
 const ssn = JSON.parse(fs.readFileSync("./ssn.json", "utf8"));
+const ssnGiver = JSON.parse(fs.readFileSync("./ssnGiver.json", "utf8"));
 
-function ssnTrackerFunction(reaction) {
+function ssnTrackerFunction(reaction, user) {
     // ----------------
     // SSN Counter
     // ----------------
@@ -27,6 +28,20 @@ function ssnTrackerFunction(reaction) {
             ssnData.SSN++;
             console.log(ssnData);
             fs.writeFileSync('./ssn.json', JSON.stringify(ssn), (err) => {
+                if (err) console.error(err);
+            });
+
+            // Add user data to ssnGiver.json if they don't exist
+            if (!ssnGiver[user.id]) ssnGiver[user.id] = {
+                username: user.username,
+                ssnGiven: 0
+            };
+
+            // Increment the value of SSN and write to the JSON file
+            const ssnGiverData = ssnGiver[user.id];
+            ssnGiverData.ssnGiven++;
+            console.log(ssnGiverData);
+            fs.writeFileSync('./ssnGiver.json', JSON.stringify(ssnGiver), (err) => {
                 if (err) console.error(err);
             });
         } else if (reaction.message.author.bot) {

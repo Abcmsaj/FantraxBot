@@ -4,7 +4,7 @@ const fs = require('fs');
 // Read from JSON files
 const cards = JSON.parse(fs.readFileSync("./cards.json", "utf8"));
 
-function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApproverId) {
+function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApproverId, user) {
     // ----------------
     // Red Card Counter
     // ----------------
@@ -25,10 +25,12 @@ function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApprove
                 .setThumbnail('https://imgur.com/2ceCkDk.jpg')
                 .addFields(
                     { name: 'Message', value: `${reaction.message.content}` },
-                    { name: 'Offence committed by', value: `${reaction.message.author}`, inline: true },
                     { name: '\u200B', value: '\u200B' },
-                    { name: 'Channel', value: `${reaction.message.channel}`, inline: true },
-                    { name: 'Link', value: `https://discordapp.com/channels/${reaction.message.guild.id}/${reaction.message.channel.id}/${reaction.message.id}`, inline: true }
+                    { name: 'Offence committed by', value: `${reaction.message.author}`, inline: true },
+                    { name: 'Card given by', value: `${user}`, inline: true },
+                    { name: '\u200B', value: '\u200B' },
+                    { name: 'Channel', value: `${reaction.message.channel}` },
+                    { name: 'Link', value: `https://discordapp.com/channels/${reaction.message.guild.id}/${reaction.message.channel.id}/${reaction.message.id}` }
                 )
                 .setTimestamp();
 
