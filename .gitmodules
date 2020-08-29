@@ -1,0 +1,3 @@
+[submodule "FantraxConfig"]
+	path = FantraxConfig
+	url = https://github.com/Abcmsaj/FantraxConfig.git

@@ -4,7 +4,7 @@ const reactFunction = require('./modules/reactions.js');
 const commandsFunction = require('./modules/commands.js');
 const redCardTrackerFunction = require('./modules/redCardTracker.js');
 const ssnTrackerFunction = require('./modules/ssnTracker.js')
-const { prefix, token, redCardChannel, approverId } = require('./config.json');
+const { prefix, token, redCardChannel, approverId } = require('./FantraxConfig/config.json');
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
 
 //Create files if they don't exist
