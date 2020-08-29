@@ -1,4 +1,4 @@
-const { prefix } = require('../config.json');
+const { prefix } = require('/FantraxConfig/config.json');
 const pollEmbed = require('discord.js-poll-embed');
 
 module.exports = {
