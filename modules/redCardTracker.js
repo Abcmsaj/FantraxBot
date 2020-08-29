@@ -4,7 +4,7 @@ const fs = require('fs');
 // Read from JSON files
 const cards = JSON.parse(fs.readFileSync("./cards.json", "utf8"));
 
-function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApproverId, user) {
+function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApproverId, getAdminId, user) {
     // ----------------
     // Red Card Counter
     // ----------------
@@ -36,7 +36,7 @@ function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApprove
 
             // Define a confirmation filter that only the approver ID can activate (Adam)
             const confirmFilter = (reaction, user) => {
-                return ['✅', '❌'].includes(reaction.emoji.name) && (user.id === getApproverId || user.id === '196045564129968128'); // hard-coded my User ID to override
+                return ['✅', '❌'].includes(reaction.emoji.name) && (user.id === getApproverId || user.id === getAdminId); // hard-coded my User ID to override
             };
 
             getRedCardChannel.send(cardEmbed)

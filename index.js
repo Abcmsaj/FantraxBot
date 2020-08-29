@@ -4,7 +4,7 @@ const reactFunction = require('./modules/reactions.js');
 const commandsFunction = require('./modules/commands.js');
 const redCardTrackerFunction = require('./modules/redCardTracker.js');
 const ssnTrackerFunction = require('./modules/ssnTracker.js')
-const { prefix, token, redCardChannel, approverId } = require('./FantraxConfig/config.json');
+const { prefix, token, redCardChannel, approverId, adminId } = require('./FantraxConfig/config.json');
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
 
 //Create files if they don't exist
@@ -60,10 +60,11 @@ client.on('messageReactionAdd', async (reaction, user) => {
     // Get Red Card Channel
     const getRedCardChannel = client.channels.cache.get(redCardChannel)
 
-    // Get ApproverId
+    // Get ApproverId and AdminId
     const getApproverId = approverId
+    const getAdminId = adminId
 
-    redCardTrackerFunction.redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApproverId, user);
+    redCardTrackerFunction.redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApproverId, getAdminId, user);
 
     ssnTrackerFunction.ssnTrackerFunction(reaction, user)
 
