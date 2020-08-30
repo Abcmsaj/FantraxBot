@@ -2,8 +2,19 @@
 const fs = require('fs');
 
 // Read from JSON files
-const ssn = JSON.parse(fs.readFileSync("./ssn.json", "utf8"));
-const ssnGiver = JSON.parse(fs.readFileSync("./ssnGiver.json", "utf8"));
+let ssn;
+try {
+    ssn = JSON.parse(fs.readFileSync("./ssn.json", "utf8"));
+} catch (err) {
+    console.log(err);
+}
+
+let ssnGiver;
+try {
+    ssnGiver = JSON.parse(fs.readFileSync("./ssnGiver.json", "utf8"));
+} catch (err) {
+    console.log(err);
+}
 
 function ssnTrackerFunction(reaction, user) {
     // ----------------

@@ -1,7 +1,13 @@
 const Discord = require('discord.js');
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
 const fs = require('fs');
-const reacts = JSON.parse(fs.readFileSync("./reacts.json", "utf8"));
+// Read from JSON files
+let reacts;
+try {
+    reacts = JSON.parse(fs.readFileSync("./reacts.json", "utf8"));
+} catch (err) {
+    console.log(err);
+}
 
 module.exports = {
     name: 'react',

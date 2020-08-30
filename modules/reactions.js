@@ -2,8 +2,13 @@
 const fs = require('fs');
 
 function reactFunction(message) {
-    // Read from the reactions file
-    const reacts = JSON.parse(fs.readFileSync("./reacts.json", "utf8"));
+    // Read from JSON files
+    let reacts;
+    try {
+        reacts = JSON.parse(fs.readFileSync("./reacts.json", "utf8"));
+    } catch (err) {
+        console.log(err);
+    }
 
     // If the reaction comes from a bot then don't trigger - might end up in an infinite loop
     if (message.author.bot) {

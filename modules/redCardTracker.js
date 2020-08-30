@@ -2,7 +2,12 @@
 const fs = require('fs');
 
 // Read from JSON files
-const cards = JSON.parse(fs.readFileSync("./cards.json", "utf8"));
+let cards;
+try {
+    cards = JSON.parse(fs.readFileSync("./cards.json", "utf8"));
+} catch (err) {
+    console.log(err);
+}
 
 function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApproverId, getAdminId, user) {
     // ----------------
