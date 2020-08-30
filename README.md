@@ -19,7 +19,8 @@ The bot can do the following:
     - Nominated red cards and confirmed red cards are both tracked, with punishments at the end of the season for the person with the most red cards for foul play
     - A red card can be given a mean comment or unsavoury response
     - Only myself and a red card approver can mark the red card as "official" using the reaction emotes at the bottom of the post
-    - Declining a red card will still leave it on a person's record but as a "nominated" red card instead of an official one. Only "official" red cards count.
+    - Declining a red card will still leave it on a person's record but as a "nominated" red card instead of an official one. Only "official" red cards count
+    - Each user gets 5 cards to give out a month - a check is done whenever a red card is given to see if the allocation needs to be updated
 
 ![https://imgur.com/wAEht5h.jpg](https://imgur.com/wAEht5h.jpg)
 
@@ -52,8 +53,3 @@ The bot can do the following:
 - `!reload` can be used while the bot is running to reload any command file that might have been altered
     - Run `!reload <command name>` to trigger without needing to restart the bot
 - Commands can be dynamically added - just add JavaScript files to the commands folder and module.exports them to index.js - no extra code required!
-
-## Coming Soon
-
-- Hoping to add card allocations as one thing I found in my beta testing was that cards were over-utilised and it made it difficult for the admin/red card approver to keep up with what's legitimate or not.
-    - Will be adding a monthly limit of 5 cards per person - as a sort of currency system.
