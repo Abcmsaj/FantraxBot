@@ -59,11 +59,25 @@ function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApprove
             };
 
             // If statement for if card allowance = 0, else, continue
-            if (hasCards === 0) {
+            if (hasCards === 0 && cardAllowance.cardAllowance === 0) {
                 reaction.message.channel.send(`${user}, you have no red cards left to give this month.\nYour 🟥 does not count and has been removed.`);
                 reaction.remove().catch(error => console.error('Failed to remove reactions: ', error));
                 console.log(`Red card not added as ${user.username} has none left to give this month`);
-                return; // end and don't write to cards.json
+
+                // Take away another red to put their value at -1, and stop entering this loop
+                cardAllowance.cardAllowance--;
+
+                fs.writeFileSync('./cards.json', JSON.stringify(cards), (err) => {
+                    if (err) console.error(err);
+                });
+                return;
+            } else if (hasCards === 0 && cardAllowance.cardAllowance < 0) {
+                // User has -1 cards so none to give and should not trigger message in chat again 
+                console.log(`Red card not added as ${user.username} has none left to give this month`);
+
+                // Remove the reaction
+                reaction.remove().catch(error => console.error('Failed to remove reactions: ', error));
+                return;
             } else {
                 // Tell the user how many cards they have left and subtract one
                 cardAllowance.cardAllowance--;
@@ -168,9 +182,17 @@ function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApprove
                             });
                     });
             }
-        } else if (reaction.message.author.bot) {
+        } else if (reaction.message.author.bot && !user.bot) {
             console.log(`Not registering card as it was added to a bot`);
-        } else {
+
+            // Remove the reaction from the bot
+            reaction.remove().catch(error => console.error('Failed to remove reactions: ', error));
+        } else if (reaction.message.author.bot && user.bot) {
+            // This route is if the message reaction is on a bot's post, by a bot
+            // Need this because bot reacts with a red card if a post is confirmed
+            console.log(`Bot has added a red card to a post.`);
+        }
+        else {
             console.log(`Reaction count is ${reaction.count} - no need to post again`);
         }
     }
