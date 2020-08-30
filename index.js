@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const checkFile = require('./checkFile.js');
+const checkFile = require('./modules/checkFile.js');
 const reactFunction = require('./modules/reactions.js');
 const commandsFunction = require('./modules/commands.js');
 const redCardTrackerFunction = require('./modules/redCardTracker.js');
