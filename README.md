@@ -15,11 +15,12 @@ The bot can do the following:
     - Reactions can have other arguments passed in, such as:
         - "used anywhere" if the reaction can be triggered anywhere in a message
         - "case sensitive" if the reaction only triggers with correct casing
-- Tracking of the  🟥 emoji reaction on anybody's posts, which then posts a citation to a #red-card channel, for approval by an admin
+- Tracking of the 🟥 emoji reaction on anybody's posts, which then posts a citation to a #red-card channel, for approval by an admin
     - Nominated red cards and confirmed red cards are both tracked, with punishments at the end of the season for the person with the most red cards for foul play
     - A red card can be given a mean comment or unsavoury response
     - Only myself and a red card approver can mark the red card as "official" using the reaction emotes at the bottom of the post
     - Declining a red card will still leave it on a person's record but as a "nominated" red card instead of an official one. Only "official" red cards count
+    - Accepting a red card will put a 🟥 emoji at the bottom of the post in the #red-card channel to show it's confirmed to users
     - Each user gets 5 cards to give out a month - a check is done whenever a red card is given to see if the allocation needs to be updated
 
 ![https://imgur.com/wAEht5h.jpg](https://imgur.com/wAEht5h.jpg)
