@@ -7,16 +7,30 @@ module.exports = {
         const cards = JSON.parse(fs.readFileSync("./cards.json", "utf8"));
         const cardData = cards[message.author.id];
 
-        if (!cards[message.author.id]) {
-            message.reply(`you have no cards.`);
-        } else if (cardData.provisional === 1 && cardData.confirmed === 1) {
-            message.reply(`you currently have ${cardData.provisional} nominated red card, and ${cardData.confirmed} confirmed red card.`);
-        } else if (cardData.provisional === 1) {
-            message.reply(`you currently have ${cardData.provisional} nominated red card, and ${cardData.confirmed} confirmed red cards.`);
-        } else if (cardData.confirmed === 1) {
-            message.reply(`you currently have ${cardData.provisional} nominated red cards, and ${cardData.confirmed} confirmed red card.`);
+        var response = '';
+
+        if (cardData.provisional === 1) {
+            response += `you currently have ${cardData.provisional} nominated red card,`;
         } else {
-            message.reply(`you currently have ${cardData.provisional} nominated red cards, and ${cardData.confirmed} confirmed red cards.`);
+            response += `you currently have ${cardData.provisional} nominated red cards,`;
         };
+
+        if (cardData.confirmed === 1) {
+            response += ` ${cardData.confirmed} confirmed red card,`;
+        } else {
+            response += ` ${cardData.confirmed} confirmed red cards,`;
+        };
+
+        if (cardData.cardAllowance === 1) {
+            response += ` and ${cardData.cardAllowance} red card left to give out this month.`
+        } else if (cardData.cardAllowance < 0) {
+            // Have to add this because logic in Red Card Tracker can put a person at negative allowed reds in order to prevent spam of automated message from bot
+            response += ` and 0 red cards left to give out this month.`;
+        } else {
+            response += ` and ${cardData.cardAllowance} red cards left to give out this month.`;
+        };
+
+        // Send compiled response
+        message.reply(response);
     },
 };
