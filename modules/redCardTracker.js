@@ -96,8 +96,8 @@ function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApprove
                 const cardEmbed = new Discord.MessageEmbed()
                     .setColor('#FF0000')
                     .setTitle('Red Card Infraction')
-                    .setAuthor('Mostly-Palatable Premier Division', 'https://imgur.com/S1WDyVU.jpg')
-                    .setThumbnail('https://imgur.com/2ceCkDk.jpg')
+                    //.setAuthor('', 'https://imgur.com/S1WDyVU.jpg')
+                    .setThumbnail(reaction.message.author.displayAvatarURL({ format: "png", dynamic: true }))
                     .addFields(
                         { name: 'Message', value: `${reaction.message.content}` },
                         { name: '\u200B', value: '\u200B' },
@@ -109,7 +109,8 @@ function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApprove
                         //{ name: '\u200B', value: '\u200B' },
                         { name: 'Link', value: `https://discordapp.com/channels/${reaction.message.guild.id}/${reaction.message.channel.id}/${reaction.message.id}` }
                     )
-                    .setTimestamp();
+                    .setTimestamp()
+                    .setFooter('Mostly-Palatable Premier Division');
 
                 // Define a confirmation filter that only the approver ID can activate (Adam)
                 const confirmFilter = (reaction, user) => {
