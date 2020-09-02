@@ -1,5 +1,4 @@
 /cards.json
 /ssn.json
-
-ssnGiver.json
-.local-chromium
+/ssnGiver.json
+node_modules
