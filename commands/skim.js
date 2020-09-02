@@ -1,6 +1,5 @@
 const Discord = require('discord.js');
 const puppeteer = require("puppeteer");
-const { browser } = require('../index.js');
 
 function skim(message, args) {
     (async () => {
@@ -17,8 +16,6 @@ function skim(message, args) {
 
                 // Combine the query if it's >1 word, splitting commas
                 for (var i = 0; i < query.length; i++) {
-                    console.log(query[i]);
-
                     queryCombined += query[i] + ' '
                 }
 
@@ -32,10 +29,12 @@ function skim(message, args) {
                                 description:
                                     "\n`!skim athletic <url>`" +
                                     "\n`!skim screenshot <url>`" +
+                                    "\n`!skim screenshotf <url>`" +
                                     "\n`!skim google <query>`" +
-                                    "\n`!skim google-i'm-feeling-lucky <query>`" +
+                                    "\n`!skim google-im-feeling-lucky <query>`" +
                                     "\n`!skim google-images <query>`" +
                                     "\n`!skim wikipedia <query>`" +
+                                    "\n`!skim wikipediaf <query>`" +
                                     "\n Each command has an abbreviated version." +
                                     "\n"
                             }
@@ -43,6 +42,10 @@ function skim(message, args) {
                         break;
                     case "screenshot":
                     case "ss":
+                        puppetPng((queryCombined.startsWith("http://") || queryCombined.startsWith("https://")) ? queryCombined : `http://${queryCombined}`, false);
+                        break;
+                    case "screenshotf":
+                    case "ssf":
                         puppetPng((queryCombined.startsWith("http://") || queryCombined.startsWith("https://")) ? queryCombined : `http://${queryCombined}`, true);
                         break;
                     case "athletic":
@@ -58,7 +61,7 @@ function skim(message, args) {
                     case "g":
                         puppetPng(`https://www.google.com/search?q=${encodeURIComponent(queryCombined)}`, false);
                         break;
-                    case "google-i'm-feeling-lucky":
+                    case "google-im-feeling-lucky":
                     case "gifl":
                         puppetPng(`https://duckduckgo.com/?q=\\${encodeURIComponent(queryCombined)}`, true); // Need to use DDG instead of Google for this as Google now shows redirect page
                         break;
@@ -86,7 +89,9 @@ function skim(message, args) {
 
                 async function puppetPng(url, fullPageBool) {
                     const browser = await puppeteer.launch({
-                        headless: true, args: ['--no-sandbox'/*openvz*/]
+                        executablePath: '/usr/bin/chromium-browser', // Comment out if testing on Windows
+                        headless: true,
+                        args: ['--no-sandbox'/*openvz*/]
                     });
                     console.log('Chromium launched');
 
@@ -124,9 +129,12 @@ function skim(message, args) {
 
                 async function puppetJpeg(url) {
                     const browser = await puppeteer.launch({
-                        headless: false, args: ['--no-sandbox'/*openvz*/,
+                        executablePath: '/usr/bin/chromium-browser', // Comment out if testing on Windows
+                        headless: false,
+                        args: ['--no-sandbox'/*openvz*/,
                             '--disable-extensions-except=../../../../../FantraxConfig/ext/',
                             '--load-extension=../../../../..FantraxConfig/ext/',
+                            '--display=:1', // Comment out if testing on Windows
                             '--disable-gpu']
                     });
                     console.log('Chromium launched');
