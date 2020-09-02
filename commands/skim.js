@@ -109,7 +109,7 @@ function skim(message, args) {
                             await delay(2000);
                         }
                         var screenshot = await page.screenshot({ type: 'png', fullPage: fullPageBool });
-                        resolve(await message.channel.send('**Skimmed:**\n`' + queryCombined + 'using ' + cmd + '`'));
+                        resolve(await message.channel.send('**Skimmed:**\n`' + message.author.tag + ' searched ' + queryCombined + 'using ' + cmd + '`'));
                         resolve(await message.channel.send({ files: [{ attachment: screenshot, name: "screenshot.png" }] }));
                         message.delete()
                     } catch (error) {
@@ -151,7 +151,7 @@ function skim(message, args) {
                         await page.goto(url, { waitUntil: 'load' });
                         var screenshot = await page.screenshot({ type: 'jpeg', quality: 75, fullPage: true });
                         //var pdf = await page.pdf({ format: 'A4', printBackground: true, }); PDF generation only possible headless = true, extensions only possible when headless = false...
-                        resolve(await message.channel.send('**Skimmed:**\n`' + queryCombined + 'using ' + cmd + '`'));
+                        resolve(await message.channel.send('**Skimmed:**\n`' + message.author.tag + ' searched ' + queryCombined + 'using ' + cmd + '`'));
                         resolve(await message.channel.send({ files: [{ attachment: screenshot, name: "screenshot.jpeg" }] }));
                         message.delete()
                     } catch (error) {
