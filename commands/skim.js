@@ -50,6 +50,9 @@ function skim(message, args) {
                         break;
                     case "athletic":
                     case "a":
+                        if (queryCombined.startsWith('theathletic')) {
+                            queryCombined = `https://${queryCombined}`
+                        }
                         if (!(queryCombined.startsWith("http://theathletic") || queryCombined.startsWith("https://theathletic"))) {
                             message.channel.send(`:warning: That is not an Athletic link`)
                             return;
@@ -104,10 +107,17 @@ function skim(message, args) {
                         });
 
                         await page.setViewport({ width: 1440, height: 900 });
-                        await page.goto(url, { waitUntil: 'load' });
+
+                        if ((queryCombined.startsWith('https://twitter.com') || queryCombined.startsWith('https://twitter.com') || queryCombined.startsWith('twitter.com'))) {
+                            await page.goto(url, { waitUntil: 'networkidle0' });
+                        } else {
+                            await page.goto(url, { waitUntil: 'load' });
+                        }
+
                         if (url.startsWith('https://duckduckgo.com/')) { // If we choose the GIFL option, we need time for a redirect to happen
                             await delay(2000);
                         }
+
                         var screenshot = await page.screenshot({ type: 'png', fullPage: fullPageBool });
                         resolve(await message.channel.send('**Skimmed:**\n`' + message.author.tag + ' searched ' + queryCombined + 'using ' + cmd + '`'));
                         resolve(await message.channel.send({ files: [{ attachment: screenshot, name: "screenshot.png" }] }));
@@ -148,7 +158,7 @@ function skim(message, args) {
                         });
 
                         await page.setViewport({ width: 1440, height: 900 });
-                        await page.goto(url, { waitUntil: 'load' });
+                        await page.goto(url, { waitUntil: 'networkidle0' });
                         var screenshot = await page.screenshot({ type: 'jpeg', quality: 75, fullPage: true });
                         //var pdf = await page.pdf({ format: 'A4', printBackground: true, }); PDF generation only possible headless = true, extensions only possible when headless = false...
                         resolve(await message.channel.send('**Skimmed:**\n`' + message.author.tag + ' searched ' + queryCombined + 'using ' + cmd + '`'));
