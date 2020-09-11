@@ -48,8 +48,12 @@ The bot can do the following:
     - Syntax is `!prune <int from 1-99>`
 - `!poll` will produce an embedded poll post that allows users to choose 1x reaction from a multiple choice selection (up to 10 options) - and set a time limit on the poll too
     - Syntax is `!poll <Poll title>;<option 1>,<option 2>,<option 3>,<etc>;<Time in seconds>`
-
+    
 ![https://imgur.com/fD4BgWz.jpg](https://imgur.com/fD4BgWz.jpg)
+
+- `!send` allows administrators to send messages as the Bot. Bot reads whatever the content of the message is, and redistributes it to the specified channel
+    - Syntax is `!send <channel name>;<message - can include links, @mentions, Discord formatting>`
+   
 
 - `!reload` can be used while the bot is running to reload any command file that might have been altered
     - Run `!reload <command name>` to trigger without needing to restart the bot
