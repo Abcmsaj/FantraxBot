@@ -52,7 +52,7 @@ The bot can do the following:
 ![https://imgur.com/fD4BgWz.jpg](https://imgur.com/fD4BgWz.jpg)
 
 - `!send` allows administrators to send messages as the Bot. Bot reads whatever the content of the message is, and redistributes it to the specified channel
-    - Syntax is `!send <channel name>;<message - can include links, @mentions, Discord formatting>`
+    - Syntax is `!send <channel name> <message - can include links, @mentions, Discord formatting>`
    
 
 - `!reload` can be used while the bot is running to reload any command file that might have been altered
