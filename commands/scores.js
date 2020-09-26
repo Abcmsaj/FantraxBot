@@ -33,14 +33,14 @@ function scores(message, args) {
                                     clearInterval(timer);
                                     resolve();
                                 }
-                            }, 100);
+                            }, 10);
                         });
                     });
                 }
 
                 async function puppetPng(url) {
                     const browser = await puppeteer.launch({
-                        //executablePath: '/usr/bin/chromium-browser', // Comment out if testing on Windows
+                        executablePath: '/usr/bin/chromium-browser', // Comment out if testing on Windows
                         headless: true,
                         args: ['--no-sandbox'/*openvz*/]
                     });
@@ -55,10 +55,15 @@ function scores(message, args) {
                         });
                         await page.setViewport({ width: 400, height: 700 });
                         await page.goto('https://www.fantrax.com/fantasy/league/vdv5aml8kdnp16wp/standings?startDate=2020-09-12&endDate=2021-05-24&hideGoBackDays=true&timeStartType=PERIOD_ONLY&timeframeType=BY_PERIOD&view=REGULAR_SEASON&pageNumber=1', { waitUntil: 'networkidle0' });
+                        const [button] = await page.$x("//a[contains(., 'Continue')]");
+                        await button.click();
                         await autoScroll(page);
 
+                        var screenshot = await page.screenshot({
+                            type: 'png',
+                            fullPage: false
+                        });
 
-                        var screenshot = await page.screenshot({ type: 'png', fullPage: false });
                         resolve(await message.channel.send({ files: [{ attachment: screenshot, name: "screenshot.png" }] }));
                     } catch (error) {
                         console.error(error);
