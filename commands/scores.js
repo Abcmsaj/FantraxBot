@@ -56,7 +56,9 @@ function scores(message, args) {
                         await page.setViewport({ width: 400, height: 700 });
                         await page.goto('https://www.fantrax.com/fantasy/league/vdv5aml8kdnp16wp/standings?startDate=2020-09-12&endDate=2021-05-24&hideGoBackDays=true&timeStartType=PERIOD_ONLY&timeframeType=BY_PERIOD&view=REGULAR_SEASON&pageNumber=1', { waitUntil: 'networkidle0' });
                         const [button] = await page.$x("//a[contains(., 'Continue')]");
+                        const [button2] = await page.$x("//button[contains(., 'Dismiss')]");
                         await button.click();
+                        await button2.click();
                         await autoScroll(page);
 
                         var screenshot = await page.screenshot({
