@@ -55,8 +55,8 @@ The bot can do the following:
 
 - `!send` allows administrators to send messages as the Bot. Bot reads whatever the content of the message is, and redistributes it to the specified channel
     - Syntax is `!send <channel name> <message - can include links, @mentions, Discord formatting>`
-   
-
+- `!skim` allows users to take screenshots of various webpages and pass in arguments. These website include Google, Google Images, Google "I'm Feeling Lucky", Wikipedia, or the user can pass "screenshot" an a URL argument to just take a screenshot of a webpage.
+    - Syntax is `!skim <website (google, google-images, wikipedia, screenshot)> <search term/URL>`
 - `!reload` can be used while the bot is running to reload any command file that might have been altered
     - Run `!reload <command name>` to trigger without needing to restart the bot
 - Commands can be dynamically added - just add JavaScript files to the commands folder and module.exports them to index.js - no extra code required!
