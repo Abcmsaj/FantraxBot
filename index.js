@@ -12,6 +12,7 @@ checkFile.checkFile('cards.json')
 checkFile.checkFile('reacts.json')
 checkFile.checkFile('ssn.json')
 checkFile.checkFile('ssnGiver.json')
+checkFile.checkFile('memes.json')
 
 // Login
 client.login(token);

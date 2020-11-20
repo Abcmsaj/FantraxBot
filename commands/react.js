@@ -16,7 +16,7 @@ module.exports = {
         // Only run if user is admin
         if (message.member.hasPermission("ADMINISTRATOR")) {
             // If no arguments after !react then tell use
-            if (!args) {
+            if (!args[0]) {
                 message.reply('need a trigger phrase first');
                 return;
             }
