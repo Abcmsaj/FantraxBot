@@ -45,7 +45,7 @@ The bot can do the following:
 - `!mute` and `!unmute` can be used with an @mention argument to mute/unmute a user
     - Syntax is `!mute @user` or `!unmute @user`
 - `!scores` will take a screenshot from the Fantrax standings page for our league, after scrolling to the bottom for this gameweek, and post it in the channel the command was requested from
-- `!meme` takes a random image from a JSON file, and posts it to the channel requested
+- `!meme` will pick a random image from a JSON file of images added with `!addmeme`, and post it to the chat
 - `!prune` will allow the user to prune the last 1-99 messages
     - Syntax is `!prune <int from 1-99>`
 - `!poll` will produce an embedded poll post that allows users to choose 1x reaction from a multiple choice selection (up to 10 options) - and set a time limit on the poll too
