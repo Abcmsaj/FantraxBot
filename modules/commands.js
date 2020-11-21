@@ -18,9 +18,6 @@ for (const file of commandFiles) {
     console.log(command)
 };
 
-// Add cooldowns
-const cooldowns = new Discord.Collection();
-
 function commandsFunction(message, getPrefix) {
     if (!message.content.startsWith(getPrefix) || message.author.bot) return;
 
