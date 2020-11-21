@@ -25,6 +25,11 @@ module.exports = {
                 return;
             } else {
                 var lastKey = Object.keys(memes).pop()  // Get the last key
+
+                if (!lastKey) {
+                    lastKey = '0' // Set last key to 0 if one doesn't exist
+                }
+
                 var newKey = (parseInt(lastKey) + 1) // Add one onto the last in the list
 
                 console.log(lastKey)

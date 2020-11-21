@@ -1,11 +1,13 @@
 const Discord = require('discord.js');
 const checkFile = require('./modules/checkFile.js');
 const reactFunction = require('./modules/reactions.js');
+const memeFunction = require('./modules/memes.js');
 const commandsFunction = require('./modules/commands.js');
 const redCardTrackerFunction = require('./modules/redCardTracker.js');
 const ssnTrackerFunction = require('./modules/ssnTracker.js')
 const { prefix, token, redCardChannel, approverId, adminId, monthlyCards } = require('./FantraxConfig/config.json');
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
+const getPrefix = prefix;  // Get Prefix
 
 //Create files if they don't exist
 checkFile.checkFile('cards.json')
@@ -32,13 +34,17 @@ client.on('message', message => {
     reactFunction.reactFunction(message);
 });
 
+// -----------------------------------------------------
+// Send memes randomly from the Memes JSON file
+// -----------------------------------------------------
+client.on('message', message => {
+    memeFunction.memeFunction(message);
+});
+
 // ---------------------------------
 // Send responses based on !commands
 // ---------------------------------
 client.on('message', message => {
-    // Get Prefix
-    const getPrefix = prefix;
-
     commandsFunction.commandsFunction(message, getPrefix);
 });
 
