@@ -48,7 +48,9 @@ module.exports = {
             `yeah and I'm the fucking Pope`,
             `yeah, right`,
             `you wish`,
-            `you've got to be kidding me...`
+            `you've got to be kidding me...`,
+            `that's about as likely as Alex finding true happiness`,
+            `that's about as likely as Freeman getting his trophy`
         ]
 
         var randomNumber = Math.floor(Math.random() * replies.length)
