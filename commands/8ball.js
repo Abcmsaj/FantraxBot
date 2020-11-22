@@ -21,6 +21,8 @@ module.exports = {
             `concentrate and ask again`,
             `don't count on it`,
             `my reply is no`,
+            `probably`,
+            `probs mate`,
             `my sources say no`,
             `outlook not so good`,
             `very doubtful`,
