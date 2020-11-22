@@ -28,6 +28,8 @@ module.exports = {
             `my sources say no. They also tell me they hate you.`,
             `all signs point to yes. But on second thought, go fuck yourself.`,
             `as if`,
+            `idk`,
+            `flip a coin`,
             `TOGGA!!!`,
             `dumb question, ask another`,
             `forget about it`,
