@@ -55,7 +55,8 @@ module.exports = {
             `you wish`,
             `you've got to be kidding me...`,
             `that's about as likely as Alex finding true happiness`,
-            `that's about as likely as Freeman getting his trophy`
+            `that's about as likely as Freeman getting his trophy`,
+            `send £10 to £LakeBlackett on CashApp and I'll DM you my answer`
         ]
 
         var randomNumber = Math.floor(Math.random() * replies.length)
