@@ -1,7 +1,7 @@
 // Define fs
 const fs = require('fs');
 
-function memeFunction(message) {
+function memeFunction(message, memeChannel) {
     if (!message.content.startsWith('!meme') || message.author.bot) return;
 
     // Read from JSON
@@ -36,6 +36,7 @@ function memeFunction(message) {
             console.log('Meme #' + randomNo + ' sent to chat.')
             // Send the url back to the channel where the !meme command was found
             message.channel.send(url);
+            memeChannel.send(`Meme ${randomNo} sent to ${message.channel.name`});
         }
     })
 }
