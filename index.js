@@ -38,7 +38,8 @@ client.on('message', message => {
 // Send memes randomly from the Memes JSON file
 // -----------------------------------------------------
 client.on('message', message => {
-    memeFunction.memeFunction(message);
+    const memeChannel = client.channels.cache.find(channel => channel.name === 'memeoutput');
+    memeFunction.memeFunction(message, memeChannel);
 });
 
 // ---------------------------------
