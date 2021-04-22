@@ -92,6 +92,11 @@ function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApprove
                 // If this was the first time that a red card was given then follow this route
                 console.log(`${reaction.message.author.tag}'s message "${reaction.message.content}" gained a provisional red card.`);
 
+                // If the message carded is an image, it won't add the red card - so change the content to a string
+                if (reaction.message.content === '') {
+                    reaction.message.content = 'Image (click link to see)';
+                };
+
                 // Generate a pretty embedded post
                 const cardEmbed = new Discord.MessageEmbed()
                     .setColor('#FF0000')
