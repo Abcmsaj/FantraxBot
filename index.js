@@ -38,9 +38,7 @@ client.on('message', message => {
 // Send memes randomly from the Memes JSON file
 // -----------------------------------------------------
 client.on('message', message => {
-    // This is just for debugging so we can delete images that are no longer wanted    
-    const memeChannel = client.channels.cache.find(channel => channel.name === 'memeoutput');
-    memeFunction.memeFunction(message, memeChannel);
+    memeFunction.memeFunction(message);
 });
 
 // ---------------------------------
