@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
 const fs = require('fs');
+
 // Read from JSON files
 let memes;
 try {
@@ -45,8 +46,11 @@ module.exports = {
                     if (err) console.error(err);
                 });
 
+                const memeLibraryCh = message.guild.channels.cache.find(channel => channel.name === 'meme-library')
+
                 message.reply(`meme #${newKey} added.`)
                 console.log('Added meme to memes.json');
+                memeLibraryCh.send(`Meme #${newKey}: ` + args[0])
                 return;
             }
         }
