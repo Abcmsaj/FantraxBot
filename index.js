@@ -25,6 +25,8 @@ client.login(token);
 client.once('ready', () => {
     console.log('Ready!');
 
+    const adminChannel = client.channels.cache.find(channel => channel.name === 'commands'); // Admin channel
+    adminChannel.send('Online!')
 });
 
 // -----------------------------------------------------
