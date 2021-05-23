@@ -36,7 +36,7 @@ The bot can do the following:
 
 - `!ssn` can be called to see a table of all SSN reactions given
 
-![https://imgur.com/6wmahc5.jpg](https://imgur.com/6wmahc5.jpg)
+![https://imgur.com/HnEPfZZ.jpg](https://imgur.com/HnEPfZZ.jpg)
 
 - `!ssnGiver` can be called to see a table of the people who give the SSN reactions
 
