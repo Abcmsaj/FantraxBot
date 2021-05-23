@@ -32,15 +32,15 @@ The bot can do the following:
 
 - `!totalcards` can be called to see a table of all cards given
 
-![https://imgur.com/jywXwNw.jpg](https://imgur.com/jywXwNw.jpg)
+![https://imgur.com/jehVDHe.jpg](https://imgur.com/jehVDHe.jpg)
 
 - `!ssn` can be called to see a table of all SSN reactions given
 
-![https://imgur.com/emUlCST.jpg](https://imgur.com/emUlCST.jpg)
+![https://imgur.com/6wmahc5.jpg](https://imgur.com/6wmahc5.jpg)
 
 - `!ssnGiver` can be called to see a table of the people who give the SSN reactions
 
-![https://imgur.com/TlM3ONO.jpg](https://imgur.com/TlM3ONO.jpg)
+![https://imgur.com/D2ilMvR.jpg](https://imgur.com/D2ilMvR.jpg)
 
 - `!mute` and `!unmute` can be used with an @mention argument to mute/unmute a user
     - Syntax is `!mute @user` or `!unmute @user`
