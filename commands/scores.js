@@ -10,7 +10,7 @@ function scores(message, args) {
                 console.log(`[${new Date().toLocaleString()}] ${message.author.tag} requested latest scores.`);
 
                 // Fun the puppetPng function
-                puppetPng('https://www.fantrax.com/fantasy/league/vdv5aml8kdnp16wp/livescoring')
+                puppetPng('https://www.fantrax.com/fantasy/league/xk1svl7hkr2lo76t/livescoring')
 
                 // Delay function used in both async puppet functions
                 function delay(time) {
@@ -54,7 +54,7 @@ function scores(message, args) {
                             resolve(await message.channel.send(`:warning: ${error.message}`));
                         });
                         await page.setViewport({ width: 400, height: 700 });
-                        await page.goto('https://www.fantrax.com/fantasy/league/vdv5aml8kdnp16wp/standings?startDate=2020-09-12&endDate=2021-05-24&hideGoBackDays=true&timeStartType=PERIOD_ONLY&timeframeType=BY_PERIOD&view=REGULAR_SEASON&pageNumber=1', { waitUntil: 'networkidle0' });
+                        await page.goto('https://www.fantrax.com/fantasy/league/xk1svl7hkr2lo76t/standings?startDate=2021-08-12&endDate=2022-05-24&hideGoBackDays=true&timeStartType=PERIOD_ONLY&timeframeType=BY_PERIOD&view=REGULAR_SEASON&pageNumber=1', { waitUntil: 'networkidle0' });
                         const [button] = await page.$x("//a[contains(., 'Continue')]");
                         const [button2] = await page.$x("//button[contains(., 'Dismiss')]");
                         await button.click();
