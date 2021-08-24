@@ -53,8 +53,8 @@ function scores(message, args) {
                         page.on("error", async error => {
                             resolve(await message.channel.send(`:warning: ${error.message}`));
                         });
-                        await page.setViewport({ width: 400, height: 700 });
-                        await page.goto('https://www.fantrax.com/fantasy/league/xk1svl7hkr2lo76t/standings?startDate=2021-08-12&endDate=2022-05-24&hideGoBackDays=true&timeStartType=PERIOD_ONLY&timeframeType=BY_PERIOD&view=REGULAR_SEASON&pageNumber=1', { waitUntil: 'networkidle0' });
+                        await page.setViewport({ width: 400, height: 750 });
+                        await page.goto('https://www.fantrax.com/fantasy/league/xk1svl7hkr2lo76t/standings;timeframeType=BY_PERIOD?startDate=2021-08-12&endDate=2022-05-24&hideGoBackDays=true&timeStartType=PERIOD_ONLY&timeframeType=BY_PERIOD&view=REGULAR_SEASON&pageNumber=1', { waitUntil: 'networkidle0' });
                         const [button] = await page.$x("//a[contains(., 'Continue')]");
                         const [button2] = await page.$x("//button[contains(., 'Dismiss')]");
                         await button.click();
