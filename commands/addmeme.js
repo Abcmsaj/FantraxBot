@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
+const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'], intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS] });
 const fs = require('fs');
 
 // Read from JSON files
@@ -15,7 +15,7 @@ module.exports = {
     description: 'Adds a meme to the memes.json file',
     execute(message, args) {
         // Only run if user is admin
-        if (message.member.hasPermission('ADMINISTRATOR')) {
+        if (message.member.permissions.has('ADMINISTRATOR')) {
             if (!args[0]) {
                 // If not args provided, inform user
                 message.reply('you need to enter a URL to a meme');
@@ -25,16 +25,16 @@ module.exports = {
                 message.reply('provide a valid URL');
                 return;
             } else {
-                var lastKey = Object.keys(memes).pop()  // Get the last key
+                var lastKey = Object.keys(memes).pop();  // Get the last key
 
                 if (!lastKey) {
-                    lastKey = '0' // Set last key to 0 if one doesn't exist
+                    lastKey = '0'; // Set last key to 0 if one doesn't exist
                 }
 
-                var newKey = (parseInt(lastKey) + 1) // Add one onto the last in the list
+                var newKey = (parseInt(lastKey) + 1); // Add one onto the last in the list
 
-                console.log(lastKey)
-                console.log(newKey)
+                console.log(lastKey);
+                console.log(newKey);
 
                 // Add meme to memes.json
                 if (!memes[newKey]) memes[newKey] = {
@@ -46,11 +46,11 @@ module.exports = {
                     if (err) console.error(err);
                 });
 
-                const memeLibraryCh = message.guild.channels.cache.find(channel => channel.name === 'meme-library')
+                const memeLibraryCh = message.guild.channels.cache.find(channel => channel.name === 'meme-library');
 
-                message.reply(`meme #${newKey} added.`)
+                message.reply(`meme #${newKey} added.`);
                 console.log('Added meme to memes.json');
-                memeLibraryCh.send(`Meme #${newKey}: ` + args[0])
+                memeLibraryCh.send(`Meme #${newKey}: ` + args[0]);
                 return;
             }
         }

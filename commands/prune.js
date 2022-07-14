@@ -5,7 +5,7 @@ module.exports = {
         const amount = parseInt(args[0]) + 1;
 
         // Only run if the sender of the message is an admin
-        if (message.member.hasPermission("ADMINISTRATOR")) {
+        if (message.member.permissions.has('ADMINISTRATOR')) {
             if (isNaN(amount)) {
                 return message.reply('that doesn\'t seem to be a valid number.');
             } else if (amount <= 1 || amount > 100) {
