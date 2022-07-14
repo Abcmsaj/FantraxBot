@@ -11,7 +11,7 @@ module.exports = {
 
         // Combine the query if it's >1 word, splitting commas
         for (var i = 0; i < providedMessage.length; i++) {
-            providedMessageCombined += providedMessage[i] + ' '
+            providedMessageCombined += providedMessage[i] + ' ';
         }
 
         // If not channel provided, tell user
@@ -29,7 +29,7 @@ module.exports = {
         };
 
         // Only run if the sender of the message is an admin
-        if (message.member.hasPermission("ADMINISTRATOR")) {
+        if (message.member.permissions.has('ADMINISTRATOR')) {
             // Send the message to the channel
             sendingChannel.send(providedMessageCombined);
             console.log('Bot sent: ' + providedMessageCombined + 'to #' + sendingChannel.name);

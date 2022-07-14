@@ -9,8 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^12.3.1",
+    "discord.js": "^13.8.1",
     "discord.js-poll-embed": "^1.0.2",
-    "puppeteer": "^5.2.1"
+    "puppeteer": "^15.4.0"
   }
 }

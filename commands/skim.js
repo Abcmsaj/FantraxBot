@@ -86,7 +86,7 @@ function skim(message, args) {
                 // Delay function used in both async puppet functions
                 function delay(time) {
                     return new Promise(function (resolve) {
-                        setTimeout(resolve, time)
+                        setTimeout(resolve, time);
                     });
                 }
 
