@@ -10,12 +10,12 @@ function scores(message, args) {
                 console.log(`[${new Date().toLocaleString()}] ${message.author.tag} requested latest scores.`);
 
                 // Fun the puppetPng function
-                puppetPng('https://www.fantrax.com/fantasy/league/rjo7oio4l4pgxnmb/livescoring')
+                puppetPng('https://www.fantrax.com/fantasy/league/rjo7oio4l4pgxnmb/livescoring');
 
                 // Delay function used in both async puppet functions
                 function delay(time) {
                     return new Promise(function (resolve) {
-                        setTimeout(resolve, time)
+                        setTimeout(resolve, time);
                     });
                 }
 
@@ -57,9 +57,10 @@ function scores(message, args) {
                         await page.goto('https://www.fantrax.com/fantasy/league/rjo7oio4l4pgxnmb/standings;timeframeType=BY_PERIOD?startDate=2022-08-12&endDate=2023-05-24&hideGoBackDays=true&timeStartType=PERIOD_ONLY&timeframeType=BY_PERIOD&view=REGULAR_SEASON&pageNumber=1', { waitUntil: 'networkidle0' });
                         const [button] = await page.$x("//a[contains(., 'Continue')]");
                         const [button2] = await page.$x("//button[contains(., 'Dismiss')]");
-                        await button.click();
+                        //await button.click(); // Continue button no longer displays
                         await button2.click();
                         await autoScroll(page);
+                        await delay(500); // Small delay to prevent scrollbar showing in screenshot
 
                         var screenshot = await page.screenshot({
                             type: 'png',
@@ -95,4 +96,4 @@ module.exports = {
     execute(message, args) {
         scores(message, args);
     }
-}
+};

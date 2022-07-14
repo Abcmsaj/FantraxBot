@@ -16,7 +16,7 @@ function skim(message, args) {
 
                 // Combine the query if it's >1 word, splitting commas
                 for (var i = 0; i < query.length; i++) {
-                    queryCombined += query[i] + ' '
+                    queryCombined += query[i] + ' ';
                 }
 
                 // Switch statement based on cmd
@@ -51,10 +51,10 @@ function skim(message, args) {
                     case "athletic":
                     case "a":
                         if (queryCombined.startsWith('theathletic')) {
-                            queryCombined = `https://${queryCombined}`
+                            queryCombined = `https://${queryCombined}`;
                         }
                         if (!(queryCombined.startsWith("http://theathletic") || queryCombined.startsWith("https://theathletic"))) {
-                            message.channel.send(`:warning: That is not an Athletic link`)
+                            message.channel.send(`:warning: That is not an Athletic link`);
                             return;
                         } else {
                             puppetJpeg(queryCombined);
@@ -118,10 +118,15 @@ function skim(message, args) {
                             await delay(2000);
                         }
 
+                        if (url.startsWith('https://www.google.com/')) { // If we choose the Google option, need to confirm cookies
+                            const [button] = await page.$x("//button[contains(., 'Accept')]");
+                            await button.click();
+                        }
+
                         var screenshot = await page.screenshot({ type: 'png', fullPage: fullPageBool });
                         resolve(await message.channel.send('**Skimmed:**\n`' + message.author.tag + ' searched ' + queryCombined + 'using ' + cmd + '`'));
                         resolve(await message.channel.send({ files: [{ attachment: screenshot, name: "screenshot.png" }] }));
-                        message.delete()
+                        message.delete();
                     } catch (error) {
                         console.error(error);
                         resolve(await message.channel.send(`:warning: ${error.message}`));
@@ -163,7 +168,7 @@ function skim(message, args) {
                         //var pdf = await page.pdf({ format: 'A4', printBackground: true, }); PDF generation only possible headless = true, extensions only possible when headless = false...
                         resolve(await message.channel.send('**Skimmed:**\n`' + message.author.tag + ' searched ' + queryCombined + 'using ' + cmd + '`'));
                         resolve(await message.channel.send({ files: [{ attachment: screenshot, name: "screenshot.jpeg" }] }));
-                        message.delete()
+                        message.delete();
                     } catch (error) {
                         console.error(error);
                         resolve(await message.channel.send(`:warning: ${error.message}`));
@@ -192,4 +197,4 @@ module.exports = {
     execute(message, args) {
         skim(message, args);
     }
-}
+};
