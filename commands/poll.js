@@ -6,7 +6,7 @@ module.exports = {
     description: 'Create a poll',
     usage: 'Title + Option 1 + Option 2 + Option 3 + etc',
     execute(message, args) {
-        poll(message, args, '+', '#00D1CD');
+        poll(message, args, '+', '#ffffff');
     },
 };
 
@@ -25,8 +25,12 @@ async function poll(message, args, separator, embedColor) {
 
         // Delete original message
         message.delete();
-
-        const embed = new Discord.MessageEmbed().setTitle('📊  Poll').setDescription(question).setColor(embedColor);
+        console.log(message)
+        const embed = new Discord.MessageEmbed()
+            .setTitle('📊  Poll')
+            .setDescription(question)
+            .setColor(embedColor)
+            .setAuthor({ name: `${message.author.username}`, iconURL: message.author.displayAvatarURL({ format: "png", dynamic: true }) });
 
         await message.channel.send({ embeds: [embed] }).then(msg => {
             msg.react('👍');
@@ -75,7 +79,7 @@ async function poll(message, args, separator, embedColor) {
 
         // If more than 26 options, return error
         if (options.length > alphabet.length) {
-            return await message.channel.send('Please don\'t input more than 26 options.').then(sent => {
+            return await message.channel.send(`Please don't input more than 26 options.`).then(sent => {
                 setTimeout(() => {
                     sent.delete();
                 }, 2000);
@@ -92,7 +96,8 @@ async function poll(message, args, separator, embedColor) {
 
         embed
             .setDescription(arr.join('\n\n'))
-            .setColor(embedColor);
+            .setColor(embedColor)
+            .setAuthor({ name: `${message.author.username}`, iconURL: message.author.displayAvatarURL({ format: "png", dynamic: true }) });
 
         // Send message to channel and react with alphabet emojis
         await message.channel.send({ embeds: [embed] }).then(msg => {
