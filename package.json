@@ -4,13 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^12.3.1",
-    "discord.js-poll-embed": "^1.0.2",
-    "puppeteer": "^5.2.1"
+    "discord.js": "^13.8.1",
+    "discord.js-poll": "^1.2.1",
+    "puppeteer": "^15.4.0"
   }
 }

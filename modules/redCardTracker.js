@@ -92,6 +92,11 @@ function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApprove
                 // If this was the first time that a red card was given then follow this route
                 console.log(`${reaction.message.author.tag}'s message "${reaction.message.content}" gained a provisional red card.`);
 
+                // If the message carded is an image, it won't add the red card - so change the content to a string
+                if (reaction.message.content === '') {
+                    reaction.message.content = 'Image (click link to see)';
+                };
+
                 // Generate a pretty embedded post
                 const cardEmbed = new Discord.MessageEmbed()
                     .setColor('#FF0000')
@@ -110,14 +115,14 @@ function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApprove
                         { name: 'Link', value: `https://discordapp.com/channels/${reaction.message.guild.id}/${reaction.message.channel.id}/${reaction.message.id}` }
                     )
                     .setTimestamp()
-                    .setFooter('Mostly-Palatable Premier Division');
+                    .setFooter({ text: 'Mostly-Palatable Premier Division' });
 
                 // Define a confirmation filter that only the approver ID can activate (Adam)
                 const confirmFilter = (reaction, user) => {
                     return ['✅', '❌'].includes(reaction.emoji.name) && (user.id === getApproverId || user.id === getAdminId); // hard-coded my User ID to override
                 };
 
-                getRedCardChannel.send(cardEmbed)
+                getRedCardChannel.send({ embeds: [cardEmbed] })
                     .then(message => {
                         // Send message
                         console.log('Message sent to Channel');
@@ -145,10 +150,10 @@ function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApprove
                                 fs.writeFileSync('./cards.json', JSON.stringify(cards), (err) => {
                                     if (err) console.error(err);
                                 });
-                            })
+                            });
 
                         // Await a reaction to the message from the filter (approver and approved emotes)
-                        message.awaitReactions(confirmFilter, { max: 1 })
+                        message.awaitReactions({ filter: confirmFilter, max: 1 })
                             .then(collected => {
                                 const approvalReaction = collected.first();
                                 // In here, write what we want to do when Adam confirms the card

@@ -32,25 +32,32 @@ The bot can do the following:
 
 - `!totalcards` can be called to see a table of all cards given
 
-![https://imgur.com/jywXwNw.jpg](https://imgur.com/jywXwNw.jpg)
+![https://imgur.com/jehVDHe.jpg](https://imgur.com/jehVDHe.jpg)
 
 - `!ssn` can be called to see a table of all SSN reactions given
 
-![https://imgur.com/emUlCST.jpg](https://imgur.com/emUlCST.jpg)
+![https://imgur.com/HnEPfZZ.jpg](https://imgur.com/HnEPfZZ.jpg)
 
 - `!ssnGiver` can be called to see a table of the people who give the SSN reactions
 
-![https://imgur.com/TlM3ONO.jpg](https://imgur.com/TlM3ONO.jpg)
+![https://imgur.com/D2ilMvR.jpg](https://imgur.com/D2ilMvR.jpg)
 
 - `!mute` and `!unmute` can be used with an @mention argument to mute/unmute a user
     - Syntax is `!mute @user` or `!unmute @user`
+- `!8ball` can be sent and a random reply generated for the user (yes/no/maybe)
+- `!scores` will take a screenshot from the Fantrax standings page for our league, after scrolling to the bottom for this gameweek, and post it in the channel the command was requested from
+- `!meme` will pick a random image from a JSON file of images added with `!addmeme`, and post it to the chat
 - `!prune` will allow the user to prune the last 1-99 messages
     - Syntax is `!prune <int from 1-99>`
 - `!poll` will produce an embedded poll post that allows users to choose 1x reaction from a multiple choice selection (up to 10 options) - and set a time limit on the poll too
     - Syntax is `!poll <Poll title>;<option 1>,<option 2>,<option 3>,<etc>;<Time in seconds>`
-
+    
 ![https://imgur.com/fD4BgWz.jpg](https://imgur.com/fD4BgWz.jpg)
 
+- `!send` allows administrators to send messages as the Bot. Bot reads whatever the content of the message is, and redistributes it to the specified channel
+    - Syntax is `!send <channel name> <message - can include links, @mentions, Discord formatting>`
+- `!skim` allows users to take screenshots of various webpages and pass in arguments. These website include Google, Google Images, Google "I'm Feeling Lucky", Wikipedia, or the user can pass "screenshot" an a URL argument to just take a screenshot of a webpage.
+    - Syntax is `!skim <website (google, google-images, wikipedia, screenshot)> <search term/URL>`
 - `!reload` can be used while the bot is running to reload any command file that might have been altered
     - Run `!reload <command name>` to trigger without needing to restart the bot
 - Commands can be dynamically added - just add JavaScript files to the commands folder and module.exports them to index.js - no extra code required!

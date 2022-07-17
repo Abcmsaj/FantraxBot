@@ -16,7 +16,7 @@ function skim(message, args) {
 
                 // Combine the query if it's >1 word, splitting commas
                 for (var i = 0; i < query.length; i++) {
-                    queryCombined += query[i] + ' '
+                    queryCombined += query[i] + ' ';
                 }
 
                 // Switch statement based on cmd
@@ -50,8 +50,11 @@ function skim(message, args) {
                         break;
                     case "athletic":
                     case "a":
-                        if (!(queryCombined.startsWith("http://theathletic") || queryCombined.startsWith("https://theathletic") || queryCombined.startsWith("theathletic"))) {
-                            message.channel.send(`:warning: That is not an Athletic link`)
+                        if (queryCombined.startsWith('theathletic')) {
+                            queryCombined = `https://${queryCombined}`;
+                        }
+                        if (!(queryCombined.startsWith("http://theathletic") || queryCombined.startsWith("https://theathletic"))) {
+                            message.channel.send(`:warning: That is not an Athletic link`);
                             return;
                         } else {
                             puppetJpeg(queryCombined);
@@ -83,7 +86,7 @@ function skim(message, args) {
                 // Delay function used in both async puppet functions
                 function delay(time) {
                     return new Promise(function (resolve) {
-                        setTimeout(resolve, time)
+                        setTimeout(resolve, time);
                     });
                 }
 
@@ -104,18 +107,26 @@ function skim(message, args) {
                         });
 
                         await page.setViewport({ width: 1440, height: 900 });
-if ((queryCombined.startsWith('https://twitter.com') || queryCombined.startsWith('https://twitter.com') || queryCombined.startsWith('twitter.com'))) {
-await page.goto(url, { waitUntil: 'networkidle0' });
-} else { 
-                        await page.goto(url, { waitUntil: 'load' });
-}
+
+                        if ((queryCombined.startsWith('https://twitter.com') || queryCombined.startsWith('https://twitter.com') || queryCombined.startsWith('twitter.com'))) {
+                            await page.goto(url, { waitUntil: 'networkidle0' });
+                        } else {
+                            await page.goto(url, { waitUntil: 'load' });
+                        }
+
                         if (url.startsWith('https://duckduckgo.com/')) { // If we choose the GIFL option, we need time for a redirect to happen
                             await delay(2000);
                         }
+
+                        if (url.startsWith('https://www.google.com/')) { // If we choose the Google option, need to confirm cookies
+                            const [button] = await page.$x("//button[contains(., 'Accept')]");
+                            await button.click();
+                        }
+
                         var screenshot = await page.screenshot({ type: 'png', fullPage: fullPageBool });
                         resolve(await message.channel.send('**Skimmed:**\n`' + message.author.tag + ' searched ' + queryCombined + 'using ' + cmd + '`'));
                         resolve(await message.channel.send({ files: [{ attachment: screenshot, name: "screenshot.png" }] }));
-                        message.delete()
+                        message.delete();
                     } catch (error) {
                         console.error(error);
                         resolve(await message.channel.send(`:warning: ${error.message}`));
@@ -157,7 +168,7 @@ await page.goto(url, { waitUntil: 'networkidle0' });
                         //var pdf = await page.pdf({ format: 'A4', printBackground: true, }); PDF generation only possible headless = true, extensions only possible when headless = false...
                         resolve(await message.channel.send('**Skimmed:**\n`' + message.author.tag + ' searched ' + queryCombined + 'using ' + cmd + '`'));
                         resolve(await message.channel.send({ files: [{ attachment: screenshot, name: "screenshot.jpeg" }] }));
-                        message.delete()
+                        message.delete();
                     } catch (error) {
                         console.error(error);
                         resolve(await message.channel.send(`:warning: ${error.message}`));
@@ -186,4 +197,4 @@ module.exports = {
     execute(message, args) {
         skim(message, args);
     }
-}
+};
