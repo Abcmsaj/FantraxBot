@@ -49,10 +49,11 @@ The bot can do the following:
 - `!meme` will pick a random image from a JSON file of images added with `!addmeme`, and post it to the chat
 - `!prune` will allow the user to prune the last 1-99 messages
     - Syntax is `!prune <int from 1-99>`
-- `!poll` will produce an embedded poll post that allows users to choose 1x reaction from a multiple choice selection (up to 10 options) - and set a time limit on the poll too
-    - Syntax is `!poll <Poll title>;<option 1>,<option 2>,<option 3>,<etc>;<Time in seconds>`
+- `!poll` will produce an embedded poll post that allows users to choose a reaction. These could be yes/no Qs or multiple choice.
+    - Syntax is `!poll <Poll question>`
+    - or  `!poll <Poll question> + <option 1> + <option 2> + <option 3> + etc (up to 26)` for multi-choice
     
-![https://imgur.com/fD4BgWz.jpg](https://imgur.com/fD4BgWz.jpg)
+![https://imgur.com/EVoSkJa.jpg](https://imgur.com/EVoSkJa.jpg)
 
 - `!send` allows administrators to send messages as the Bot. Bot reads whatever the content of the message is, and redistributes it to the specified channel
     - Syntax is `!send <channel name> <message - can include links, @mentions, Discord formatting>`
