@@ -7,3 +7,4 @@ services:
     restart: unless-stopped
     volumes:
       - .:/usr/src/bot
+      - /usr/src/bot/node_modules # needed for node modules

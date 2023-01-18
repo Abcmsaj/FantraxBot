@@ -11,6 +11,6 @@
   "dependencies": {
     "discord.js": "^13.8.1",
     "discord.js-poll": "^1.2.1",
-    "puppeteer": "^15.4.0"
+    "puppeteer": "^18.2.1"
   }
 }

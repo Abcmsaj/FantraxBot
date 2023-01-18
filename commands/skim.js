@@ -92,7 +92,7 @@ function skim(message, args) {
 
                 async function puppetPng(url, fullPageBool) {
                     const browser = await puppeteer.launch({
-                        executablePath: '/usr/bin/chromium-browser', // Comment out if testing on Windows
+                        executablePath: '/usr/bin/chromiur', // Comment out if testing on Windows
                         headless: true,
                         args: ['--no-sandbox'/*openvz*/]
                     });
