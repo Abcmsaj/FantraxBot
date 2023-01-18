@@ -74,12 +74,18 @@ function scores(message, args) {
                             await button5.click();
                         }
 
-                        await autoScroll(page);
+                        //await autoScroll(page); // Removed scrolling in favour of clipping the screenshot
                         await delay(500); // Small delay to prevent scrollbar showing in screenshot
 
                         var screenshot = await page.screenshot({
                             type: 'png',
-                            fullPage: false
+                            fullPage: false,
+                            clip: {
+                                x: 0,
+                                y: 1230,
+                                height: 750,
+                                width: 400
+                            }
                         });
 
                         resolve(await message.channel.send({ files: [{ attachment: screenshot, name: "screenshot.png" }] }));
