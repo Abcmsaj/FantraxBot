@@ -92,7 +92,7 @@ function skim(message, args) {
 
                 async function puppetPng(url, fullPageBool) {
                     const browser = await puppeteer.launch({
-                        executablePath: '/usr/bin/chromiur', // Comment out if testing on Windows
+                        executablePath: '/usr/bin/chromium', // Comment out if testing on Windows
                         headless: true,
                         args: ['--no-sandbox'/*openvz*/]
                     });
@@ -144,8 +144,8 @@ function skim(message, args) {
 
                 async function puppetJpeg(url) {
                     const browser = await puppeteer.launch({
-                        executablePath: '/usr/bin/chromium-browser', // Comment out if testing on Windows
-                        headless: false,
+                        executablePath: '/usr/bin/chromium', // Comment out if testing on Windows
+                        headless: true,
                         args: ['--no-sandbox'/*openvz*/,
                             '--disable-extensions-except=../../../../../FantraxConfig/ext/',
                             '--load-extension=../../../../..FantraxConfig/ext/',

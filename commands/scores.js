@@ -54,11 +54,26 @@ function scores(message, args) {
                             resolve(await message.channel.send(`:warning: ${error.message}`));
                         });
                         await page.setViewport({ width: 400, height: 750 });
-                        await page.goto('https://www.fantrax.com/fantasy/league/rjo7oio4l4pgxnmb/standings;timeframeType=BY_PERIOD?startDate=2022-08-12&endDate=2023-05-24&hideGoBackDays=true&timeStartType=PERIOD_ONLY&timeframeType=BY_PERIOD&view=REGULAR_SEASON&pageNumber=1', { waitUntil: 'networkidle0' });
-                        const [button] = await page.$x("//a[contains(., 'Continue')]");
-                        const [button2] = await page.$x("//button[contains(., 'Dismiss')]");
-                        //await button.click(); // Continue button no longer displays
-                        await button2.click();
+                        await page.goto('https://www.fantrax.com/fantasy/league/rjo7oio4l4pgxnmb/standings;timeframeType=BY_PERIOD?startDate=2022-08-12&endDate=2023-05-24&hideGoBackDays=true&timeStartType=PERIOD_ONLY&timeframeType=BY_PERIOD&view=REGULAR_SEASON&pageNumber=1', { waitUntil: 'networkidle2' });
+                        await delay(2000); // Small delay to wait for page load fully as networkidle0 no longer works
+                        // const [button] = await page.$x("//a[contains(., 'Continue')]");
+                        // const [button2] = await page.$x("//button[contains(., 'Dismiss')]");
+                        // const [button3] = await page.$x("//button[contains(., 'AGREE')]");
+                        const [button4] = await page.$x(`//*[@id="qc-cmp2-ui"]/div[2]/div/button[3]`); // AGREE button to privacy policy
+                        const [button5] = await page.$x(`/html/body/app-root/div/div[1]/layout-overlay/overlay-toasts/toast/section/div[1]/button[3]`); // Dismiss button for cookies
+
+                        if (!button4) {
+                            console.log('No AGREE button on page');
+                        } else {
+                            await button4.click();
+                        }
+
+                        if (!button5) {
+                            console.log('No dismiss button to click');
+                        } else {
+                            await button5.click();
+                        }
+
                         await autoScroll(page);
                         await delay(500); // Small delay to prevent scrollbar showing in screenshot
 
@@ -89,6 +104,11 @@ function scores(message, args) {
     })().catch(error => { console.error(error); process.exit(1); });
 }
 
+function delay(time) {
+    return new Promise(function (resolve) {
+        setTimeout(resolve, time);
+    });
+}
 
 module.exports = {
     name: 'scores',
