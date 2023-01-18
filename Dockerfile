@@ -1,15 +1,15 @@
 FROM node:latest
 
-# Create the directory!
+# Create the directory within the container and CD into it
 RUN mkdir -p /usr/src/bot
 WORKDIR /usr/src/bot
 
-# Copy and Install our bot
+# Copy and install our bot's packages
 COPY package.json /usr/src/bot
 RUN npm install
 
-# Our precious bot
+# Copy the rest of the bot files
 COPY . /usr/src/bot
 
-# Start me!
+# Start node
 CMD ["node", "index.js"]
