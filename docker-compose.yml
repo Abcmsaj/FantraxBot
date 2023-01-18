@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  fantraxbot:
+    build: .
+    container_name: fantraxbot
+    restart: unless-stopped
+    volumes:
+      - .:/usr/src/bot
