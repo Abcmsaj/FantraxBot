@@ -12,7 +12,7 @@ function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApprove
     try {
         cards = JSON.parse(fs.readFileSync("./cards.json", "utf8"));
     } catch (err) {
-        console.log(err);
+        console.error(err);
     }
 
     // Conditional arg for adding red cards to messages
@@ -62,7 +62,7 @@ function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApprove
             if (hasCards === 0 && cardAllowance.cardAllowance === 0) {
                 reaction.message.channel.send(`${user}, you have no red cards left to give this month.\nYour 🟥 does not count and has been removed.`);
                 reaction.remove().catch(error => console.error('Failed to remove reactions: ', error));
-                console.log(`Red card not added as ${user.username} has none left to give this month`);
+                console.log(`<RedCardTracker> Red card not added as ${user.username} has none left to give this month`);
 
                 // Take away another red to put their value at -1, and stop entering this loop
                 cardAllowance.cardAllowance--;
@@ -73,7 +73,7 @@ function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApprove
                 return;
             } else if (hasCards === 0 && cardAllowance.cardAllowance < 0) {
                 // User has -1 cards so none to give and should not trigger message in chat again 
-                console.log(`Red card not added as ${user.username} has none left to give this month`);
+                console.log(`<RedCardTracker> Red card not added as ${user.username} has none left to give this month`);
 
                 // Remove the reaction
                 reaction.remove().catch(error => console.error('Failed to remove reactions: ', error));
@@ -83,14 +83,14 @@ function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApprove
                 cardAllowance.cardAllowance--;
                 if (cardAllowance.cardAllowance === 1) {
                     reaction.message.channel.send(`🟥 ${user}, you have ${cardAllowance.cardAllowance} red card left to give this month.`);
-                    console.log(`Informed ${user.username} they have ${cardAllowance.cardAllowance} red card left to give this month`);
+                    console.log(`<RedCardTracker> Informed ${user.username} they have ${cardAllowance.cardAllowance} red card left to give this month`);
                 } else {
                     reaction.message.channel.send(`🟥 ${user}, you have ${cardAllowance.cardAllowance} red cards left to give this month.`);
-                    console.log(`Informed ${user.username} they have ${cardAllowance.cardAllowance} red cards left to give this month`);
+                    console.log(`<RedCardTracker> Informed ${user.username} they have ${cardAllowance.cardAllowance} red cards left to give this month`);
                 }
 
                 // If this was the first time that a red card was given then follow this route
-                console.log(`${reaction.message.author.tag}'s message "${reaction.message.content}" gained a provisional red card.`);
+                console.log(`<RedCardTracker> ${reaction.message.author.tag}'s message "${reaction.message.content}" gained a provisional red card.`);
 
                 // If the message carded is an image, it won't add the red card - so change the content to a string
                 if (reaction.message.content === '') {
@@ -125,13 +125,13 @@ function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApprove
                 getRedCardChannel.send({ embeds: [cardEmbed] })
                     .then(message => {
                         // Send message
-                        console.log('Message sent to Channel');
+                        console.log('<RedCardTracker> Message sent to Channel');
 
                         // Add checkmark emoji for appprover to confirm
                         message.react('✅')
                             .then(() => {
                                 message.react('❌');
-                                console.log('Confirmation buttons added');
+                                console.log('<RedCardTracker> Confirmation buttons added');
 
                                 // Add user data to cards.json if they don't exist
                                 if (!cards[reaction.message.author.id]) cards[reaction.message.author.id] = {
@@ -161,8 +161,8 @@ function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApprove
                                 if (approvalReaction.emoji.name === '✅') {
                                     // If accepted, increment the counter for approved and remove a provisional 
                                     message.react('🟥');
-                                    console.log('Approved');
-                                    console.log(`${reaction.message.author.tag}'s message "${reaction.message.content}" gained a confirmed red card!`);
+                                    console.log('<RedCardTracker> Approved');
+                                    console.log(`<RedCardTracker> ${reaction.message.author.tag}'s message "${reaction.message.content}" gained a confirmed red card!`);
 
                                     // Add one to confirmed value and take away a provisional card
                                     const cardData = cards[reaction.message.author.id];
@@ -176,7 +176,8 @@ function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApprove
 
                                 } else {
                                     // If rejected, delete the message
-                                    console.log('Rejected');
+                                    console.log('<RedCardTracker> Rejected');
+                                    console.log(`<RedCardTracker> ${reaction.message.author.tag}'s message "${reaction.message.content}" did not gain a confirmed red card`);
                                     approvalReaction.message.delete({ timeout: 1000 })
                                         .then(() => {
                                             getRedCardChannel.send('Provisional card removed')
@@ -189,17 +190,17 @@ function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApprove
                     });
             }
         } else if (reaction.message.author.bot && !user.bot) {
-            console.log(`Not registering card as it was added to a bot`);
+            console.log(`<RedCardTracker> Not registering card as it was added to a bot`);
 
             // Remove the reaction from the bot
             reaction.remove().catch(error => console.error('Failed to remove reactions: ', error));
         } else if (reaction.message.author.bot && user.bot) {
             // This route is if the message reaction is on a bot's post, by a bot
             // Need this because bot reacts with a red card if a post is confirmed
-            console.log(`Bot has added a red card to a post.`);
+            console.log(`<RedCardTracker> Bot has added a red card to a post.`);
         }
         else {
-            console.log(`Reaction count is ${reaction.count} - no need to post again`);
+            console.log(`<RedCardTracker> Reaction count is ${reaction.count} - no need to post again`);
         }
     }
 }

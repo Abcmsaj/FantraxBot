@@ -31,6 +31,7 @@ module.exports = {
                 });
 
                 message.channel.send('**Total cards**:\n```json\n' + totalCards + '\n```');
+                console.log(`<TotalCards> ${message.author.username} requested total cards in #${message.channel.name}`)
             };
         });
     },

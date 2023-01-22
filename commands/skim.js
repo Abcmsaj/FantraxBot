@@ -7,7 +7,7 @@ function skim(message, args) {
 
         function processMessage(message) {
             return new Promise(async function (resolve, reject) {
-                console.log(`[${new Date().toLocaleString()}] ${message.author.tag} invoked command: ${message.content}`);
+                console.log(`<Skim> [${new Date().toLocaleString()}] ${message.author.tag} invoked command: ${message.content}`);
 
                 // Get the cmd used and the query (the rest of the arguments)
                 var cmd = args[0];
@@ -96,7 +96,7 @@ function skim(message, args) {
                         headless: true,
                         args: ['--no-sandbox'/*openvz*/]
                     });
-                    console.log('Chromium launched');
+                    console.log('<Skim> Chromium launched');
 
                     // React to tell user something is happening
                     message.react('🆗');
@@ -133,10 +133,10 @@ function skim(message, args) {
                     } finally {
                         try {
                             await browser.close();
-                            console.log('Chromium closed');
+                            console.log('<Skim> Chromium closed');
                         } catch (error) {
                             console.error(error);
-                            console.log('Chromium crashed');
+                            console.log('<Skim> Chromium crashed');
                             process.exit(1);
                         }
                     }
@@ -152,7 +152,7 @@ function skim(message, args) {
                             '--display=:1', // Comment out if testing on Windows
                             '--disable-gpu']
                     });
-                    console.log('Chromium launched');
+                    console.log('<Skim> Chromium launched');
 
                     message.react('🆗');
                     try {
@@ -175,10 +175,10 @@ function skim(message, args) {
                     } finally {
                         try {
                             await browser.close();
-                            console.log('Chromium closed');
+                            console.log('<Skim> Chromium closed');
                         } catch (error) {
                             console.error(error);
-                            console.log('Chromium crashed');
+                            console.log('<Skim> Chromium crashed');
                             process.exit(1);
                         }
                     }

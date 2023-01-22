@@ -13,7 +13,7 @@ function memeFunction(message) {
     try {
         memes = JSON.parse(fs.readFileSync("./memes.json", "utf8"));
     } catch (err) {
-        console.log(err);
+        console.error(err);
     }
 
     if (hasNumber(message.content)) {
@@ -29,13 +29,13 @@ function memeFunction(message) {
 
                 if (!matchedKey) {
                     // If no match on number, tell user
-                    console.log('No meme with that ID exists')
+                    console.log(`<Memes> No meme with ID ${fixedNo} exists`)
                     message.reply('no meme with that ID exists.');
                     return
                 }
                 var url = matchedKey['url'] // Get the url for the matched random number
 
-                console.log('Meme #' + fixedNo + ' sent to chat. (Fixed value)')
+                console.log(`<Memes> Meme #${fixedNo} requested by ${message.author.username} and sent to #${message.channel.name} (Fixed number)`)
                 // Send the ID and url back to the channel where the !meme command was found
                 message.channel.send(`Meme #${fixedNo}: ${url}`);
             }
@@ -58,13 +58,13 @@ function memeFunction(message) {
 
                 if (!matchedKey) {
                     // Tell user no memes added if the file is empty
-                    console.log('No memes added')
+                    console.log('<Memes> No memes added')
                     message.reply('no memes have been added yet. Use the !addmeme command to add some.');
                     return
                 }
                 var url = matchedKey['url'] // Get the url for the matched random number
 
-                console.log('Meme #' + randomNo + ' sent to chat.')
+                console.log(`<Memes> Meme #${randomNo} requested by ${message.author.username} and sent to #${message.channel.name} (Random)`)
                 // Send the ID and url back to the channel where the !meme command was found
                 message.channel.send(`Meme #${randomNo}: ${url}`);
             }

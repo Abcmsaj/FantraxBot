@@ -15,7 +15,6 @@ for (const file of commandFiles) {
     // set a new item in the Collection
     // with the key as the command name and the value as the exported module
     client.commands.set(command.name, command);
-    console.log(command);
 };
 
 module.exports = {
@@ -23,23 +22,30 @@ module.exports = {
     description: 'Reloads a command',
     args: true,
     execute(message, args) {
-        const commandName = args[0].toLowerCase();
-        const command = client.commands.get(commandName)
-            || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+        if (!args[0]) {
+            console.log(`<Reload> Reload args cannot by null`)
+            return message.channel.send(`You need to provide a reload command name`);
+        } else {
+            const commandName = args[0].toLowerCase();
+            const command = client.commands.get(commandName)
+                || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
-        if (!command) {
-            return message.channel.send(`There is no command with name or alias \`${commandName}\`, ${message.author}!`);
-        }
+            if (!command) {
+                console.log(`<Reload> There is no command called ${commandName}`)
+                return message.channel.send(`There is no command with name or alias \`${commandName}\`, ${message.author}!`);
+            }
 
-        delete require.cache[require.resolve(`./${command.name}.js`)];
+            delete require.cache[require.resolve(`./${command.name}.js`)];
 
-        try {
-            const newCommand = require(`./${command.name}.js`);
-            client.commands.set(newCommand.name, newCommand);
-            message.channel.send(`Command \`${command.name}\` was reloaded!`);
-        } catch (error) {
-            console.log(error);
-            message.channel.send(`There was an error while reloading a command \`${command.name}\`:\n\`${error.message}\``);
+            try {
+                const newCommand = require(`./${command.name}.js`);
+                client.commands.set(newCommand.name, newCommand);
+                message.channel.send(`Command \`${command.name}\` was reloaded!`);
+                console.log(`<Reload> Command ${command.name} was reloaded by ${message.author.username}!`);
+            } catch (error) {
+                console.log(`<Reload> ${error}`);
+                message.channel.send(`There was an error while reloading a command \`${command.name}\`:\n\`${error.message}\``);
+            }
         }
     },
 };

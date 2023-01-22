@@ -31,6 +31,7 @@ module.exports = {
                 });
 
                 message.channel.send('**Total SSN**:\n```json\n' + totalSSN + '\n```');
+                console.log(`<SSN> ${message.author.username} requested SSN in #${message.channel.name}`)
             };
         });
     },

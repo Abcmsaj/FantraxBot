@@ -10,9 +10,9 @@ module.exports = {
         var response = '';
 
         if (cardData.provisional === 1) {
-            response += `you currently have ${cardData.provisional} nominated red card,`;
+            response += `You currently have ${cardData.provisional} nominated red card,`;
         } else {
-            response += `you currently have ${cardData.provisional} nominated red cards,`;
+            response += `You currently have ${cardData.provisional} nominated red cards,`;
         };
 
         if (cardData.confirmed === 1) {
@@ -32,5 +32,9 @@ module.exports = {
 
         // Send compiled response
         message.reply(response);
+        console.log(`<Cards> ${message.author.username} requested their card count`)
+        console.log(`<Cards> Nominated: ${cardData.provisional}`)
+        console.log(`<Cards> Confirmed: ${cardData.confirmed}`)
+        console.log(`<Cards> Allowance: ${cardData.cardAllowance}`)
     },
 };

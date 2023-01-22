@@ -12,29 +12,28 @@ module.exports = {
         if (message.member.permissions.has('ADMINISTRATOR')) {
             // If guild doesn't have a mute role, tell the channel to make it
             if (!muteRole) {
-                console.log('Mute role does not exist');
+                console.log('<Mute> Mute role does not exist');
                 message.channel.send(`Please create a role called 'mute' with no message send permissions.`);
                 return;
             } else {
                 // if mute role exists, get the first mentioned user
-                console.log('Mute role exists');
+                console.log('<Mute> Mute role exists');
                 const member = message.mentions.members.first();
                 // If they don't already have the mute role, give it to them
                 if (!member.roles.cache.some(role => role.name === 'mute')) {
                     const member = message.mentions.members.first();
                     member.roles.add(muteRole).then(() => {
                         message.channel.send(`${member} is now muted.`);
-                        console.log(`${member} is now muted.`);
+                        console.log(`<Mute> ${member.user.username} is now muted.`);
                     });
                     // Otherwise, tell the channel that the user has the role
                 } else {
-                    console.log('User already has the mute role');
                     message.channel.send(`${member} is already muted.`);
-                    console.log(`${member} is already muted.`);
+                    console.log(`<Mute> ${member.user.username} is already muted.`);
                 }
             }
         } else {
-            console.log('Non-admin user tried to execute mute command');
+            console.log('<Mute> Non-admin user tried to execute mute command');
         }
     },
 };

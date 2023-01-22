@@ -31,6 +31,7 @@ module.exports = {
                 });
 
                 message.channel.send('**Total SSN Given**:\n```json\n' + totalSSNGiven + '\n```');
+                console.log(`<SSNGiver> ${message.author.username} requested SSN Givers in #${message.channel.name}`)
             };
         });
     },

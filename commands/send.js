@@ -16,14 +16,14 @@ module.exports = {
 
         // If not channel provided, tell user
         if (!sendingChannel) {
-            console.log('Channel not found');
+            console.log(`<Send> Channel ${args[0]} not found`);
             message.channel.send(`The channel provided as an argument does not exist.`);
             return;
         };
 
         // If no message detected, tell user
         if (!providedMessageCombined) {
-            console.log('Message cannot be empty');
+            console.log('<Send> Message cannot be empty');
             message.channel.send(`Message cannot be empty.`);
             return;
         };
@@ -32,7 +32,7 @@ module.exports = {
         if (message.member.permissions.has('ADMINISTRATOR')) {
             // Send the message to the channel
             sendingChannel.send(providedMessageCombined);
-            console.log('Bot sent: ' + providedMessageCombined + 'to #' + sendingChannel.name);
+            console.log(`<Send> Bot sent: '${providedMessageCombined}' to #${sendingChannel.name}`);
         };
     }
 };

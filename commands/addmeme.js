@@ -18,11 +18,13 @@ module.exports = {
         if (message.member.permissions.has('ADMINISTRATOR')) {
             if (!args[0]) {
                 // If not args provided, inform user
-                message.reply('you need to enter a URL to a meme');
+                console.log('<AddMeme> No URL added to command');
+                message.reply('You need to enter a URL to a meme');
                 return;
             } else if (!args[0].includes('https://') && !args[0].includes('http://')) {
                 // If no link provided, inform user
-                message.reply('provide a valid URL');
+                console.log('<AddMeme> No valid URL detected on command');
+                message.reply('Provide a valid URL');
                 return;
             } else {
                 var lastKey = Object.keys(memes).pop();  // Get the last key
@@ -32,9 +34,6 @@ module.exports = {
                 }
 
                 var newKey = (parseInt(lastKey) + 1); // Add one onto the last in the list
-
-                console.log(lastKey);
-                console.log(newKey);
 
                 // Add meme to memes.json
                 if (!memes[newKey]) memes[newKey] = {
@@ -48,8 +47,8 @@ module.exports = {
 
                 const memeLibraryCh = message.guild.channels.cache.find(channel => channel.name === 'meme-library');
 
-                message.reply(`meme #${newKey} added.`);
-                console.log('Added meme to memes.json');
+                message.reply(`Meme #${newKey} added.`);
+                console.log('<AddMeme> Added meme #${newKey} to memes.json');
                 memeLibraryCh.send(`Meme #${newKey}: ` + args[0]);
                 return;
             }

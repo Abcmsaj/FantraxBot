@@ -62,7 +62,7 @@ module.exports = {
         var randomNumber = Math.floor(Math.random() * replies.length)
         var randomReply = replies[randomNumber]
 
-        console.log(`8ball triggered. ` + randomNumber + ` chosen. '` + randomReply + `' sent.`)
+        console.log(`<8ball> 8ball triggered. ${randomNumber} chosen. '${randomReply}' sent to ${message.channel.name}.`)
         message.reply(randomReply)
     }
 }

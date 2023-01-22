@@ -25,7 +25,6 @@ async function poll(message, args, separator, embedColor) {
 
         // Delete original message
         message.delete();
-        console.log(message)
         const embed = new Discord.MessageEmbed()
             .setTitle('📊  Poll')
             .setDescription(question)
@@ -36,7 +35,7 @@ async function poll(message, args, separator, embedColor) {
             msg.react('👍');
             msg.react('👎');
 
-            console.log('Yes/No poll sent: ' + question)
+            console.log(`<Poll> Yes/No poll by ${message.author.username}: '${question}' in the ${message.channel.name} channel`)
         });
     }
 
@@ -106,6 +105,6 @@ async function poll(message, args, separator, embedColor) {
             }
         });
 
-        console.log('Multi choice poll sent: ' + originalQ)
+        console.log(`<Poll> Multi choice poll created by ${message.author.username}: '${originalQ}' in the ${message.channel.name} channel`)
     }
 }

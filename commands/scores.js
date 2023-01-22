@@ -7,7 +7,7 @@ function scores(message, args) {
 
         function processMessage(message) {
             return new Promise(async function (resolve, reject) {
-                console.log(`[${new Date().toLocaleString()}] ${message.author.tag} requested latest scores.`);
+                console.log(`<Scores> [${new Date().toLocaleString()}] ${message.author.tag} requested latest scores.`);
 
                 // Fun the puppetPng function
                 puppetPng('https://www.fantrax.com/fantasy/league/rjo7oio4l4pgxnmb/livescoring');
@@ -44,7 +44,7 @@ function scores(message, args) {
                         headless: true,
                         args: ['--no-sandbox'/*openvz*/]
                     });
-                    console.log('Chromium launched');
+                    console.log('<Scores> Chromium launched');
 
                     // React to tell user something is happening
                     message.react('🆗');
@@ -63,13 +63,13 @@ function scores(message, args) {
                         const [button5] = await page.$x(`/html/body/app-root/div/div[1]/layout-overlay/overlay-toasts/toast/section/div[1]/button[3]`); // Dismiss button for cookies
 
                         if (!button4) {
-                            console.log('No AGREE button on page');
+                            console.log('<Scores> No AGREE button on page');
                         } else {
                             await button4.click();
                         }
 
                         if (!button5) {
-                            console.log('No dismiss button to click');
+                            console.log('<Scores> No dismiss button to click');
                         } else {
                             await button5.click();
                         }
@@ -95,10 +95,10 @@ function scores(message, args) {
                     } finally {
                         try {
                             await browser.close();
-                            console.log('Chromium closed');
+                            console.log('<Scores> Chromium closed');
                         } catch (error) {
                             console.error(error);
-                            console.log('Chromium crashed');
+                            console.log('<Scores> Chromium crashed');
                             process.exit(1);
                         }
                     }

@@ -6,7 +6,7 @@ let reacts;
 try {
     reacts = JSON.parse(fs.readFileSync("./reacts.json", "utf8"));
 } catch (err) {
-    console.log(err);
+    console.log(`<React> ${err}`);
 }
 
 module.exports = {
@@ -17,8 +17,8 @@ module.exports = {
         if (message.member.permissions.has('ADMINISTRATOR')) {
             // If no arguments after !react then tell use
             if (!args[0]) {
-                message.reply('need a trigger phrase first');
-                return;
+                console.log('<React> No trigger phrase provided')
+                return message.reply('Need a trigger phrase first');
             }
 
             // Create the trigger and get all args and combine them
@@ -26,14 +26,14 @@ module.exports = {
             var arrayLength = args.length;
 
             for (var i = 0; i < arrayLength; i++) {
-                console.log(args[i]);
+                console.log(`<React> Trigger provided: ${args[i]}`);
 
                 trigger += args[i] + ' ';
             }
 
             // Trim the final whitespace from the end of the trigger
             trigger = trigger.trim();
-            console.log('Trigger created');
+            console.log('<React> Trigger created');
 
             // Declare the two other vars by default
             var usage = 0;
@@ -49,7 +49,7 @@ module.exports = {
             const messageCollector = channel.createMessageCollector({ filter, max: 1, time: 10000 });
             var response;
 
-            message.reply('provide the response.')
+            message.reply('Provide the response.')
                 .then(() => {
                     // Collect a response and set it to the response var
                     messageCollector.on('collect', userResp => {
@@ -66,9 +66,8 @@ module.exports = {
                             } else {
                                 // If there was no response, send message to channel
                                 if (!response) {
-                                    channel.send('No response provided, timed out.');
-                                    console.log('There was no response');
-                                    return;
+                                    console.log('<React> There was no response, timed out');
+                                    return channel.send('No response provided, timed out.');
                                 } else {
                                     // Send another message and start a reaction collector
                                     channel.send('Any additional options?')
@@ -86,11 +85,11 @@ module.exports = {
 
                                             reactionCollector.on('collect', (reaction, user) => {
                                                 if (reaction.emoji.name === '🌍') {
-                                                    console.log(`Collected ${reaction.emoji.name} from ${user.tag}`);
+                                                    console.log(`<React> Collected ${reaction.emoji.name} from ${user.tag}`);
                                                     usage = 1;
                                                     return usage;
                                                 } else if (reaction.emoji.name === '🅰️') {
-                                                    console.log(`Collected ${reaction.emoji.name} from ${user.tag}`);
+                                                    console.log(`<React> Collected ${reaction.emoji.name} from ${user.tag}`);
                                                     casing = 1;
                                                     return casing;
                                                 }
@@ -98,14 +97,13 @@ module.exports = {
 
                                             // On reaction collector end
                                             reactionCollector.on('end', collected => {
-                                                console.log(`Casing is ${casing} and usage is ${usage}`);
+                                                console.log(`<React> Casing is ${casing} and usage is ${usage}`);
 
                                                 // Add to reacts.json
                                                 if (reacts[trigger]) {
                                                     // If it does exist, tell user
-                                                    channel.send('Unable to add reaction as it already exists');
-                                                    console.log('Reaction exists, nothing saved');
-                                                    return;
+                                                    console.log(`<React> Reaction '${trigger}' exists, nothing saved`);
+                                                    return channel.send('Unable to add reaction as it already exists');
                                                 }
                                                 // Add react data to reacts.json if it doesn't exist
                                                 if (!reacts[trigger]) reacts[trigger] = {
@@ -120,8 +118,8 @@ module.exports = {
                                                 });
                                                 // Message channel to say it's been added
                                                 channel.send(`Reaction ${trigger} added with response: ${response}.\nCasing is ${casing} and usage is ${usage}.`);
-                                                console.log('Reaction does not exist in reacts.json');
-                                                console.log('Added reaction to reacts.json');
+                                                console.log('<React> Reaction does not exist in reacts.json');
+                                                console.log(`<React> Added reaction to reacts.json: ${trigger} -> ${response}`);
                                                 return;
                                             });
                                         });
