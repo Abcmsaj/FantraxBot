@@ -1,8 +1,13 @@
+const { SlashCommandBuilder } = require('@discordjs/builders');
+
 module.exports = {
     name: 'ssn',
     description: 'Shows a leaderboard of SSN',
     cooldown: 60,
-    execute(message, args) {
+    data: new SlashCommandBuilder()
+        .setName('ssn')
+        .setDescription('this is a test command!'),
+    async execute(interaction, args) {
         const fs = require('fs');
         const ssn = JSON.parse(fs.readFileSync("./ssn.json", "utf8"));
 
@@ -16,7 +21,7 @@ module.exports = {
                 // Populate it with each item
                 Object.values(ssn).forEach(item => {
                     sortedArray.push(item);
-                })
+                });
 
                 // Actually sort the array in descending order
                 sortedArray.sort(function (a, b) {
@@ -30,8 +35,8 @@ module.exports = {
                     totalSSN += item.username + ' │ ' + item.SSN + '\n';
                 });
 
-                message.channel.send('**Total SSN**:\n```json\n' + totalSSN + '\n```');
-                console.log(`<SSN> ${message.author.username} requested SSN in #${message.channel.name}`)
+                interaction.reply('**Total SSN**:\n```json\n' + totalSSN + '\n```');
+                console.log(`<SSN> ${interaction.user.username} requested SSN in #${interaction.channel.name}`);
             };
         });
     },

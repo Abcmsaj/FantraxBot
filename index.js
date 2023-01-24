@@ -8,6 +8,7 @@ const ssnTrackerFunction = require('./modules/ssnTracker.js');
 const { prefix, token, redCardChannel, approverId, adminId, monthlyCards } = require('./FantraxConfig/config.json');
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'], intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS] });
 const getPrefix = prefix;  // Get Prefix
+const fs = require('fs');
 
 //Create files if they don't exist
 checkFile.checkFile('cards.json');
@@ -15,6 +16,17 @@ checkFile.checkFile('reacts.json');
 checkFile.checkFile('ssn.json');
 checkFile.checkFile('ssnGiver.json');
 checkFile.checkFile('memes.json');
+
+// ----------------
+// Get a list of all command names
+// ----------------
+const commandNames = fs.readdirSync('./commands').filter((fileName) => fileName.endsWith('.js'));
+const commands = {};
+
+for (const commandName of commandNames) {
+    const command = require(`./commands/${commandName}`);
+    commands[command.data.name] = command;
+}
 
 // Login
 client.login(token);
@@ -27,6 +39,30 @@ client.once('ready', () => {
 
     const adminChannel = client.channels.cache.find(channel => channel.name === 'commands'); // Admin channel
     adminChannel.send('Online!');
+
+    // ----------------
+    // Use the command names to create the slash commands
+    // ----------------
+    for (command in commands) {
+        client.application.commands.create(commands[command].data);
+    }
+});
+
+// ----------------
+// Only reply to commands
+// ----------------
+client.on('interactionCreate', async (interaction) => {
+    if (!interaction.isCommand()) return;
+
+    const command = commands[interaction.commandName];
+
+    if (!command) return;
+
+    try {
+        await command.execute(interaction);
+    } catch (error) {
+        console.error(error);
+    }
 });
 
 // -----------------------------------------------------

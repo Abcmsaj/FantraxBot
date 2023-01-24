@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
-const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'], intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS] });
+const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'], intents: [Discord.GatewayIntentBits.Guilds, Discord.GatewayIntentBits.GuildMessages, Discord.GatewayIntentBits.GuildMessageReactions] });
+const { SlashCommandBuilder } = require('@discordjs/builders');
 const fs = require('fs');
 
 // Read from JSON files
@@ -13,45 +14,50 @@ try {
 module.exports = {
     name: 'addmeme',
     description: 'Adds a meme to the memes.json file',
-    execute(message, args) {
+    data: new SlashCommandBuilder()
+        .setName('addmeme')
+        .setDescription('this is a test command!')
+        .addStringOption((option) => option.setName('test').setDescription('The user who will be smacked!').setRequired(true))
+        .setDefaultMemberPermissions(0),
+    async execute(interaction) {
+        const url = interaction.options.getString('test');
+
         // Only run if user is admin
-        if (message.member.permissions.has('ADMINISTRATOR')) {
-            if (!args[0]) {
-                // If not args provided, inform user
-                console.log('<AddMeme> No URL added to command');
-                message.reply('You need to enter a URL to a meme');
-                return;
-            } else if (!args[0].includes('https://') && !args[0].includes('http://')) {
+        if (interaction.memberPermissions.has('ADMINISTRATOR')) {
+            if (!url.includes('https://') && !url.includes('http://')) {
                 // If no link provided, inform user
                 console.log('<AddMeme> No valid URL detected on command');
-                message.reply('Provide a valid URL');
+                interaction.reply('Provide a valid URL');
                 return;
             } else {
                 var lastKey = Object.keys(memes).pop();  // Get the last key
-
+                console.log('1');
                 if (!lastKey) {
                     lastKey = '0'; // Set last key to 0 if one doesn't exist
                 }
-
+                console.log('2');
                 var newKey = (parseInt(lastKey) + 1); // Add one onto the last in the list
-
+                console.log('3');
                 // Add meme to memes.json
                 if (!memes[newKey]) memes[newKey] = {
-                    url: args[0]
+                    url: url
                 };
-
+                console.log('4');
                 // Write to the file
                 fs.writeFileSync('./memes.json', JSON.stringify(memes), (err) => {
                     if (err) console.error(err);
                 });
 
-                const memeLibraryCh = message.guild.channels.cache.find(channel => channel.name === 'meme-library');
+                const memeLibraryCh = interaction.guild.channels.cache.find(channel => channel.name === 'meme-library');
 
-                message.reply(`Meme #${newKey} added.`);
-                console.log('<AddMeme> Added meme #${newKey} to memes.json');
-                memeLibraryCh.send(`Meme #${newKey}: ` + args[0]);
+                interaction.reply(`Meme #${newKey} added.`);
+                console.log(`<AddMeme> Added meme #${newKey} to memes.json`);
+                memeLibraryCh.send(`Meme #${newKey}: ` + url);
                 return;
             }
+        } else {
+            interaction.reply('You do not have permissions to execute this command');
+            console.log(`<AddMeme> ${interaction.user.username} failed to run command due to permissions`);
         }
     }
 };
