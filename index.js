@@ -6,7 +6,7 @@ const commandsFunction = require('./modules/commands.js');
 const redCardTrackerFunction = require('./modules/redCardTracker.js');
 const ssnTrackerFunction = require('./modules/ssnTracker.js');
 const { prefix, token, redCardChannel, approverId, adminId, monthlyCards } = require('./FantraxConfig/config.json');
-const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'], intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS] });
+const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'], intents: [Discord.GatewayIntentBits.Guilds, Discord.GatewayIntentBits.GuildMessages, Discord.GatewayIntentBits.GuildMessageReactions] });
 const getPrefix = prefix;  // Get Prefix
 const fs = require('fs');
 
