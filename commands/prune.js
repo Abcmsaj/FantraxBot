@@ -25,6 +25,6 @@ module.exports = {
         interaction.deferReply();
         interaction.deleteReply();
 
-        console.log(`<Prune> ${numberToDelete} messages removed by ${interaction.user.username} in the ${interaction.channel.name} channel`);
+        console.log(`<Prune> ${numberToDelete} messages removed by ${interaction.user.username} in #${interaction.channel.name}`);
     }
 };
