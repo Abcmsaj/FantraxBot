@@ -9,7 +9,7 @@ module.exports = {
         .addUserOption((option) => option.setName('user').setDescription('The user who will be smacked!').setRequired(true))
         .addNumberOption((option) => option.setName('duration').setDescription('The user who will be smacked!').setRequired(true))
         .addStringOption((option) => option.setName('reason').setDescription('The user who will be smacked!').setMaxLength(512).setRequired(false))
-        .setDefaultMemberPermissions(0),
+        .setDefaultMemberPermissions(0), // Admin only
     async execute(interaction) {
 
         const member = interaction.options.getMember('user');

@@ -1,6 +1,7 @@
 // Define client
 const Discord = require('discord.js');
-const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'], intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS] });
+const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'], intents: [Discord.GatewayIntentBits.Guilds, Discord.GatewayIntentBits.GuildMessages, Discord.GatewayIntentBits.GuildMessageReactions] });
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
 // Define fs
 const fs = require('fs');
@@ -20,32 +21,34 @@ for (const file of commandFiles) {
 module.exports = {
     name: 'reload',
     description: 'Reloads a command',
-    args: true,
-    execute(message, args) {
-        if (!args[0]) {
-            console.log(`<Reload> Reload args cannot by null`)
-            return message.channel.send(`You need to provide a reload command name`);
-        } else {
-            const commandName = args[0].toLowerCase();
-            const command = client.commands.get(commandName)
-                || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+    data: new SlashCommandBuilder()
+        .setName('reload')
+        .setDescription('Provide a command name and this will reload the command to use its latest code')
+        .addStringOption((option) => option
+            .setName('command')
+            .setDescription('Name of command to reload')
+            .setRequired(true))
+        .setDefaultMemberPermissions(0), // Admin only
+    async execute(interaction) {
+        const commandName = interaction.options.getString('command').toLowerCase();
+        const command = client.commands.get(commandName)
+            || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
-            if (!command) {
-                console.log(`<Reload> There is no command called ${commandName}`)
-                return message.channel.send(`There is no command with name or alias \`${commandName}\`, ${message.author}!`);
-            }
+        if (!command) {
+            console.log(`<Reload> There is no command called ${commandName}`);
+            return interaction.reply(`There is no command with name or alias \`${commandName}\`, ${interaction.user}!`);
+        }
 
-            delete require.cache[require.resolve(`./${command.name}.js`)];
+        delete require.cache[require.resolve(`./${command.name}.js`)];
 
-            try {
-                const newCommand = require(`./${command.name}.js`);
-                client.commands.set(newCommand.name, newCommand);
-                message.channel.send(`Command \`${command.name}\` was reloaded!`);
-                console.log(`<Reload> Command ${command.name} was reloaded by ${message.author.username}!`);
-            } catch (error) {
-                console.log(`<Reload> ${error}`);
-                message.channel.send(`There was an error while reloading a command \`${command.name}\`:\n\`${error.message}\``);
-            }
+        try {
+            const newCommand = require(`./${command.name}.js`);
+            client.commands.set(newCommand.name, newCommand);
+            interaction.reply(`Command \`${command.name}\` was reloaded!`);
+            console.log(`<Reload> Command ${command.name} was reloaded by ${interaction.user.username}!`);
+        } catch (error) {
+            console.log(`<Reload> ${error}`);
+            interaction.reply(`There was an error while reloading a command \`${command.name}\`:\n\`${error.message}\``);
         }
     },
 };

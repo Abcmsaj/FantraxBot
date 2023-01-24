@@ -12,7 +12,7 @@ module.exports = {
             .setMinValue(1)
             .setMaxValue(99)
             .setRequired(true))
-        .setDefaultMemberPermissions(0),
+        .setDefaultMemberPermissions(0), // Admin only
     async execute(interaction) {
         const numberToDelete = (interaction.options.getNumber('messagecount') + 1);
 
@@ -21,6 +21,7 @@ module.exports = {
             interaction.reply('There was an error trying to prune messages in this channel!');
         });
 
+        // No reply needed
         interaction.deferReply();
         interaction.deleteReply();
 

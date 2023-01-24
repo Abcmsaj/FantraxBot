@@ -18,7 +18,7 @@ module.exports = {
         .setName('addmeme')
         .setDescription('this is a test command!')
         .addStringOption((option) => option.setName('test').setDescription('The user who will be smacked!').setRequired(true))
-        .setDefaultMemberPermissions(0),
+        .setDefaultMemberPermissions(0), // Admin only
     async execute(interaction) {
         const url = interaction.options.getString('test');
 
