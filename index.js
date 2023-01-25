@@ -72,7 +72,6 @@ client.on('interactionCreate', async (interaction) => {
 // Send messages based on triggers from Reacts JSON file
 // -----------------------------------------------------
 client.on('messageCreate', (message) => {
-    console.log(message.content);
     reactFunction.reactFunction(message);
 });
 
