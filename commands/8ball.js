@@ -5,9 +5,13 @@ module.exports = {
     description: 'Randomly responds with a reply',
     data: new SlashCommandBuilder()
         .setName('8ball')
-        .setDescription('Replies with a random 8-Ball response'),
+        .setDescription('Replies with a random 8-Ball response')
+        .addStringOption((option) => option
+            .setName('question')
+            .setDescription('Enter the question you wish the 8 Ball to answer...')
+            .setRequired(true)),
     async execute(interaction) {
-
+        const question = interaction.options.getString('question');
         var replies = [
             `yes`,
             `it is certain`,
@@ -67,7 +71,7 @@ module.exports = {
         var randomNumber = Math.floor(Math.random() * replies.length);
         var randomReply = replies[randomNumber];
 
-        console.log(`<8ball> 8ball triggered. ${randomNumber} chosen. '${randomReply}' sent to ${interaction.channel.name}.`);
-        interaction.reply(randomReply);
+        console.log(`<8ball> 8ball triggered. ${randomNumber} chosen. '${randomReply}' sent to #${interaction.channel.name}.`);
+        interaction.reply(`**${interaction.user.username} asked:** ${question}\n**8 Ball responds:** ${randomReply}`);
     }
 };

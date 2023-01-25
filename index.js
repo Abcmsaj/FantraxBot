@@ -34,7 +34,7 @@ client.login(token);
 client.once('ready', () => {
     // Uncomment to delete all commands from the bot and guild
     // const guild = client.guilds.cache.get(guildId);
-    //client.application.commands.set([]); 
+    // client.application.commands.set([]);
     // guild.commands.set([]);
 
     // ----------------
