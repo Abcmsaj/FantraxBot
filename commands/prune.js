@@ -18,11 +18,11 @@ module.exports = {
 
         // No reply needed
         interaction.deferReply();
-        interaction.deleteReply();
-
-        interaction.channel.bulkDelete(numberToDelete, true).catch(err => {
-            console.error(err);
-            interaction.reply('There was an error trying to prune messages in this channel!');
+        interaction.deleteReply().then(() => {
+            interaction.channel.bulkDelete(numberToDelete, true).catch(err => {
+                console.error(err);
+                interaction.reply('There was an error trying to prune messages in this channel!');
+            });
         });
 
         console.log(`<Prune> ${numberToDelete} messages removed by ${interaction.user.username} in #${interaction.channel.name}`);
