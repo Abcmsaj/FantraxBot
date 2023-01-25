@@ -65,14 +65,14 @@ module.exports = {
                     if (!matchedKey) {
                         // Tell user no memes added if the file is empty
                         console.log('<Memes> No memes added');
-                        message.reply('no memes have been added yet. Use the !addmeme command to add some.');
+                        message.reply('No memes have been added yet. Use the /addmeme command to add some.');
                         return;
                     }
                     var url = matchedKey['url']; // Get the url for the matched random number
 
                     console.log(`<Memes> Meme #${randomNo} requested by ${interaction.user.username} and sent to #${interaction.channel.name} (Random)`);
                     // Send the ID and url back to the channel where the !meme command was found
-                    interaction.reply(`Meme #${randomNo}: ${url}`);
+                    interaction.reply(`🎲 Meme #${randomNo}: ${url}`);
                 }
             });
         }
