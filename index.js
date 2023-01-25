@@ -4,7 +4,7 @@ const reactFunction = require('./modules/reactions.js');
 const redCardTrackerFunction = require('./modules/redCardTracker.js');
 const ssnTrackerFunction = require('./modules/ssnTracker.js');
 const { token, redCardChannel, approverId, adminId, monthlyCards, guildId } = require('./FantraxConfig/config.json');
-const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'], intents: [Discord.GatewayIntentBits.Guilds, Discord.GatewayIntentBits.GuildMessages, Discord.GatewayIntentBits.GuildMessageReactions] });
+const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'], intents: [Discord.GatewayIntentBits.Guilds, Discord.GatewayIntentBits.GuildMessages, Discord.GatewayIntentBits.GuildMessageReactions, Discord.GatewayIntentBits.MessageContent] });
 const fs = require('fs');
 
 // Create files if they don't exist
@@ -32,14 +32,9 @@ client.login(token);
 // Ready
 // ----------------
 client.once('ready', () => {
-    console.log('Ready!');
-
-    const adminChannel = client.channels.cache.find(channel => channel.name === 'commands'); // Admin channel
-    adminChannel.send('Online!');
-
     // Uncomment to delete all commands from the bot and guild
     // const guild = client.guilds.cache.get(guildId);
-    // client.application.commands.set([]); 
+    //client.application.commands.set([]); 
     // guild.commands.set([]);
 
     // ----------------
@@ -49,6 +44,11 @@ client.once('ready', () => {
         client.application.commands.create(commands[command].data);
         console.log(`<Commands> ${command} created`);
     }
+
+    console.log('Ready!');
+
+    const adminChannel = client.channels.cache.find(channel => channel.name === 'commands'); // Admin channel
+    adminChannel.send('Online!');
 });
 
 // ----------------
@@ -71,7 +71,8 @@ client.on('interactionCreate', async (interaction) => {
 // -----------------------------------------------------
 // Send messages based on triggers from Reacts JSON file
 // -----------------------------------------------------
-client.on('messageCreate', message => {
+client.on('messageCreate', (message) => {
+    console.log(message.content);
     reactFunction.reactFunction(message);
 });
 
