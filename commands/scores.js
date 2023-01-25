@@ -115,11 +115,11 @@ function scores(interaction) {
     })().catch(error => { console.error(error); process.exit(1); });
 }
 
-function delay(time) {
-    return new Promise(function (resolve) {
-        setTimeout(resolve, time);
-    });
-}
+// function delay(time) {
+//     return new Promise(function (resolve) {
+//         setTimeout(resolve, time);
+//     });
+// }
 
 module.exports = {
     name: 'scores',

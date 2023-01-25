@@ -1,3 +1,4 @@
+const fs = require('fs');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 module.exports = {
@@ -5,10 +6,9 @@ module.exports = {
     description: 'Sends a message to the user that requested the command, letting them know their card numbers',
     data: new SlashCommandBuilder()
         .setName('cards')
-        .setDescription('this is a test command!!'),
+        .setDescription(`Returns the user's nominated reds, confirmed reds, and card allowance`),
     cooldown: 10,
     async execute(interaction) {
-        const fs = require('fs');
         const cards = JSON.parse(fs.readFileSync("./cards.json", "utf8"));
         const cardData = cards[interaction.user.id];
 

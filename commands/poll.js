@@ -4,12 +4,19 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 module.exports = {
     name: 'poll',
     description: 'Create a poll',
-    usage: 'Title + Option 1 + Option 2 + Option 3 + etc',
     data: new SlashCommandBuilder()
         .setName('poll')
         .setDescription('Create a Yes/No poll, or provide options separated by + to add multiple choice')
-        .addStringOption((option) => option.setName('question').setDescription('The question to your poll').setMaxLength(512).setRequired(true))
-        .addStringOption((option) => option.setName('options').setDescription('Add options to a multiple choice poll, separated by a +').setMaxLength(512).setRequired(false)),
+        .addStringOption((option) => option
+            .setName('question')
+            .setDescription('The question to your poll')
+            .setMaxLength(512)
+            .setRequired(true))
+        .addStringOption((option) => option
+            .setName('options')
+            .setDescription('Add options to a multiple choice poll, separated by a +')
+            .setMaxLength(512)
+            .setRequired(false)),
     async execute(interaction) {
         const question = interaction.options.getString('question');
         const options = interaction.options.getString('options');

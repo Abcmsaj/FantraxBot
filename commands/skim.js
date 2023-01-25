@@ -132,7 +132,6 @@ function skim(interaction) {
     })().catch(error => { console.error(error); process.exit(1); });
 }
 
-
 module.exports = {
     name: 'skim',
     description: 'Skims a website and produces a screenshot to be posted into Discord',

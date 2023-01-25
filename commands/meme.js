@@ -1,5 +1,5 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
 const fs = require('fs');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
 // Function to get a random number between 1 and the max provided
 function getRandomInt(max) {

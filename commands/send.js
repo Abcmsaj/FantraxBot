@@ -12,7 +12,7 @@ module.exports = {
             .setRequired(true))
         .addStringOption((option) => option
             .setName('message')
-            .setDescription('Message you wish to send to the channel')
+            .setDescription('Message you want to send to the channel')
             .setRequired(true))
         .setDefaultMemberPermissions(0), // Admin only
     async execute(interaction) {

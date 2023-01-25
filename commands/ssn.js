@@ -1,3 +1,4 @@
+const fs = require('fs');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 module.exports = {
@@ -6,9 +7,8 @@ module.exports = {
     cooldown: 60,
     data: new SlashCommandBuilder()
         .setName('ssn')
-        .setDescription('this is a test command!'),
-    async execute(interaction, args) {
-        const fs = require('fs');
+        .setDescription('Responds with a leaderboard SSNs in the Discord'),
+    async execute(interaction) {
         const ssn = JSON.parse(fs.readFileSync("./ssn.json", "utf8"));
 
         fs.readFile('./ssn.json', (err) => {

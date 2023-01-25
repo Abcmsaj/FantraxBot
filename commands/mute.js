@@ -6,12 +6,21 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('mute')
         .setDescription('this is a test command!')
-        .addUserOption((option) => option.setName('user').setDescription('The user who will be smacked!').setRequired(true))
-        .addNumberOption((option) => option.setName('duration').setDescription('The user who will be smacked!').setRequired(true))
-        .addStringOption((option) => option.setName('reason').setDescription('The user who will be smacked!').setMaxLength(512).setRequired(false))
+        .addUserOption((option) => option
+            .setName('user')
+            .setDescription('The user that will be timed out')
+            .setRequired(true))
+        .addNumberOption((option) => option
+            .setName('duration')
+            .setDescription('How long the timeout will last (in seconds)')
+            .setRequired(true))
+        .addStringOption((option) => option
+            .setName('reason')
+            .setDescription('The reason for the timeout (optional)')
+            .setMaxLength(512)
+            .setRequired(false))
         .setDefaultMemberPermissions(0), // Admin only
     async execute(interaction) {
-
         const member = interaction.options.getMember('user');
         const timeout = interaction.options.getNumber('duration');
         const reason = interaction.options.getString('reason') || 'no reason';
