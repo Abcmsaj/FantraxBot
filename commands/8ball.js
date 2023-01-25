@@ -6,7 +6,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('8ball')
         .setDescription('Replies with a random 8-Ball response'),
-    async execute(interaction, args) {
+    async execute(interaction) {
 
         var replies = [
             `yes`,

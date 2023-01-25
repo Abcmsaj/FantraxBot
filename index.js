@@ -1,10 +1,9 @@
 const Discord = require('discord.js');
 const checkFile = require('./modules/checkFile.js');
 const reactFunction = require('./modules/reactions.js');
-const memeFunction = require('./commands/meme.js');
 const redCardTrackerFunction = require('./modules/redCardTracker.js');
 const ssnTrackerFunction = require('./modules/ssnTracker.js');
-const { token, redCardChannel, approverId, adminId, monthlyCards } = require('./FantraxConfig/config.json');
+const { token, redCardChannel, approverId, adminId, monthlyCards, guildId } = require('./FantraxConfig/config.json');
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'], intents: [Discord.GatewayIntentBits.Guilds, Discord.GatewayIntentBits.GuildMessages, Discord.GatewayIntentBits.GuildMessageReactions] });
 const fs = require('fs');
 
@@ -38,16 +37,22 @@ client.once('ready', () => {
     const adminChannel = client.channels.cache.find(channel => channel.name === 'commands'); // Admin channel
     adminChannel.send('Online!');
 
+    // Uncomment to delete all commands from the bot and guild
+    // const guild = client.guilds.cache.get(guildId);
+    // client.application.commands.set([]); 
+    // guild.commands.set([]);
+
     // ----------------
     // Use the command names to create the slash commands
     // ----------------
     for (command in commands) {
         client.application.commands.create(commands[command].data);
+        console.log(`<Commands> ${command} created`);
     }
 });
 
 // ----------------
-// Only reply to commands
+// Enable slash commands
 // ----------------
 client.on('interactionCreate', async (interaction) => {
     if (!interaction.isCommand()) return;

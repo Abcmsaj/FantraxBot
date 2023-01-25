@@ -16,14 +16,14 @@ module.exports = {
     async execute(interaction) {
         const numberToDelete = (interaction.options.getNumber('messagecount') + 1);
 
+        // No reply needed
+        interaction.deferReply();
+        interaction.deleteReply();
+
         interaction.channel.bulkDelete(numberToDelete, true).catch(err => {
             console.error(err);
             interaction.reply('There was an error trying to prune messages in this channel!');
         });
-
-        // No reply needed
-        interaction.deferReply();
-        interaction.deleteReply();
 
         console.log(`<Prune> ${numberToDelete} messages removed by ${interaction.user.username} in #${interaction.channel.name}`);
     }
