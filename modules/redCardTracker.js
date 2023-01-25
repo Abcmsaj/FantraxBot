@@ -98,7 +98,7 @@ function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApprove
                 };
 
                 // Generate a pretty embedded post
-                const cardEmbed = new Discord.MessageEmbed()
+                const cardEmbed = new Discord.EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Red Card Infraction')
                     //.setAuthor('', 'https://imgur.com/S1WDyVU.jpg')

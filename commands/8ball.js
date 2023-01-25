@@ -1,7 +1,12 @@
+const { SlashCommandBuilder } = require('@discordjs/builders');
+
 module.exports = {
     name: '8ball',
     description: 'Randomly responds with a reply',
-    execute(message, args) {
+    data: new SlashCommandBuilder()
+        .setName('8ball')
+        .setDescription('Replies with a random 8-Ball response'),
+    async execute(interaction) {
 
         var replies = [
             `yes`,
@@ -57,12 +62,12 @@ module.exports = {
             `that's about as likely as Alex finding true happiness`,
             `that's about as likely as Freeman getting his trophy`,
             `send £10 to £LakeBlackett on CashApp and I'll DM you my answer`
-        ]
+        ];
 
-        var randomNumber = Math.floor(Math.random() * replies.length)
-        var randomReply = replies[randomNumber]
+        var randomNumber = Math.floor(Math.random() * replies.length);
+        var randomReply = replies[randomNumber];
 
-        console.log(`<8ball> 8ball triggered. ${randomNumber} chosen. '${randomReply}' sent to ${message.channel.name}.`)
-        message.reply(randomReply)
+        console.log(`<8ball> 8ball triggered. ${randomNumber} chosen. '${randomReply}' sent to ${interaction.channel.name}.`);
+        interaction.reply(randomReply);
     }
-}
+};

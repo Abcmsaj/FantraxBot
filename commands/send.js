@@ -1,38 +1,32 @@
+const { SlashCommandBuilder } = require('@discordjs/builders');
+
 module.exports = {
     name: 'send',
     description: 'Command, channel name, message to be sent as the bot',
-    execute(message, args) {
-        // Declare the channel
-        const sendingChannel = message.guild.channels.cache.find(channel => channel.name === args[0]);
+    data: new SlashCommandBuilder()
+        .setName('send')
+        .setDescription('this is a test command!')
+        .addStringOption((option) => option
+            .setName('channel')
+            .setDescription('Name of command to send a message to')
+            .setRequired(true))
+        .addStringOption((option) => option
+            .setName('message')
+            .setDescription('Message you want to send to the channel')
+            .setRequired(true))
+        .setDefaultMemberPermissions(0), // Admin only
+    async execute(interaction) {
+        // Declare channel, message, and find channel to send to
+        const channelName = interaction.options.getString('channel');
+        const messageToSend = interaction.options.getString('message');
+        const sendingChannel = interaction.guild.channels.cache.find(channel => channel.name === channelName);
 
-        // Declare the message
-        var providedMessage = args.slice(1);
-        var providedMessageCombined = '';
+        // Send the message to the channel
+        sendingChannel.send(messageToSend);
+        console.log(`<Send> Bot sent: '${messageToSend}' to #${sendingChannel.name}`);
 
-        // Combine the query if it's >1 word, splitting commas
-        for (var i = 0; i < providedMessage.length; i++) {
-            providedMessageCombined += providedMessage[i] + ' ';
-        }
-
-        // If not channel provided, tell user
-        if (!sendingChannel) {
-            console.log(`<Send> Channel ${args[0]} not found`);
-            message.channel.send(`The channel provided as an argument does not exist.`);
-            return;
-        };
-
-        // If no message detected, tell user
-        if (!providedMessageCombined) {
-            console.log('<Send> Message cannot be empty');
-            message.channel.send(`Message cannot be empty.`);
-            return;
-        };
-
-        // Only run if the sender of the message is an admin
-        if (message.member.permissions.has('ADMINISTRATOR')) {
-            // Send the message to the channel
-            sendingChannel.send(providedMessageCombined);
-            console.log(`<Send> Bot sent: '${providedMessageCombined}' to #${sendingChannel.name}`);
-        };
+        // No reply needed
+        interaction.deferReply();
+        interaction.deleteReply();
     }
 };

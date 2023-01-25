@@ -1,11 +1,16 @@
+const fs = require('fs');
+const { SlashCommandBuilder } = require('@discordjs/builders');
+
 module.exports = {
     name: 'cards',
     description: 'Sends a message to the user that requested the command, letting them know their card numbers',
+    data: new SlashCommandBuilder()
+        .setName('cards')
+        .setDescription(`Returns the user's nominated reds, confirmed reds, and card allowance`),
     cooldown: 10,
-    execute(message, args) {
-        const fs = require('fs');
+    async execute(interaction) {
         const cards = JSON.parse(fs.readFileSync("./cards.json", "utf8"));
-        const cardData = cards[message.author.id];
+        const cardData = cards[interaction.user.id];
 
         var response = '';
 
@@ -22,7 +27,7 @@ module.exports = {
         };
 
         if (cardData.cardAllowance === 1) {
-            response += ` and ${cardData.cardAllowance} red card left to give out this month.`
+            response += ` and ${cardData.cardAllowance} red card left to give out this month.`;
         } else if (cardData.cardAllowance < 0) {
             // Have to add this because logic in Red Card Tracker can put a person at negative allowed reds in order to prevent spam of automated message from bot
             response += ` and 0 red cards left to give out this month.`;
@@ -31,10 +36,10 @@ module.exports = {
         };
 
         // Send compiled response
-        message.reply(response);
-        console.log(`<Cards> ${message.author.username} requested their card count`)
-        console.log(`<Cards> Nominated: ${cardData.provisional}`)
-        console.log(`<Cards> Confirmed: ${cardData.confirmed}`)
-        console.log(`<Cards> Allowance: ${cardData.cardAllowance}`)
+        interaction.reply(response);
+        console.log(`<Cards> ${interaction.user.username} requested their card count`);
+        console.log(`<Cards> Nominated: ${cardData.provisional}`);
+        console.log(`<Cards> Confirmed: ${cardData.confirmed}`);
+        console.log(`<Cards> Allowance: ${cardData.cardAllowance}`);
     },
 };

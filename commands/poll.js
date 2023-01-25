@@ -1,110 +1,82 @@
-//const { poll } = require('discord.js-poll');
 const Discord = require('discord.js');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
 module.exports = {
     name: 'poll',
     description: 'Create a poll',
-    usage: 'Title + Option 1 + Option 2 + Option 3 + etc',
-    execute(message, args) {
-        poll(message, args, '+', '#ffffff');
-    },
-};
+    data: new SlashCommandBuilder()
+        .setName('poll')
+        .setDescription('Create a Yes/No poll, or provide options separated by + to add multiple choice')
+        .addStringOption((option) => option
+            .setName('question')
+            .setDescription('The question to your poll')
+            .setMaxLength(512)
+            .setRequired(true))
+        .addStringOption((option) => option
+            .setName('options')
+            .setDescription('Add options to a multiple choice poll, separated by a +')
+            .setMaxLength(512)
+            .setRequired(false)),
+    async execute(interaction) {
+        const question = interaction.options.getString('question');
+        const options = interaction.options.getString('options');
+        const embedColor = '#ffffff';
+        const separator = '+';
 
-// This function taken from discord.js-poll and adapted to send the Q as a description instead of title
-async function poll(message, args, separator, embedColor) {
+        if (!options) {
+            const embed = new Discord.EmbedBuilder()
+                .setTitle('📊  Poll')
+                .setDescription(question)
+                .setColor(embedColor)
+                .setAuthor({ name: `${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL({ format: "png", dynamic: true }) });
 
-    const findSep = args.find(char => char.includes(separator));
+            const msg = await interaction.reply({ embeds: [embed], fetchReply: true });
 
-    if (findSep === undefined) {
-
-        // If no args provided, return error
-        const question = args.join(' ');
-        if (!question) {
-            return message.channel.send('Please enter a question');
-        }
-
-        // Delete original message
-        message.delete();
-        const embed = new Discord.MessageEmbed()
-            .setTitle('📊  Poll')
-            .setDescription(question)
-            .setColor(embedColor)
-            .setAuthor({ name: `${message.author.username}`, iconURL: message.author.displayAvatarURL({ format: "png", dynamic: true }) });
-
-        await message.channel.send({ embeds: [embed] }).then(msg => {
             msg.react('👍');
             msg.react('👎');
 
-            console.log(`<Poll> Yes/No poll by ${message.author.username}: '${question}' in the ${message.channel.name} channel`)
-        });
-    }
+            console.log(`<Poll> Yes/No poll by ${interaction.user.username}: '${question}' in the ${interaction.channel.name} channel`);
+        }
 
-    else {
-        // Delete original message
-        message.delete();
+        else {
+            // Declare the question and options from the slash command
+            const embed = new Discord.EmbedBuilder();
+            const question = interaction.options.getString('question');
+            const options = interaction.options.getString('options');
 
-        const originalQ = args.join(' ').split(separator)[0] // Get original Q from args
-        const embed = new Discord.MessageEmbed();
-        const options = [];
+            // Declare blank options array
+            var optionsArr = [];
 
-        // Remove the Q from the list of args
-        for (let i = 0; i < args.length; i++) {
-            if (args[i] === separator) {
-                args.splice(i, 1);
-                const question = args.splice(0, i);
-                embed.setTitle('📊  Poll').setDescription(question.join(' '))
-                break;
+            // Declare alphabet emojis
+            const alphabet = ['🇦', '🇧', '🇨', '🇩', '🇪', '🇫', '🇬', '🇭', '🇮', '🇯', '🇰', '🇱',
+                '🇲', '🇳', '🇴', '🇵', '🇶', '🇷', '🇸', '🇹', '🇺', '🇻', '🇼', '🇽', '🇾', '🇿'];
+
+            // Split the options up by the separator character
+            optionsArr = options.split(separator);
+
+            // Add the question to the start of the options array (as all of this will be in the desc of the embed)
+            const arr = [question].concat(optionsArr);
+
+            // If more than 26 options, return error
+            if (optionsArr.length > alphabet.length) {
+                return interaction.reply(`Please don't input more than 26 options.`);
             }
-        }
 
-        // Get list of options in an array
-        let j = 0;
-        for (let i = 0; i < args.length; i++) {
-            if (args[i] === separator) {
-                args.splice(i, 1);
-                options[j] = args.splice(0, i);
-                j++;
-                i = 0;
-            }
-        }
+            // Create the embed
+            embed
+                .setDescription(arr.join('\n\n'))
+                .setColor(embedColor)
+                .setAuthor({ name: `${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL({ format: "png", dynamic: true }) });
 
-        // Declare alphabet emojis
-        const alphabet = ['🇦', '🇧', '🇨', '🇩', '🇪', '🇫', '🇬', '🇭', '🇮', '🇯', '🇰', '🇱',
-            '🇲', '🇳', '🇴', '🇵', '🇶', '🇷', '🇸', '🇹', '🇺', '🇻', '🇼', '🇽', '🇾', '🇿'];
+            // Send message to channel and react with alphabet emojis
+            const msg = await interaction.reply({ embeds: [embed], fetchReply: true });
 
-        // Create array with original Q (this will be start of description)
-        const arr = [originalQ];
-        options[j] = args;
-
-        // If more than 26 options, return error
-        if (options.length > alphabet.length) {
-            return await message.channel.send(`Please don't input more than 26 options.`).then(sent => {
-                setTimeout(() => {
-                    sent.delete();
-                }, 2000);
-            });
-        }
-
-        // For each option in the array, add to desc and separate with new line
-        let count = 0;
-
-        options.forEach(option => {
-            arr.push(alphabet[count] + ' ' + option.join(' '));
-            count++;
-        });
-
-        embed
-            .setDescription(arr.join('\n\n'))
-            .setColor(embedColor)
-            .setAuthor({ name: `${message.author.username}`, iconURL: message.author.displayAvatarURL({ format: "png", dynamic: true }) });
-
-        // Send message to channel and react with alphabet emojis
-        await message.channel.send({ embeds: [embed] }).then(msg => {
-            for (let i = 0; i < options.length; i++) {
+            for (let i = 0; i < optionsArr.length; i++) {
                 msg.react(alphabet[i]);
             }
-        });
 
-        console.log(`<Poll> Multi choice poll created by ${message.author.username}: '${originalQ}' in the ${message.channel.name} channel`)
-    }
-}
+            // Log to console
+            console.log(`<Poll> Multi choice poll created by ${interaction.user.username}: '${question}' in the ${interaction.channel.name} channel`);
+        }
+    },
+};

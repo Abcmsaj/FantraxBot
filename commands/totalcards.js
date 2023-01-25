@@ -1,11 +1,17 @@
+const fs = require('fs');
+const { SlashCommandBuilder } = require('@discordjs/builders');
+
 module.exports = {
     name: 'totalcards',
     description: 'Sends a message to channel displaying all card totals',
     cooldown: 60,
-    execute(message, args) {
-        const fs = require('fs');
+    data: new SlashCommandBuilder()
+        .setName('totalcards')
+        .setDescription('Show the number of cards for all users in the Discord'),
+    async execute(interaction) {
         const cards = JSON.parse(fs.readFileSync("./cards.json", "utf8"));
 
+        // Read cards.json file
         fs.readFile('./cards.json', (err) => {
             if (err) {
                 throw err;
@@ -30,8 +36,8 @@ module.exports = {
                     totalCards += item.username + ' │ ' + item.provisional + ' │ ' + item.confirmed + '\n';
                 });
 
-                message.channel.send('**Total cards**:\n```json\n' + totalCards + '\n```');
-                console.log(`<TotalCards> ${message.author.username} requested total cards in #${message.channel.name}`)
+                interaction.reply('**Total cards**:\n```json\n' + totalCards + '\n```');
+                console.log(`<TotalCards> ${interaction.user.username} requested total cards in #${interaction.channel.name}`);
             };
         });
     },
