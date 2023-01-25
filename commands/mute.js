@@ -5,7 +5,7 @@ module.exports = {
     description: 'Provide a username and time in minutes for the user to be timeout out for',
     data: new SlashCommandBuilder()
         .setName('mute')
-        .setDescription('this is a test command!')
+        .setDescription('Will time out a user for the specified time (in seconds)')
         .addUserOption((option) => option
             .setName('user')
             .setDescription('The user that will be timed out')

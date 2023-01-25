@@ -5,7 +5,7 @@ module.exports = {
     description: 'Command, channel name, message to be sent as the bot',
     data: new SlashCommandBuilder()
         .setName('send')
-        .setDescription('this is a test command!')
+        .setDescription('Will send a message to the specified channel, as the bot')
         .addStringOption((option) => option
             .setName('channel')
             .setDescription('Name of command to send a message to')
