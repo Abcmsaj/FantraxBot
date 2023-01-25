@@ -1,16 +1,17 @@
-const Discord = require('discord.js');
-const puppeteer = require("puppeteer");
+const puppeteer = require('puppeteer');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
-function scores(message, args) {
+function scores(interaction) {
     (async () => {
-        message.response = processMessage(message);
+        const waitingMessage = await interaction.deferReply({ fetchReply: true });
+        processMessage(interaction);
 
-        function processMessage(message) {
+        function processMessage(interaction) {
             return new Promise(async function (resolve, reject) {
-                console.log(`<Scores> [${new Date().toLocaleString()}] ${message.author.tag} requested latest scores.`);
+                console.log(`<Scores> [${new Date().toLocaleString()}] ${interaction.user.username} requested latest scores.`);
 
-                // Fun the puppetPng function
-                puppetPng('https://www.fantrax.com/fantasy/league/rjo7oio4l4pgxnmb/livescoring');
+                // Run the puppetPng function
+                puppetPng('https://www.fantrax.com/fantasy/league/rjo7oio4l4pgxnmb/standings;timeframeType=BY_PERIOD?startDate=2022-08-12&endDate=2023-05-24&hideGoBackDays=true&timeStartType=PERIOD_ONLY&timeframeType=BY_PERIOD&view=REGULAR_SEASON&pageNumber=1');
 
                 // Delay function used in both async puppet functions
                 function delay(time) {
@@ -19,24 +20,24 @@ function scores(message, args) {
                     });
                 }
 
-                async function autoScroll(page) {
-                    await page.evaluate(async () => {
-                        await new Promise((resolve, reject) => {
-                            var totalHeight = 0;
-                            var distance = 100;
-                            var timer = setInterval(() => {
-                                var scrollHeight = document.body.scrollHeight;
-                                window.scrollBy(0, distance);
-                                totalHeight += distance;
+                // async function autoScroll(page) {
+                //     await page.evaluate(async () => {
+                //         await new Promise((resolve, reject) => {
+                //             var totalHeight = 0;
+                //             var distance = 100;
+                //             var timer = setInterval(() => {
+                //                 var scrollHeight = document.body.scrollHeight;
+                //                 window.scrollBy(0, distance);
+                //                 totalHeight += distance;
 
-                                if (totalHeight >= scrollHeight) {
-                                    clearInterval(timer);
-                                    resolve();
-                                }
-                            }, 10);
-                        });
-                    });
-                }
+                //                 if (totalHeight >= scrollHeight) {
+                //                     clearInterval(timer);
+                //                     resolve();
+                //                 }
+                //             }, 10);
+                //         });
+                //     });
+                // }
 
                 async function puppetPng(url) {
                     const browser = await puppeteer.launch({
@@ -47,14 +48,14 @@ function scores(message, args) {
                     console.log('<Scores> Chromium launched');
 
                     // React to tell user something is happening
-                    message.react('🆗');
+                    waitingMessage.react('🆗');
                     try {
                         var page = await browser.newPage();
                         page.on("error", async error => {
-                            resolve(await message.channel.send(`:warning: ${error.message}`));
+                            resolve(await interaction.editReply(`:warning: ${error.message}`));
                         });
                         await page.setViewport({ width: 400, height: 750 });
-                        await page.goto('https://www.fantrax.com/fantasy/league/rjo7oio4l4pgxnmb/standings;timeframeType=BY_PERIOD?startDate=2022-08-12&endDate=2023-05-24&hideGoBackDays=true&timeStartType=PERIOD_ONLY&timeframeType=BY_PERIOD&view=REGULAR_SEASON&pageNumber=1', { waitUntil: 'networkidle2' });
+                        await page.goto(url, { waitUntil: 'networkidle2' });
                         await delay(2000); // Small delay to wait for page load fully as networkidle0 no longer works
                         // const [button] = await page.$x("//a[contains(., 'Continue')]");
                         // const [button2] = await page.$x("//button[contains(., 'Dismiss')]");
@@ -74,7 +75,7 @@ function scores(message, args) {
                             await button5.click();
                         }
 
-                        //await autoScroll(page); // Removed scrolling in favour of clipping the screenshot
+                        // await autoScroll(page); // Removed scrolling in favour of clipping the screenshot
                         await delay(500); // Small delay to prevent scrollbar showing in screenshot
 
                         var screenshot = await page.screenshot({
@@ -88,10 +89,11 @@ function scores(message, args) {
                             }
                         });
 
-                        resolve(await message.channel.send({ files: [{ attachment: screenshot, name: "screenshot.png" }] }));
+                        // Post edit deferredReply with screenshot of scores
+                        resolve(await interaction.editReply({ files: [{ attachment: screenshot, name: "screenshot.png" }] }));
                     } catch (error) {
                         console.error(error);
-                        resolve(await message.channel.send(`:warning: ${error.message}`));
+                        resolve(await interaction.editReply(`:warning: ${error.message}`));
                     } finally {
                         try {
                             await browser.close();
@@ -102,6 +104,9 @@ function scores(message, args) {
                             process.exit(1);
                         }
                     }
+
+                    // Remove all emojis from the post at the end
+                    waitingMessage.reactions.removeAll();
                 }
 
             });
@@ -119,7 +124,10 @@ function delay(time) {
 module.exports = {
     name: 'scores',
     description: 'Logs into Fantrax and screenshots the scores to the Discord',
-    execute(message, args) {
-        scores(message, args);
+    data: new SlashCommandBuilder()
+        .setName('scores')
+        .setDescription('Request the latest scores for the current gameweek'),
+    execute(interaction) {
+        scores(interaction);
     }
 };

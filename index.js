@@ -1,14 +1,14 @@
 const Discord = require('discord.js');
 const checkFile = require('./modules/checkFile.js');
 const reactFunction = require('./modules/reactions.js');
-const memeFunction = require('./modules/memes.js');
+const memeFunction = require('./commands/meme.js');
 const redCardTrackerFunction = require('./modules/redCardTracker.js');
 const ssnTrackerFunction = require('./modules/ssnTracker.js');
 const { token, redCardChannel, approverId, adminId, monthlyCards } = require('./FantraxConfig/config.json');
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'], intents: [Discord.GatewayIntentBits.Guilds, Discord.GatewayIntentBits.GuildMessages, Discord.GatewayIntentBits.GuildMessageReactions] });
 const fs = require('fs');
 
-//Create files if they don't exist
+// Create files if they don't exist
 checkFile.checkFile('cards.json');
 checkFile.checkFile('reacts.json');
 checkFile.checkFile('ssn.json');
@@ -68,13 +68,6 @@ client.on('interactionCreate', async (interaction) => {
 // -----------------------------------------------------
 client.on('messageCreate', message => {
     reactFunction.reactFunction(message);
-});
-
-// -----------------------------------------------------
-// Send memes randomly from the Memes JSON file
-// -----------------------------------------------------
-client.on('messageCreate', message => {
-    memeFunction.memeFunction(message);
 });
 
 // --------------------------------------------------------------------
