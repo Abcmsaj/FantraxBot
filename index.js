@@ -8,6 +8,7 @@ const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION']
 const fs = require('fs');
 
 // Create files if they don't exist
+checkFile.checkFile('birthdays.json');
 checkFile.checkFile('cards.json');
 checkFile.checkFile('reacts.json');
 checkFile.checkFile('ssn.json');
