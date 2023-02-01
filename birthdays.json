@@ -1,11 +1,4 @@
 {
-    "196045564129968128": {
-        "username": "Abcmsaj",
-        "name": "Alex",
-        "birthday": "5 October",
-        "isBirthdayToday": 0,
-        "currentNickname": ""
-    },
     "446368911550840833": {
         "username": "Jenner91",
         "name": "Conor",
@@ -24,7 +17,8 @@
         "username": "elrevert",
         "name": "Tommey",
         "birthday": "27 November",
-        "isBirthdayToday": 0
+        "isBirthdayToday": 0,
+        "currentNickname": ""
     },
     "445993888021348372": {
         "username": "ejfreeman",

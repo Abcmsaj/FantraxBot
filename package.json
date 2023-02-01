@@ -9,10 +9,10 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "cron": "^2.2.0",
     "discord.js": "^14.7.1",
     "discord.js-poll": "^1.2.1",
     "luxon": "^3.2.1",
+    "node-cron": "^3.0.2",
     "puppeteer": "^18.2.1"
   }
 }

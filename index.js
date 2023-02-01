@@ -1,8 +1,10 @@
 const Discord = require('discord.js');
 const checkFile = require('./modules/checkFile.js');
+const cron = require('node-cron');
 const reactFunction = require('./modules/reactions.js');
 const redCardTrackerFunction = require('./modules/redCardTracker.js');
 const ssnTrackerFunction = require('./modules/ssnTracker.js');
+const birthdayCheckerFunction = require('./modules/birthdayChecker.js');
 const { token, redCardChannel, approverId, adminId, monthlyCards, guildId } = require('./FantraxConfig/config.json');
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'], intents: [Discord.GatewayIntentBits.Guilds, Discord.GatewayIntentBits.GuildMessages, Discord.GatewayIntentBits.GuildMessageReactions, Discord.GatewayIntentBits.MessageContent] });
 const fs = require('fs');
@@ -34,7 +36,7 @@ client.login(token);
 // ----------------
 client.once('ready', () => {
     // Uncomment to delete all commands from the bot and guild
-    // const guild = client.guilds.cache.get(guildId);
+    const guild = client.guilds.cache.get(guildId);
     // client.application.commands.set([]);
     // guild.commands.set([]);
 
@@ -67,6 +69,13 @@ client.on('interactionCreate', async (interaction) => {
     } catch (error) {
         console.error(error);
     }
+});
+
+// -----------------------------------------------------
+// Trigger function at midnight, every night
+// -----------------------------------------------------
+cron.schedule('00 00 * * *', () => {
+    birthdayCheckerFunction.birthdayCheckerFunction(client);
 });
 
 // -----------------------------------------------------
