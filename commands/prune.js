@@ -7,7 +7,7 @@ module.exports = {
         .setName('prune')
         .setDescription('Delete a set number of messages from 1-99')
         .addNumberOption((option) => option
-            .setName('messagecount')
+            .setName('message_count')
             .setDescription('Number of messages to be removed')
             .setMinValue(1)
             .setMaxValue(99)

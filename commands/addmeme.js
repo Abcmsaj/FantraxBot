@@ -19,9 +19,14 @@ module.exports = {
             .setName('url')
             .setDescription('The URL of the image')
             .setRequired(true))
+        .addBooleanOption((option) => option
+            .setName('nsfw')
+            .setDescription('Is the image considered NSFW?')
+            .setRequired(false))
         .setDefaultMemberPermissions(0), // Admin only
     async execute(interaction) {
         const url = interaction.options.getString('url');
+        const nsfw = interaction.options.getString('nsfw');
 
         if (!url.includes('https://') && !url.includes('http://')) {
             // If no link provided, inform user
@@ -30,18 +35,26 @@ module.exports = {
             return;
         } else {
             var lastKey = Object.keys(memes).pop();  // Get the last key
-            console.log('1');
+
             if (!lastKey) {
                 lastKey = '0'; // Set last key to 0 if one doesn't exist
             }
-            console.log('2');
+
             var newKey = (parseInt(lastKey) + 1); // Add one onto the last in the list
-            console.log('3');
-            // Add meme to memes.json
-            if (!memes[newKey]) memes[newKey] = {
-                url: url
-            };
-            console.log('4');
+
+            // If the image is marked as NSFW
+            if (nsfw) {
+                // Add meme to memes.json with spoiler tags around the url
+                if (!memes[newKey]) memes[newKey] = {
+                    url: `||${url}||`
+                };
+            } else {
+                // Add meme to memes.json
+                if (!memes[newKey]) memes[newKey] = {
+                    url: url
+                };
+            }
+
             // Write to the file
             fs.writeFileSync('./memes.json', JSON.stringify(memes), (err) => {
                 if (err) console.error(err);
