@@ -26,7 +26,7 @@ module.exports = {
         .setDefaultMemberPermissions(0), // Admin only
     async execute(interaction) {
         const url = interaction.options.getString('url');
-        const nsfw = interaction.options.getString('nsfw');
+        const nsfw = interaction.options.getBoolean('nsfw');
 
         if (!url.includes('https://') && !url.includes('http://')) {
             // If no link provided, inform user
