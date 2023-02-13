@@ -47,20 +47,26 @@ module.exports = {
             // Declare blank options array
             var optionsArr = [];
 
-            // Declare alphabet emojis
+            // Declare alphabet emojis (up to T as you can only add 20 reactions to a post)
             const alphabet = ['🇦', '🇧', '🇨', '🇩', '🇪', '🇫', '🇬', '🇭', '🇮', '🇯', '🇰', '🇱',
-                '🇲', '🇳', '🇴', '🇵', '🇶', '🇷', '🇸', '🇹', '🇺', '🇻', '🇼', '🇽', '🇾', '🇿'];
+                '🇲', '🇳', '🇴', '🇵', '🇶', '🇷', '🇸', '🇹'];
 
             // Split the options up by the separator character
             optionsArr = options.split(separator);
 
+            // If more than 20 options, return error
+            if (optionsArr.length > alphabet.length) {
+                return interaction.reply(`Please don't input more than 20 options.`);
+            }
+
+            for (var i = 0; i < optionsArr.length; i++) {
+                // Trim the white space from each item in the array
+                // Add the alphabet emoji to the start of each option
+                optionsArr[i] = `${alphabet[i]} ${optionsArr[i].trim()}`;
+            }
+
             // Add the question to the start of the options array (as all of this will be in the desc of the embed)
             const arr = [question].concat(optionsArr);
-
-            // If more than 26 options, return error
-            if (optionsArr.length > alphabet.length) {
-                return interaction.reply(`Please don't input more than 26 options.`);
-            }
 
             // Create the embed
             embed
