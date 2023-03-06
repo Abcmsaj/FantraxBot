@@ -19,23 +19,25 @@ function joyTrackerFunction(reaction, user) {
     // ----------------
 
     if (reaction.emoji.name === '😂') {
-        // If this joy react came from Nathan's user ID
-        if (user.id === '293477911955243008') {             //  if (user.id === '196045564129968128') { 
-            // Add datetime data to joy.json if they don't exist
-            if (!joy[`${todayMonth}/${todayYear}`]) joy[`${todayMonth}/${todayYear}`] = {
-                joy: 0
-            };
+        // Add datetime data to joy.json if they don't exist
 
-            // Increment the value of joy react and write to the JSON file
-            const joyData = joy[`${todayMonth}/${todayYear}`];
-            joyData.joy++;
-            console.log(`<JoyTracker> ${JSON.stringify(joyData)}`);
-            fs.writeFileSync('./joy.json', JSON.stringify(joy), (err) => {
-                if (err) console.error(err);
-            });
+        // If the month doesn't exist in the file yet, add it
+        if (!joy[`${todayMonth}/${todayYear}`]) joy[`${todayMonth}/${todayYear}`] = {};
 
-            console.log(`<JoyTracker> Nath's joy count increased for ${todayMonth} ${todayYear} to ${joyData.joy}. Message is "${reaction.message.content}"`);
-        }
+        // If the user reacting doesn't exist in the file yet, add them
+        if (!joy[`${todayMonth}/${todayYear}`][user.id]) joy[`${todayMonth}/${todayYear}`][user.id] = {
+            user: user.username,
+            joy: 0
+        };
+
+        // Increment the value of joy react for the user and write to the JSON file
+        const joyData = joy[`${todayMonth}/${todayYear}`][user.id];
+        joyData.joy++;
+        fs.writeFileSync('./joy.json', JSON.stringify(joy), (err) => {
+            if (err) console.error(err);
+        });
+
+        console.log(`<JoyTracker> ${user.username}'s joy count increased for ${todayMonth} ${todayYear} to ${joyData.joy}. Message is "${reaction.message.content}"`);
     }
 }
 
