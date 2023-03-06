@@ -4,6 +4,7 @@ const cron = require('node-cron');
 const reactFunction = require('./modules/reactions.js');
 const redCardTrackerFunction = require('./modules/redCardTracker.js');
 const ssnTrackerFunction = require('./modules/ssnTracker.js');
+const joyTrackerFunction = require('./modules/joyTracker.js');
 const birthdayCheckerFunction = require('./modules/birthdayChecker.js');
 const { token, redCardChannel, approverId, adminId, monthlyCards, guildId } = require('./FantraxConfig/config.json');
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'], intents: [Discord.GatewayIntentBits.Guilds, Discord.GatewayIntentBits.GuildMessages, Discord.GatewayIntentBits.GuildMessageReactions, Discord.GatewayIntentBits.MessageContent] });
@@ -16,6 +17,7 @@ checkFile.checkFile('reacts.json');
 checkFile.checkFile('ssn.json');
 checkFile.checkFile('ssnGiver.json');
 checkFile.checkFile('memes.json');
+checkFile.checkFile('joy.json');
 
 // ----------------
 // Get a list of all command names
@@ -111,4 +113,6 @@ client.on('messageReactionAdd', async (reaction, user) => {
     redCardTrackerFunction.redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApproverId, getAdminId, user, monthlyCards);
 
     ssnTrackerFunction.ssnTrackerFunction(reaction, user);
+
+    joyTrackerFunction.joyTrackerFunction(reaction, user);
 });
