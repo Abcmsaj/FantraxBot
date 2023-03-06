@@ -10,12 +10,12 @@ try {
 }
 
 const today = DateTime.now().setZone('Europe/London');
-const todayMonth = today.set({ month: 6 }).toFormat('MMMM');
+const todayMonth = today.toFormat('MMMM');
 const todayYear = today.toFormat('yyyy');
 
 function joyTrackerFunction(reaction, user) {
     // ----------------
-    // SSN Counter
+    // Joy Counter
     // ----------------
 
     if (reaction.emoji.name === '😂') {
