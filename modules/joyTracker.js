@@ -9,14 +9,14 @@ try {
     console.error(err);
 }
 
-const today = DateTime.now().setZone('Europe/London');
-const todayMonth = today.toFormat('MMMM');
-const todayYear = today.toFormat('yyyy');
-
 function joyTrackerFunction(reaction, user) {
     // ----------------
     // Joy Counter
     // ----------------
+
+    const today = DateTime.now().setZone('Europe/London');
+    const todayMonth = today.toFormat('MMMM');
+    const todayYear = today.toFormat('yyyy');
 
     if (reaction.emoji.name === '😂') {
         // Add datetime data to joy.json if they don't exist
