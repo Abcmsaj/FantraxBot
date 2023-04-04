@@ -69,7 +69,7 @@ async function joyResponderFunction(interaction, date) {
         return b.joy - a.joy;
     });
 
-    var totalJoy = `User${remainingSpacing('User')}│ No. of 😂 reacts\n`;
+    var totalJoy = `User${remainingSpacing('User')}│ 😂 reacts\n`;
 
     // Loop through the sorted array to get each username and SSN val, now in desc order
     Object.values(sortedArray).forEach(item => {
