@@ -15,6 +15,12 @@ module.exports = {
             if (err) {
                 throw err;
             } else {
+                let spacing = '                    ';
+
+                function remainingSpacing(text) {
+                    return spacing.substring(0, (spacing.length - text.length));
+                }
+
                 // Create new array to sort values
                 var sortedArray = [];
 
@@ -28,11 +34,11 @@ module.exports = {
                     return b.ssnGiven - a.ssnGiven;
                 });
 
-                var totalSSNGiven = 'User │ SSN given out \n';
+                var totalSSNGiven = `User${remainingSpacing('User')}│${remainingSpacing('SSN given out')}SSN given out \n`;
 
                 // Loop through the sorted array to get each username and SSN val, now in desc order
                 Object.values(sortedArray).forEach(item => {
-                    totalSSNGiven += item.username + ' │ ' + item.ssnGiven + '\n';
+                    totalSSNGiven += `${item.username}${remainingSpacing(item.username)}│${remainingSpacing('SSN given out')}${item.ssnGiven}\n`;
                 });
 
                 interaction.reply('**Total SSN Given**:\n```json\n' + totalSSNGiven + '\n```');
