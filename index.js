@@ -5,6 +5,7 @@ const reactFunction = require('./modules/reactions.js');
 const redCardTrackerFunction = require('./modules/redCardTracker.js');
 const ssnTrackerFunction = require('./modules/ssnTracker.js');
 const joyTrackerFunction = require('./modules/joyTracker.js');
+const joyResponderFunction = require('./modules/joyTracker.js');
 const birthdayCheckerFunction = require('./modules/birthdayChecker.js');
 const { token, redCardChannel, approverId, adminId, monthlyCards, guildId } = require('./FantraxConfig/config.json');
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'], intents: [Discord.GatewayIntentBits.Guilds, Discord.GatewayIntentBits.GuildMessages, Discord.GatewayIntentBits.GuildMessageReactions, Discord.GatewayIntentBits.MessageContent] });
@@ -70,6 +71,17 @@ client.on('interactionCreate', async (interaction) => {
         await command.execute(interaction);
     } catch (error) {
         console.error(error);
+    }
+});
+
+// ----------------
+// Listen for Select Menu responses (joyReact)
+// ----------------
+client.on('interactionCreate', async (interaction) => {
+    if (!interaction.isStringSelectMenu()) return;
+
+    if (interaction.customId === 'joy') {
+        joyResponderFunction.joyResponderFunction(interaction, interaction.values[0]);
     }
 });
 
