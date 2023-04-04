@@ -34,7 +34,7 @@ module.exports = {
                         options // This is our object of dates
                     ),
             );
-
-        await interaction.reply({ content: 'Choose a month to see joy react data for 😂😂😂', ephemeral: true, components: [menu] });
+        await interaction.deferReply(); // If I don't defer the reply first, the select menu fails to show on mobile
+        await interaction.editReply({ content: 'Choose a month to see joy react data for 😂😂😂', ephemeral: true, components: [menu] });
     },
 };
