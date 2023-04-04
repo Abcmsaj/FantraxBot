@@ -78,9 +78,9 @@ async function joyResponderFunction(interaction, date) {
 
     // Update the interaction with the month/year and a table of joy reacts for that month
     await interaction.update({ content: `😂 ${date.replace('/', ' ')} selected`, components: [] });
-    await interaction.followUp({ content: `**Total 😂 reacts for ${date}**:\n\`\`\`json\n${totalJoy}\`\`\`\n`, ephemeral: false });
+    await interaction.followUp({ content: `**Total 😂 reacts for ${date.replace('/', ' ')}**:\n\`\`\`json\n${totalJoy}\`\`\`\n`, ephemeral: false });
 
-    console.log(`<JoyResponder> Joy reacts for ${date} sent to #${interaction.channel.name}`);
+    console.log(`<JoyResponder> Joy reacts for ${date.replace('/', ' ')} sent to #${interaction.channel.name}`);
 }
 
 module.exports.joyTrackerFunction = joyTrackerFunction;
