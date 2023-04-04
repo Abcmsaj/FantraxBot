@@ -50,7 +50,7 @@ async function joyResponderFunction(interaction, date) {
     It will send over the selected option from the menu and we'll update the interaction with the table for
     the selected month */
 
-    let spacing = '                    ';
+    let spacing = '                ';
 
     function remainingSpacing(text) {
         return spacing.substring(0, (spacing.length - text.length));
@@ -69,11 +69,11 @@ async function joyResponderFunction(interaction, date) {
         return b.joy - a.joy;
     });
 
-    var totalJoy = `User${remainingSpacing('User')}│${remainingSpacing('No. of 😂 reacts')}No. of 😂 reacts\n`;
+    var totalJoy = `User${remainingSpacing('User')}│ No. of 😂 reacts\n`;
 
     // Loop through the sorted array to get each username and SSN val, now in desc order
     Object.values(sortedArray).forEach(item => {
-        totalJoy += `${item.user}${remainingSpacing(item.user)}│${remainingSpacing('No. of 😂 reacts')}${item.joy}\n`;
+        totalJoy += `${item.user}${remainingSpacing(item.user)}│ ${item.joy}\n`;
     });
 
     // Update the interaction with the month/year and a table of joy reacts for that month
