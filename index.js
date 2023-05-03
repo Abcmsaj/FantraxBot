@@ -91,7 +91,6 @@ client.on('interactionCreate', async (interaction) => {
 cron.schedule('00 00 * * *', () => {
     birthdayCheckerFunction.birthdayCheckerFunction(client);
 }, {
-    scheduled: true,
     timezone: 'Europe/London'
 });
 
