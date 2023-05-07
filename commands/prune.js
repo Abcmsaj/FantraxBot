@@ -14,7 +14,7 @@ module.exports = {
             .setRequired(true))
         .setDefaultMemberPermissions(0), // Admin only
     async execute(interaction) {
-        const numberToDelete = interaction.options.getNumber('messagecount');
+        const numberToDelete = interaction.options.getNumber('message_count');
 
         // No reply needed
         interaction.deferReply();
