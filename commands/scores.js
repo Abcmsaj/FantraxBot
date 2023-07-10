@@ -11,7 +11,7 @@ function scores(interaction) {
                 console.log(`<Scores> [${new Date().toLocaleString()}] ${interaction.user.username} requested latest scores.`);
 
                 // Run the puppetPng function
-                puppetPng('https://www.fantrax.com/fantasy/league/dz2lz1soljwx4kry/standings;timeframeType=BY_PERIOD?startDate=2022-08-12&endDate=2023-05-24&hideGoBackDays=true&timeStartType=PERIOD_ONLY&timeframeType=BY_PERIOD&view=REGULAR_SEASON&pageNumber=1');
+                puppetPng('https://www.fantrax.com/fantasy/league/dz2lz1soljwx4kry/standings;timeframeType=BY_PERIOD?startDate=2023-08-11&endDate=2024-05-24&hideGoBackDays=true&timeStartType=PERIOD_ONLY&timeframeType=BY_PERIOD&view=REGULAR_SEASON&pageNumber=1');
 
                 // Delay function used in both async puppet functions
                 function delay(time) {
@@ -61,7 +61,7 @@ function scores(interaction) {
                         // const [button2] = await page.$x("//button[contains(., 'Dismiss')]");
                         // const [button3] = await page.$x("//button[contains(., 'AGREE')]");
                         const [button4] = await page.$x(`//*[@id="qc-cmp2-ui"]/div[2]/div/button[3]`); // AGREE button to privacy policy
-                        const [button5] = await page.$x(`/html/body/app-root/div/div[1]/layout-overlay/overlay-toasts/toast/section/div[1]/button[3]`); // Dismiss button for cookies
+                        const [button5] = await page.$x(`//html/body/app-root/div/overlay-toasts/toast/div[1]/button[3]`); // Dismiss button for cookies
 
                         if (!button4) {
                             console.log('<Scores> No AGREE button on page');
@@ -83,7 +83,7 @@ function scores(interaction) {
                             fullPage: false,
                             clip: {
                                 x: 0,
-                                y: 1230,
+                                y: 950,
                                 height: 750,
                                 width: 400
                             }
