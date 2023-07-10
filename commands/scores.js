@@ -41,7 +41,7 @@ function scores(interaction) {
 
                 async function puppetPng(url) {
                     const browser = await puppeteer.launch({
-                        //executablePath: '/usr/bin/chromium', // Comment out if testing on Windows
+                        executablePath: '/usr/bin/chromium', // Comment out if testing on Windows
                         headless: true,
                         args: ['--no-sandbox'/*openvz*/]
                     });
