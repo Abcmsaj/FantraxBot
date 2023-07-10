@@ -1,4 +1,4 @@
-FROM node:16.14.0
+FROM node:18.15.0
 
 # Install Chromium
 RUN apt-get update && apt-get install chromium -y
