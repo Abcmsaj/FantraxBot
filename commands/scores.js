@@ -11,7 +11,7 @@ function scores(interaction) {
                 console.log(`<Scores> [${new Date().toLocaleString()}] ${interaction.user.username} requested latest scores.`);
 
                 // Run the puppetPng function
-                puppetPng('https://www.fantrax.com/fantasy/league/rjo7oio4l4pgxnmb/standings;timeframeType=BY_PERIOD?startDate=2022-08-12&endDate=2023-05-24&hideGoBackDays=true&timeStartType=PERIOD_ONLY&timeframeType=BY_PERIOD&view=REGULAR_SEASON&pageNumber=1');
+                puppetPng('https://www.fantrax.com/fantasy/league/dz2lz1soljwx4kry/standings;timeframeType=BY_PERIOD?startDate=2022-08-12&endDate=2023-05-24&hideGoBackDays=true&timeStartType=PERIOD_ONLY&timeframeType=BY_PERIOD&view=REGULAR_SEASON&pageNumber=1');
 
                 // Delay function used in both async puppet functions
                 function delay(time) {
