@@ -41,7 +41,7 @@ function scores(interaction) {
 
                 async function puppetPng(url) {
                     const browser = await puppeteer.launch({
-                        executablePath: '/usr/bin/chromium', // Comment out if testing on Windows
+                        //executablePath: '/usr/bin/chromium', // Comment out if testing on Windows
                         headless: true,
                         args: ['--no-sandbox'/*openvz*/]
                     });
@@ -83,7 +83,7 @@ function scores(interaction) {
                             fullPage: false,
                             clip: {
                                 x: 0,
-                                y: 950,
+                                y: 1050,
                                 height: 750,
                                 width: 400
                             }
