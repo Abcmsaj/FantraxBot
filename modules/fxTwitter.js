@@ -24,7 +24,8 @@ function fxTwitterFunction(message) {
 
     const modifiedContent = modifiedURLs.join('\n'); // Join modified URLs with a line break
 
-    message.reply(modifiedContent);
+    message.reply({ content: modifiedContent, allowedMentions: { repliedUser: false } });
+
 }
 
 module.exports.fxTwitterFunction = fxTwitterFunction;
