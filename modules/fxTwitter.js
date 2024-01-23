@@ -23,7 +23,7 @@ function fxTwitterFunction(message) {
     }
 
     const modifiedContent = modifiedURLs.join('\n'); // Join modified URLs with a line break
-
+    message.suppressEmbeds(true);
     message.reply({ content: modifiedContent, allowedMentions: { repliedUser: false } });
 
 }
