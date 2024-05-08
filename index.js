@@ -7,7 +7,7 @@ const ssnTrackerFunction = require('./modules/ssnTracker.js');
 const joyTrackerFunction = require('./modules/joyTracker.js');
 const joyResponderFunction = require('./modules/joyTracker.js');
 const birthdayCheckerFunction = require('./modules/birthdayChecker.js');
-const fxTwitterFunction = require('./modules/fxTwitter.js');
+const fixSocialsFunction = require('./modules/fixSocials.js');
 const { token, redCardChannel, approverId, adminId, monthlyCards, guildId } = require('./FantraxConfig/config.json');
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'], intents: [Discord.GatewayIntentBits.Guilds, Discord.GatewayIntentBits.GuildMessages, Discord.GatewayIntentBits.GuildMessageReactions, Discord.GatewayIntentBits.MessageContent] });
 const fs = require('fs');
@@ -105,10 +105,10 @@ client.on('messageCreate', (message) => {
 // -----------------------------------------------------
 client.on('messageCreate', (message) => {
     // Check if the message contains any Twitter/X URLs to modify
-    if (message && message.content && message.content.match(/https:\/\/(?:www\.)?(x\.com|twitter\.com)/)) {
-        fxTwitterFunction.fxTwitterFunction(message)
+    if (message && !message.author.bot && message.content && message.content.match(/(https:\/\/(?:www\.)?(x\.com|twitter\.com|instagram\.com|reddit\.com|vm\.tiktok\.com|tiktok\.com))/)) {
+        fixSocialsFunction.fixSocialsFunction(message);
     }
-})
+});
 
 // --------------------------------------------------------------------
 // Message Reaction Add - SSN and Red Card Tracker
