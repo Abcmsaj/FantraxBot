@@ -27,14 +27,15 @@ function fixSocialsFunction(message) {
     const modifiedVmTikTokURLs = modifyURLs(matchedVmTikTokURLs, 'https://vm.tiktxk.com');
     const modifiedXURLs = modifyURLs(matchedXURLs, 'https://fxtwitter.com');
 
-    // Replace URLs in the message content
-    let modifiedContent = message.content;
-    modifiedContent = replaceURLs(modifiedContent, matchedTwitterURLs, modifiedTwitterURLs);
-    modifiedContent = replaceURLs(modifiedContent, matchedInstagramURLs, modifiedInstagramURLs);
-    modifiedContent = replaceURLs(modifiedContent, matchedRedditURLs, modifiedRedditURLs);
-    modifiedContent = replaceURLs(modifiedContent, matchedVmTikTokURLs, modifiedVmTikTokURLs);
-    modifiedContent = replaceURLs(modifiedContent, matchedTikTokURLs, modifiedTikTokURLs);
-    modifiedContent = replaceURLs(modifiedContent, matchedXURLs, modifiedXURLs);
+    // Construct a new message containing only the modified URLs
+    const modifiedContent = [
+        ...modifiedTwitterURLs,
+        ...modifiedInstagramURLs,
+        ...modifiedRedditURLs,
+        ...modifiedTikTokURLs,
+        ...modifiedVmTikTokURLs,
+        ...modifiedXURLs
+    ].join('\r');
 
     message.suppressEmbeds(true).then(() => {
         message.reply({ content: modifiedContent, allowedMentions: { repliedUser: false } });
@@ -47,14 +48,6 @@ function modifyURLs(urls, replacement) {
         return [];
     }
     return urls.map(url => url.replace(/\?.*/, '').replace(/https?:\/\/(?:www\.)?(?:twitter\.com|instagram\.com|reddit\.com|vm\.tiktok\.com|tiktok\.com|x\.com)/, replacement));
-}
-
-// Function to replace URLs in content with modified URLs
-function replaceURLs(content, originalURLs, modifiedURLs) {
-    for (let i = 0; i < originalURLs.length; i++) {
-        content = content.replace(originalURLs[i], modifiedURLs[i]);
-    }
-    return content;
 }
 
 module.exports.fixSocialsFunction = fixSocialsFunction;
