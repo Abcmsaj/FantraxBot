@@ -10,8 +10,12 @@ function scores(interaction) {
             return new Promise(async function (resolve, reject) {
                 console.log(`<Scores> [${new Date().toLocaleString()}] ${interaction.user.username} requested latest scores.`);
 
+                const leagueId = '3903zpaflzgrpsu6'
+                const startDate = '2024-08-16'
+                const endDate = '2024-05-26'
+
                 // Run the puppetPng function
-                puppetPng('https://www.fantrax.com/fantasy/league/dz2lz1soljwx4kry/standings;timeframeType=BY_PERIOD?startDate=2023-08-11&endDate=2024-05-24&hideGoBackDays=true&timeStartType=PERIOD_ONLY&timeframeType=BY_PERIOD&view=REGULAR_SEASON&pageNumber=1');
+                puppetPng(`https://www.fantrax.com/fantasy/league/${leagueId}/standings;timeframeType=BY_PERIOD?startDate=${startDate}&endDate=${endDate}&hideGoBackDays=true&timeStartType=PERIOD_ONLY&timeframeType=BY_PERIOD&view=REGULAR_SEASON&pageNumber=1`);
 
                 // Delay function used in both async puppet functions
                 function delay(time) {
