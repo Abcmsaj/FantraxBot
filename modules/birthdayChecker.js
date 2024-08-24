@@ -31,11 +31,12 @@ async function birthdayCheckerFunction(client) {
 
     // Check to see if anyone isBirthday = 1, and if it is, set their nickname to currentNickname and reset isBirthday = 0
     Object.keys(birthdays).forEach(async userId => {
-        const member = await guild.members.fetch(userId);
         const birthday = birthdays[userId];
         const channel = guild.channels.cache.find(channel => channel.name === 'general');
 
         if (birthday.isBirthdayToday === 1) {
+            const member = await guild.members.fetch(userId);
+
             // reset isBirthdayToday to 0
             birthday.isBirthdayToday = 0;
             console.log(`<BirthdayChecker> Resetting @${birthday.username}'s isBirthday = 0`);
@@ -50,6 +51,8 @@ async function birthdayCheckerFunction(client) {
 
         // Loop through every day and see if it matches today's date (use no padding day and long month)
         if (birthday.birthday === `${todayDay} ${todayMonth}`) {
+            const member = await guild.members.fetch(userId);
+            
             // add the user to the birthday list
             birthday.isBirthdayToday = 1;
             console.log(`<BirthdayChecker> Resetting @${birthday.username}'s isBirthday = 1`);
