@@ -105,7 +105,8 @@ client.on('messageCreate', (message) => {
 // -----------------------------------------------------
 client.on('messageCreate', (message) => {
     // Check if the message contains any Twitter/X URLs to modify
-    if (message && !message.author.bot && message.content && message.content.match(/(https:\/\/(?:www\.)?(x\.com|twitter\.com|instagram\.com|reddit\.com|vm\.tiktok\.com|tiktok\.com))/)) {
+    if (message && !message.author.bot && message.content && message.content.match(/(https:\/\/(?:www\.)?(x\.com|twitter\.com|reddit\.com))/)) {
+        // When tiktok/ig works, use (/(https:\/\/(?:www\.)?(x\.com|twitter\.com|instagram\.com|reddit\.com|vm\.tiktok\.com|tiktok\.com))/)
         fixSocialsFunction.fixSocialsFunction(message);
     }
 });

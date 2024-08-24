@@ -39,6 +39,7 @@ function fixSocialsFunction(message) {
 
     message.suppressEmbeds(true).then(() => {
         message.reply({ content: modifiedContent, allowedMentions: { repliedUser: false } });
+        message.suppressEmbeds(true); // fall back if the first suppress embeds failed
     });
 }
 
