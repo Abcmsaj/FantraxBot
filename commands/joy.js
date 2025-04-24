@@ -31,7 +31,7 @@ module.exports = {
                     .setCustomId('joy')
                     .setPlaceholder('Select a date')
                     .addOptions(
-                        options // This is our object of dates
+                        options.slice(-25) // This is our object of dates
                     ),
             );
         await interaction.deferReply(); // If I don't defer the reply first, the select menu fails to show on mobile
