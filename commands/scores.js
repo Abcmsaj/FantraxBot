@@ -12,6 +12,7 @@ async function scores(interaction) {
 
     let browser;
     try {
+        waitingMessage.react('🆗');
         browser = await chromium.launch({ headless: true });
         const context = await browser.newContext({
             viewport: { width: 400, height: 750 },
@@ -42,6 +43,7 @@ async function scores(interaction) {
         if (browser) {
             await browser.close();
             console.log('<Scores> Chromium closed');
+            waitingMessage.reactions.removeAll();
         }
     }
 }
