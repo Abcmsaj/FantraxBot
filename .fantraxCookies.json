@@ -2754,6 +2754,10 @@
           "value": "3903zpaflzgrpsu6"
         },
         {
+          "name": "featuresState",
+          "value": "{\"themeId\": \"DARK\"}"
+        },
+        {
           "name": "BT_AA_DETECTION",
           "value": "{\"ab\":false,\"acceptable\":true,\"nlf\":null}"
         },

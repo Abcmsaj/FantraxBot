@@ -4,7 +4,8 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const LEAGUE_ID = '3903zpaflzgrpsu6';
 const START_DATE = '2024-08-16';
 const END_DATE = '2025-05-26';
-const FANTRAX_URL = `https://www.fantrax.com/fantasy/league/${LEAGUE_ID}/standings;timeframeType=BY_PERIOD?startDate=${START_DATE}&endDate=${END_DATE}&hideGoBackDays=true&timeStartType=PERIOD_ONLY&timeframeType=BY_PERIOD&view=REGULAR_SEASON&pageNumber=1`;
+//const FANTRAX_URL = `https://www.fantrax.com/fantasy/league/${LEAGUE_ID}/standings;timeframeType=BY_PERIOD?startDate=${START_DATE}&endDate=${END_DATE}&hideGoBackDays=true&timeStartType=PERIOD_ONLY&timeframeType=BY_PERIOD&view=REGULAR_SEASON&pageNumber=1`;
+const FANTRAX_URL = `https://www.fantrax.com/fantasy/league/${LEAGUE_ID}/livescoring?mobileMatchupView=false&teamId=ALL&layout=STANDARD&mainView=MATCHUP&mobileView=MATCHUPS`
 
 async function scores(interaction) {
     const waitingMessage = await interaction.deferReply({ fetchReply: true });
@@ -15,7 +16,7 @@ async function scores(interaction) {
         waitingMessage.react('🆗');
         browser = await chromium.launch({ headless: true });
         const context = await browser.newContext({
-            viewport: { width: 400, height: 750 },
+            viewport: { width: 400, height: 600 },
             storageState: '.fantraxCookies.json'
         });
         const page = await context.newPage();
@@ -31,7 +32,7 @@ async function scores(interaction) {
             }
         });
 
-        const screenshot = await page.screenshot({ type: 'png' });
+        const screenshot = await page.screenshot({ type: 'png', fullPage: true });
         await interaction.editReply({ files: [{ attachment: screenshot, name: 'screenshot.png' }] });
         console.log('<Scores> Screenshot sent');
 
