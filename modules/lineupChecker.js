@@ -57,6 +57,8 @@ function formatLineupMessage(content) {
       if (!line) return '';
       const parts = line.split(/:|, /);
       const players = parts.slice(1).join(', ').replace(/\s+#FPL$/, '').trim();
+      // Remove trailing emojis
+      players = players.replace(/[\u{1F300}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{1F1E6}-\u{1F1FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}]+$/u, '').trim();
       const emoji = emojiMapFromTag(teamCode);
       return `${emoji ? emoji + ' ' : ''}${teamCode}: ${players}`;
     };
@@ -133,5 +135,6 @@ module.exports = function setupLineupChecker(client) {
     }
   }
 
-  return { parseICSAndScheduleRSSChecks };
+  // When setupLineupChecker() is called, run: 
+  parseICSAndScheduleRSSChecks()
 };
