@@ -5,7 +5,7 @@ function reactFunction(message) {
     // Read from JSON files
     let reacts;
     try {
-        reacts = JSON.parse(fs.readFileSync('./reacts.json', 'utf8'));
+        reacts = JSON.parse(fs.readFileSync('./json/reacts.json', 'utf8'));
     } catch (err) {
         console.error(err);
     }
@@ -15,7 +15,7 @@ function reactFunction(message) {
         return 0;
     } else {
         // Read the file
-        fs.readFile('./reacts.json', (err) => {
+        fs.readFile('./json/reacts.json', (err) => {
             if (err) {
                 throw err;
             } else {

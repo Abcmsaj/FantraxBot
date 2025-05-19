@@ -9,9 +9,9 @@ module.exports = {
         .setName('ssn')
         .setDescription('Responds with a leaderboard SSNs in the Discord'),
     async execute(interaction) {
-        const ssn = JSON.parse(fs.readFileSync("./ssn.json", "utf8"));
+        const ssn = JSON.parse(fs.readFileSync("./json/ssn.json", "utf8"));
 
-        fs.readFile('./ssn.json', (err) => {
+        fs.readFile('./json/ssn.json', (err) => {
             if (err) {
                 throw err;
             } else {

@@ -4,7 +4,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 // Read from JSON files
 let memes;
 try {
-    memes = JSON.parse(fs.readFileSync("./memes.json", "utf8"));
+    memes = JSON.parse(fs.readFileSync("./json/memes.json", "utf8"));
 } catch (err) {
     console.log(err);
 }
@@ -56,7 +56,7 @@ module.exports = {
             }
 
             // Write to the file
-            fs.writeFileSync('./memes.json', JSON.stringify(memes), (err) => {
+            fs.writeFileSync('./json/memes.json', JSON.stringify(memes), (err) => {
                 if (err) console.error(err);
             });
 

@@ -9,10 +9,10 @@ module.exports = {
         .setName('totalcards')
         .setDescription('Show the number of cards for all users in the Discord'),
     async execute(interaction) {
-        const cards = JSON.parse(fs.readFileSync("./cards.json", "utf8"));
+        const cards = JSON.parse(fs.readFileSync("./json/ards.json", "utf8"));
 
         // Read cards.json file
-        fs.readFile('./cards.json', (err) => {
+        fs.readFile('./json/cards.json', (err) => {
             if (err) {
                 throw err;
             } else {

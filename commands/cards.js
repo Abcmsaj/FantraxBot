@@ -9,7 +9,7 @@ module.exports = {
         .setDescription(`Returns the user's nominated reds, confirmed reds, and card allowance`),
     cooldown: 10,
     async execute(interaction) {
-        const cards = JSON.parse(fs.readFileSync("./cards.json", "utf8"));
+        const cards = JSON.parse(fs.readFileSync("./json/cards.json", "utf8"));
         const cardData = cards[interaction.user.id];
 
         var response = '';

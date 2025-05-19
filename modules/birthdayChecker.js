@@ -24,7 +24,7 @@ async function birthdayCheckerFunction(client) {
 
     // Get the birthdays.json file
     try {
-        birthdays = JSON.parse(fs.readFileSync('./birthdays.json', "utf8"));
+        birthdays = JSON.parse(fs.readFileSync('./json/birthdays.json', "utf8"));
     } catch (err) {
         console.error(err);
     }
@@ -46,7 +46,7 @@ async function birthdayCheckerFunction(client) {
             console.log(`<BirthdayChecker> Resetting @${birthday.username} nickname to ${birthday.currentNickname}`);
 
             // Write changes to the JSON file
-            fs.writeFileSync('./birthdays.json', JSON.stringify(birthdays));
+            fs.writeFileSync('./json/birthdays.json', JSON.stringify(birthdays));
         }
 
         // Loop through every day and see if it matches today's date (use no padding day and long month)
@@ -74,7 +74,7 @@ async function birthdayCheckerFunction(client) {
             console.log(`<BirthdayChecker> Birthday message sent to #general for @${birthday.username}`);
 
             // Write changes to the JSON file
-            fs.writeFileSync('./birthdays.json', JSON.stringify(birthdays));
+            fs.writeFileSync('./json/birthdays.json', JSON.stringify(birthdays));
         }
     });
 }

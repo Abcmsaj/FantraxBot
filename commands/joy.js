@@ -11,7 +11,7 @@ module.exports = {
     async execute(interaction) {
         // Read the joy.json file
         try {
-            joy = JSON.parse(fs.readFileSync('./joy.json', 'utf8'));
+            joy = JSON.parse(fs.readFileSync('./json/joy.json', 'utf8'));
         } catch (err) {
             console.error(err);
         }

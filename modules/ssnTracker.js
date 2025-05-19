@@ -4,14 +4,14 @@ const fs = require('fs');
 // Read from JSON files
 let ssn;
 try {
-    ssn = JSON.parse(fs.readFileSync("./ssn.json", "utf8"));
+    ssn = JSON.parse(fs.readFileSync("./json/ssn.json", "utf8"));
 } catch (err) {
     console.error(err);
 }
 
 let ssnGiver;
 try {
-    ssnGiver = JSON.parse(fs.readFileSync("./ssnGiver.json", "utf8"));
+    ssnGiver = JSON.parse(fs.readFileSync("./json/ssnGiver.json", "utf8"));
 } catch (err) {
     console.error(err);
 }
@@ -38,7 +38,7 @@ function ssnTrackerFunction(reaction, user) {
             const ssnData = ssn[reaction.message.author.id];
             ssnData.SSN++;
             console.log(`<SSNTracker> ${JSON.stringify(ssnData)}`);
-            fs.writeFileSync('./ssn.json', JSON.stringify(ssn), (err) => {
+            fs.writeFileSync('./json/ssn.json', JSON.stringify(ssn), (err) => {
                 if (err) console.error(err);
             });
 
@@ -52,7 +52,7 @@ function ssnTrackerFunction(reaction, user) {
             const ssnGiverData = ssnGiver[user.id];
             ssnGiverData.ssnGiven++;
             console.log(`<SSNTracker> ${JSON.stringify(ssnGiverData)}`);
-            fs.writeFileSync('./ssnGiver.json', JSON.stringify(ssnGiver), (err) => {
+            fs.writeFileSync('./json/ssnGiver.json', JSON.stringify(ssnGiver), (err) => {
                 if (err) console.error(err);
             });
         } else if (reaction.message.author.bot) {

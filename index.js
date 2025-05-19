@@ -14,13 +14,13 @@ const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION']
 const fs = require('fs');
 
 // Create files if they don't exist
-checkFile.checkFile('birthdays.json');
-checkFile.checkFile('cards.json');
-checkFile.checkFile('reacts.json');
-checkFile.checkFile('ssn.json');
-checkFile.checkFile('ssnGiver.json');
-checkFile.checkFile('memes.json');
-checkFile.checkFile('joy.json');
+checkFile.checkFile('json/birthdays.json');
+checkFile.checkFile('json/cards.json');
+checkFile.checkFile('json/reacts.json');
+checkFile.checkFile('json/ssn.json');
+checkFile.checkFile('json/ssnGiver.json');
+checkFile.checkFile('json/memes.json');
+checkFile.checkFile('json/joy.json');
 
 // ----------------
 // Get a list of all command names

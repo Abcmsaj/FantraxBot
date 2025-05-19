@@ -4,7 +4,7 @@ const { DateTime } = require('luxon');
 // Read from JSON files
 let joy;
 try {
-    joy = JSON.parse(fs.readFileSync('./joy.json', 'utf8'));
+    joy = JSON.parse(fs.readFileSync('./json/joy.json', 'utf8'));
 } catch (err) {
     console.error(err);
 }
@@ -33,7 +33,7 @@ function joyTrackerFunction(reaction, user) {
         // Increment the value of joy react for the user and write to the JSON file
         const joyData = joy[`${todayMonth}/${todayYear}`][user.id];
         joyData.joy++;
-        fs.writeFileSync('./joy.json', JSON.stringify(joy), (err) => {
+        fs.writeFileSync('./json/joy.json', JSON.stringify(joy), (err) => {
             if (err) console.error(err);
         });
 

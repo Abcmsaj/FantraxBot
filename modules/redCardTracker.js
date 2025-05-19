@@ -10,7 +10,7 @@ function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApprove
     // If no cards.json file on load, it wasn't registering that it existed as this was checked outside the function
     let cards;
     try {
-        cards = JSON.parse(fs.readFileSync("./cards.json", "utf8"));
+        cards = JSON.parse(fs.readFileSync("./json/cards.json", "utf8"));
     } catch (err) {
         console.error(err);
     }
@@ -37,7 +37,7 @@ function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApprove
             };
 
             // Write data if it's missing
-            fs.writeFileSync('./cards.json', JSON.stringify(cards), (err) => {
+            fs.writeFileSync('./json/cards.json', JSON.stringify(cards), (err) => {
                 if (err) console.error(err);
             });
 
@@ -67,7 +67,7 @@ function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApprove
                 // Take away another red to put their value at -1, and stop entering this loop
                 cardAllowance.cardAllowance--;
 
-                fs.writeFileSync('./cards.json', JSON.stringify(cards), (err) => {
+                fs.writeFileSync('./json/cards.json', JSON.stringify(cards), (err) => {
                     if (err) console.error(err);
                 });
                 return;
@@ -147,7 +147,7 @@ function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApprove
                                 cardData.provisional++;
 
                                 // Write to file - this writes the removal of a card from the reactor and the addition of a provisonal card to the accused
-                                fs.writeFileSync('./cards.json', JSON.stringify(cards), (err) => {
+                                fs.writeFileSync('./json/cards.json', JSON.stringify(cards), (err) => {
                                     if (err) console.error(err);
                                 });
                             });
@@ -170,7 +170,7 @@ function redCardTrackerFunction(Discord, reaction, getRedCardChannel, getApprove
                                     cardData.provisional--;
 
                                     // Write to file - this adds a confirmed red card and removes a provisional
-                                    fs.writeFileSync('./cards.json', JSON.stringify(cards), (err) => {
+                                    fs.writeFileSync('./json/cards.json', JSON.stringify(cards), (err) => {
                                         if (err) console.error(err);
                                     });
 

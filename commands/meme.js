@@ -21,7 +21,7 @@ module.exports = {
         // Read from JSON
         let memes;
         try {
-            memes = JSON.parse(fs.readFileSync("./memes.json", "utf8"));
+            memes = JSON.parse(fs.readFileSync("./json/memes.json", "utf8"));
         } catch (err) {
             console.error(err);
         }
@@ -31,7 +31,7 @@ module.exports = {
         if (memenumber) {
             // If the command has a number (i.e. /meme 45)
             // Read the file
-            fs.readFile('./memes.json', (err) => {
+            fs.readFile('./json/memes.json', (err) => {
                 if (err) {
                     throw err;
                 } else {
@@ -54,7 +54,7 @@ module.exports = {
         } else {
             // If no number provided
             // Read the file
-            fs.readFile('./memes.json', (err) => {
+            fs.readFile('./json/memes.json', (err) => {
                 if (err) {
                     throw err;
                 } else {
