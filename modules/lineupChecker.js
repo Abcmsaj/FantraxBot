@@ -64,6 +64,34 @@ function scheduleRSSWindow(startTime, eventSummary) {
   }
 }
 
+  function formatLineupMessage(description) {
+    const emojiMapFromTag = (tag) => {
+        const map = {
+          ARS: '⭕', AVL: '🟣', BRE: '🐝', BHA: '🕊', BOU: '🍒', BUR: '', CHE: '🧿',
+          CRY: '🦅', EVE: '🍬', FUL: '⬜', IPS: '🚜', LEE: '', LEI: '🦊', LIV: '🔴', MCI: '🔵',
+          MUN: '👹', NEW: '⚫', NFO: '🌳', SHU: '', SOU: '😇', SUN: '', TOT: '🐓', WHU: '⚒', WOL: '🐺'
+        };
+        return map[tag.toUpperCase()] || '';
+      };
+
+    const matchTagMatch = description.match(/\|\s(#\w+)/);
+    const tag = matchTagMatch?.[1] || '#MATCH';
+  
+    const teamsFromTag = tag.slice(1).match(/.{3}/g); // e.g. 'BREFUL' => ['BRE', 'FUL']
+    const lines = description.split(/\s(?=[A-Z]{2,3}:)/g);
+    const [_, team1Line, team2Line] = lines;
+  
+    const formatTeam = (line, teamCode) => {
+      if (!line) return '';
+      const [_, ...players] = line.split(/:|, /);
+      const emoji = emojiMapFromTag(teamCode);
+      return `${emoji ? emoji + ' ' : ''}${teamCode}: ${players.join(', ').trim()}`;
+    };
+  
+    const formatted = `LINE-UPS | ${tag}\n${formatTeam(team1Line, teamsFromTag?.[0] || '')}\n${formatTeam(team2Line, teamsFromTag?.[1] || '')}`;
+    return formatted.trim();
+  }
+  
 async function checkRSSAndSend() {
   try {
     const feed = await parser.parseURL(RSS_URL);
@@ -75,9 +103,10 @@ async function checkRSSAndSend() {
       const description = item.description || '';
       const id = item.guid || item.link || description;
 
-      if (description.includes('LINE-UPS') && !sentPosts.has(id)) {
+      if (description.startsWith('LINE-UPS') && !sentPosts.has(id)) {
         sentPosts.add(id);
-        await channel.send(description.substring(0, 2000));
+        const message = formatLineupMessage(description);
+        await channel.send(message);
         console.log(`[SEND] Sent LINE-UPS post: ${description}`);
         newPosts++;
       }
