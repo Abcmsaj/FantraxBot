@@ -8,6 +8,7 @@ const joyTrackerFunction = require('./modules/joyTracker.js');
 const joyResponderFunction = require('./modules/joyTracker.js');
 const birthdayCheckerFunction = require('./modules/birthdayChecker.js');
 const fixSocialsFunction = require('./modules/fixSocials.js');
+const createLineupChecker = require('./modules/lineupChecker.js');
 const parseICSAndScheduleRSSChecks = require('./modules/lineupChecker.js')
 const { token, redCardChannel, approverId, adminId, monthlyCards, guildId } = require('./FantraxConfig/config.json');
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'], intents: [Discord.GatewayIntentBits.Guilds, Discord.GatewayIntentBits.GuildMessages, Discord.GatewayIntentBits.GuildMessageReactions, Discord.GatewayIntentBits.MessageContent] });
@@ -58,7 +59,8 @@ client.once('ready', () => {
     const adminChannel = client.channels.cache.find(channel => channel.name === 'commands'); // Admin channel
     adminChannel.send('Online!');
 
-    parseICSAndScheduleRSSChecks.parseICSAndScheduleRSSChecks()
+    const { parseICSAndScheduleRSSChecks } = createLineupChecker(client); // use logged-in client
+    parseICSAndScheduleRSSChecks();
 });
 
 // ----------------
