@@ -72,13 +72,13 @@ async function checkRSSAndSend() {
 
     let newPosts = 0;
     for (const item of feed.items) {
-      const title = item.title || '';
-      const id = item.guid || item.link || title;
+      const description = item.description || '';
+      const id = item.guid || item.link || description;
 
-      if (title.includes('LINE-UPS') && !sentPosts.has(id)) {
+      if (description.includes('LINE-UPS') && !sentPosts.has(id)) {
         sentPosts.add(id);
-        await channel.send(item.contentSnippet || item.content || title);
-        console.log(`[SEND] Sent LINE-UPS post: ${title}`);
+        await channel.send(description.substring(0, 2000));
+        console.log(`[SEND] Sent LINE-UPS post: ${description}`);
         newPosts++;
       }
     }
@@ -104,7 +104,7 @@ async function parseICSAndScheduleRSSChecks() {
       const eventDate = event.start.toISOString().slice(0, 10);
       if (eventDate !== today) continue;
 
-      const rssStart = new Date(event.start.getTime() - 45 * 60000);
+      const rssStart = new Date(event.start.getTime() - 75 * 60000);
       if (rssStart > now) scheduleRSSWindow(rssStart, event.summary);
 
       todaysEvents.push({
