@@ -3,7 +3,7 @@ const axios = require('axios');
 const ical = require('node-ical');
 const RSSParser = require('rss-parser');
 const schedule = require('node-schedule');
-const { lineupsChannel, icsUrl } = require('../FantraxConfig/config.json');
+const { lineupsChannel, icsUrl } = require('../../FantraxConfig/config.json');
 
 const CHANNEL_ID = lineupsChannel;
 const ICS_URL = icsUrl;

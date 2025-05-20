@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node ./index.js"
+    "start": "node ./index.js",
+    "test:lineups": "node ./modules/lineupChecker/test/testLineupChecker.js"
   },
   "author": "",
   "license": "ISC",
