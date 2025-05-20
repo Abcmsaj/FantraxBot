@@ -1,4 +1,3 @@
-// modules/lineupChecker.js
 const fs = require('fs');
 const axios = require('axios');
 const ical = require('node-ical');
@@ -12,21 +11,30 @@ const RSS_URL = 'https://bsky.app/profile/ffscoutfpl.bsky.social/rss';
 const DAILY_EVENTS_FILE = './lineupEvents.json';
 
 const parser = new RSSParser();
+const scheduledJobs = new Set(); // Track scheduled jobs to avoid duplicates
 
+// Get today's date in YYYY-MM-DD format
 function getTodayDate() {
   return new Date().toISOString().slice(0, 10);
 }
 
+// Write JSON to a given file path
 function writeJSONFile(filePath, data) {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 }
 
+// Save parsed ICS events to local JSON
 function saveDailyEvents(events) {
   writeJSONFile(DAILY_EVENTS_FILE, events);
   console.log(`[SAVE] Saved ${events.length} events to ${DAILY_EVENTS_FILE}`);
 }
 
+// Schedule 15 RSS checks every minute starting from 75 minutes before kickoff
 function scheduleRSSWindow(startTime, eventSummary, checkRSSAndSend) {
+  const key = `${eventSummary}-${startTime.toISOString()}`;
+  if (scheduledJobs.has(key)) return; // Avoid duplicate jobs
+  scheduledJobs.add(key);
+
   console.log(`[SCHEDULE] RSS check window for "${eventSummary}" at ${startTime.toISOString()}`);
   for (let i = 0; i < 15; i++) {
     const checkTime = new Date(startTime.getTime() + i * 60000);
@@ -37,37 +45,39 @@ function scheduleRSSWindow(startTime, eventSummary, checkRSSAndSend) {
   }
 }
 
+// Format a LINE-UPS post into a Discord-friendly message
 function formatLineupMessage(content) {
-    const emojiMapFromTag = (tag) => {
-      const map = {
-        ARS: '⭕', AVL: '🟣', BRE: '🐝', BHA: '🕊', BOU: '🍒', BUR: '', CHE: '🧿',
-        CRY: '🦅', EVE: '🍬', FUL: '⬜', IPS: '🚜', LEE: '', LEI: '🦊', LIV: '🔴', MCI: '🔵',
-        MUN: '👹', NEW: '⚫', NFO: '🌳', SHU: '', SOU: '😇', SUN: '', TOT: '🐓', WHU: '⚒', WOL: '🐺'
-      };
-      return map[tag.toUpperCase()] || '';
+  const emojiMapFromTag = (tag) => {
+    const map = {
+      ARS: '⭕', AVL: '🟣', BRE: '🐝', BHA: '🕊', BOU: '🍒', BUR: '', CHE: '🧿',
+      CRY: '🦅', EVE: '🍬', FUL: '⬜', IPS: '🚜', LEE: '', LEI: '🦊', LIV: '🔴', MCI: '🔵',
+      MUN: '👹', NEW: '⚫', NFO: '🌳', SHU: '', SOU: '😇', SUN: '', TOT: '🐓', WHU: '⚒', WOL: '🐺'
     };
-  
-    const matchTagMatch = content.match(/\|\s(#\w+)/);
-    const tag = matchTagMatch?.[1] || '#MATCH';
-    const teamsFromTag = tag.slice(1).match(/.{3}/g);
-    const lines = content.split(/\s(?=[A-Z]{2,3}:)/g);
-    const [_, team1Line, team2Line] = lines;
-  
-    const formatTeam = (line, teamCode) => {
-      if (!line) return '';
-      const parts = line.split(/:|, /);
-      const players = parts.slice(1).join(', ').replace(/\s+#FPL$/, '').trim();
-      // Remove trailing emojis
-      players = players.replace(/[\u{1F300}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{1F1E6}-\u{1F1FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}]+$/u, '').trim();
-      const emoji = emojiMapFromTag(teamCode);
-      return `${emoji ? emoji + ' ' : ''}${teamCode}: ${players}`;
-    };
-  
-    const formatted = `LINE-UPS | ${tag}\n${formatTeam(team1Line, teamsFromTag?.[0] || '')}\n${formatTeam(team2Line, teamsFromTag?.[1] || '')}`;
-    return formatted.trim();
-  }
+    return map[tag.toUpperCase()] || '';
+  };
 
+  const matchTagMatch = content.match(/\|\s(#\w+)/);
+  const tag = matchTagMatch?.[1] || '#MATCH';
+  const teamsFromTag = tag.slice(1).match(/.{3}/g);
+  const lines = content.split(/\s(?=[A-Z]{2,3}:)/g);
+  const [_, team1Line, team2Line] = lines;
+
+  const formatTeam = (line, teamCode) => {
+    if (!line) return '';
+    let parts = line.split(/:|, /);
+    let players = parts.slice(1).join(', ').replace(/\s+#FPL$/, '').trim();
+    players = players.replace(/[\u{1F300}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{1F1E6}-\u{1F1FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}]+$/u, '').trim();
+    const emoji = emojiMapFromTag(teamCode);
+    return `${emoji ? emoji + ' ' : ''}${teamCode}: ${players}`;
+  };
+
+  const formatted = `LINE-UPS | ${tag}\n${formatTeam(team1Line, teamsFromTag?.[0] || '')}\n${formatTeam(team2Line, teamsFromTag?.[1] || '')}`;
+  return formatted.trim();
+}
+
+// Initialize the lineup checker with the provided Discord client
 module.exports = function setupLineupChecker(client) {
+  // Check RSS feed for new LINE-UPS posts and send to Discord
   async function checkRSSAndSend() {
     try {
       const feed = await parser.parseURL(RSS_URL);
@@ -103,13 +113,17 @@ module.exports = function setupLineupChecker(client) {
     }
   }
 
+  // Parse ICS feed and schedule RSS checks for today’s football events
   async function parseICSAndScheduleRSSChecks() {
+    scheduledJobs.clear();
+    console.log(`[INFO] Cleared all previously scheduled jobs.`);
     try {
       const response = await axios.get(ICS_URL);
       const events = ical.parseICS(response.data);
       const now = new Date();
       const today = getTodayDate();
       const todaysEvents = [];
+      const uniqueKickoffMap = new Map();
 
       for (const key in events) {
         const event = events[key];
@@ -119,8 +133,12 @@ module.exports = function setupLineupChecker(client) {
         const eventDate = event.start.toISOString().slice(0, 10);
         if (eventDate !== today) continue;
 
-        const rssStart = new Date(event.start.getTime() - 75 * 60000);
-        if (rssStart > now) scheduleRSSWindow(rssStart, event.summary, checkRSSAndSend);
+        const kickoffISO = event.start.toISOString();
+        if (!uniqueKickoffMap.has(kickoffISO)) {
+          uniqueKickoffMap.set(kickoffISO, event.summary);
+        } else {
+            console.log(`[SKIP] Duplicate kickoff time ${kickoffISO} for summary "${event.summary}"`);
+        }
 
         todaysEvents.push({
           summary: event.summary,
@@ -129,12 +147,20 @@ module.exports = function setupLineupChecker(client) {
         });
       }
 
+      // Schedule one job per unique kickoff time
+      for (const [kickoffISO, summary] of uniqueKickoffMap) {
+        const kickoffTime = new Date(kickoffISO);
+        const rssStart = new Date(kickoffTime.getTime() - 75 * 60000);
+        if (rssStart > now) scheduleRSSWindow(rssStart, summary, checkRSSAndSend);
+      }
+
       saveDailyEvents(todaysEvents);
+      console.log(`[INFO] Scheduled ${scheduledJobs.size} unique RSS job windows.`);
     } catch (err) {
       console.error('[ERROR] Failed to parse ICS:', err.message);
     }
   }
 
-  // When setupLineupChecker() is called, run: 
-  parseICSAndScheduleRSSChecks()
+  // Start the daily scheduling process immediately on load
+  parseICSAndScheduleRSSChecks();
 };
