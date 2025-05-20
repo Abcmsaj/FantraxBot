@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./index.js",
-    "test:lineups": "node ./modules/lineupChecker/test/testLineupChecker.js"
+    "test:lineups": "node ./modules/lineupChecker/test/integration.test.js && node ./modules/lineupChecker/test/formatter.test.js && node ./modules/lineupChecker/test/rssReader.test.js && node ./modules/lineupChecker/test/scheduler.test.js && node ./modules/lineupChecker/test/utils.test.js"
   },
   "author": "",
   "license": "ISC",
