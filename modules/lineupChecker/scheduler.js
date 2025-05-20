@@ -7,7 +7,7 @@ const { checkRSSAndSend } = require('./rssReader');
 
 const scheduledJobs = new Set();
 
-async function parseICSAndScheduleRSSChecks() {
+async function parseICSAndScheduleRSSChecks(client) {
   scheduledJobs.clear();
   console.log(`<Lineup Checker> [INFO] Cleared all previously scheduled jobs.`);
   try {
@@ -43,7 +43,7 @@ async function parseICSAndScheduleRSSChecks() {
     for (const [kickoffISO, summary] of uniqueKickoffMap) {
       const kickoffTime = new Date(kickoffISO);
       const rssStart = new Date(kickoffTime.getTime() - 75 * 60000);
-      if (rssStart > now) scheduleRSSWindow(rssStart, summary, checkRSSAndSend, scheduledJobs);
+      if (rssStart > now) scheduleRSSWindow(rssStart, summary, checkRSSAndSend, scheduledJobs, client);
     }
 
     saveDailyEvents(todaysEvents);

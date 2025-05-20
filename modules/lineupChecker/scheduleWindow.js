@@ -1,6 +1,6 @@
 const schedule = require('node-schedule');
 
-function scheduleRSSWindow(startTime, eventSummary, checkRSSAndSend, scheduledJobs) {
+function scheduleRSSWindow(startTime, eventSummary, checkRSSAndSend, scheduledJobs, client) {
   const key = `${eventSummary}-${startTime.toISOString()}`;
   if (scheduledJobs.has(key)) return;
   scheduledJobs.add(key);
@@ -10,7 +10,7 @@ function scheduleRSSWindow(startTime, eventSummary, checkRSSAndSend, scheduledJo
     const checkTime = new Date(startTime.getTime() + i * 60000);
     schedule.scheduleJob(checkTime, () => {
       console.log(`<Lineup Checker> [CHECK] RSS check at ${checkTime.toISOString()} for "${eventSummary}"]`);
-      checkRSSAndSend();
+      checkRSSAndSend(client);
     });
   }
 }
