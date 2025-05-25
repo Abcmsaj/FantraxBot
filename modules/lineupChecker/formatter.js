@@ -2,7 +2,7 @@ function emojiMapFromTag(tag) {
   const map = {
     ARS: '⭕', AVL: '🟣', BRE: '🐝', BHA: '🕊', BOU: '🍒', BUR: '', CHE: '🧿',
     CRY: '🦅', EVE: '🍬', FUL: '⬜', IPS: '🚜', LEE: '', LEI: '🦊', LIV: '🔴', MCI: '🔵',
-    MUN: '👹', NEW: '⚫', NFO: '🌳', SHU: '', SOU: '😇', SUN: '', TOT: '🐓', WHU: '⚒', WOL: '🐺'
+    MUN: '👹', NEW: '⚫', NFO: '🌳', SHU: '', SOU: '😇', SUN: '🐈', TOT: '🐓', WHU: '⚒', WOL: '🐺'
   };
   return map[tag.toUpperCase()] || '';
 }
@@ -15,8 +15,6 @@ function formatLineupMessage(content) {
   const [_, team1Line, team2Line] = lines;
 
   const formatTeam = (line, teamCode) => {
-    if (!line) return '';
-
     const emojiRegex = /([\u2700-\u27BF]|[\uE000-\uF8FF]|[\uD83C-\uDBFF\uDC00-\uDFFF])+|\uFE0F|\u200D/gu;
     const cleanLine = line.replace(emojiRegex, ''); // remove all emoji from the line
 
@@ -28,10 +26,11 @@ function formatLineupMessage(content) {
   };
 
   return [
-    '────────────',
-    `LINE-UPS | ${tag}`,
+    'LINE-UPS | ' + tag,
+    '_ _',
     formatTeam(team1Line, teamsFromTag?.[0] || ''),
-    formatTeam(team2Line, teamsFromTag?.[1] || '')
+    formatTeam(team2Line, teamsFromTag?.[1] || ''),
+    '_ _'
   ].join('\n').trim();
 }
 
