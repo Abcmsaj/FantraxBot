@@ -1,11 +1,10 @@
 const { chromium } = require('playwright');
 const { SlashCommandBuilder } = require('@discordjs/builders');
+const fs = require('fs');
 
-const LEAGUE_ID = '3903zpaflzgrpsu6';
-const START_DATE = '2024-08-16';
-const END_DATE = '2025-05-26';
-//const FANTRAX_URL = `https://www.fantrax.com/fantasy/league/${LEAGUE_ID}/standings;timeframeType=BY_PERIOD?startDate=${START_DATE}&endDate=${END_DATE}&hideGoBackDays=true&timeStartType=PERIOD_ONLY&timeframeType=BY_PERIOD&view=REGULAR_SEASON&pageNumber=1`;
-const FANTRAX_URL = `https://www.fantrax.com/fantasy/league/${LEAGUE_ID}/livescoring?mobileMatchupView=false&teamId=ALL&layout=STANDARD&mainView=MATCHUP&mobileView=MATCHUPS`
+const LEAGUE_ID = '91o90a6ymd4fcwde';
+const FANTRAX_URL = `https://www.fantrax.com/fantasy/league/${LEAGUE_ID}/livescoring?mobileMatchupView=false&teamId=ALL&layout=STANDARD&mainView=MATCHUP&mobileView=MATCHUPS`;
+const COOKIE_FILE = '.fantraxcookies';
 
 async function scores(interaction) {
     const waitingMessage = await interaction.deferReply({ fetchReply: true });
@@ -13,17 +12,33 @@ async function scores(interaction) {
 
     let browser;
     try {
-        waitingMessage.react('🆗');
+        await waitingMessage.react('🆗');
         browser = await chromium.launch({ headless: true });
+
+        // Load cookies if the file exists to maintain the session
         const context = await browser.newContext({
             viewport: { width: 400, height: 600 },
-            storageState: '.fantraxCookies.json'
+            storageState: fs.existsSync(COOKIE_FILE) ? COOKIE_FILE : undefined
         });
         const page = await context.newPage();
 
         await page.goto(FANTRAX_URL);
-        await page.waitForTimeout(2500);
+        await page.getByText('Live Scoring').waitFor({ state: 'visible' });
 
+        /* Uncomment when you want to remove buttons or save session state to be reused
+        await interaction.editReply('Page loaded. Waiting 5 seconds to capture session state...');
+
+        // Buttons to click
+        await page.getByRole("button", {name: 'Consent'}).click()
+        await page.getByRole("button", {name: 'Dismiss'}).click()
+        await page.waitForTimeout(5000);
+
+        await context.storageState({ path: COOKIE_FILE });
+        console.log('<Scores> Cookie state saved.');
+
+        */
+
+        // Scroll through the page to load all dynamic content - necessary of the tab bar is in the middle of the page
         await page.evaluate(async () => {
             const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
             for (let i = 0; i < document.body.scrollHeight; i += 100) {
@@ -44,7 +59,7 @@ async function scores(interaction) {
         if (browser) {
             await browser.close();
             console.log('<Scores> Chromium closed');
-            waitingMessage.reactions.removeAll();
+            await waitingMessage.reactions.removeAll();
         }
     }
 }
