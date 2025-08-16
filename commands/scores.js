@@ -25,20 +25,23 @@ async function scores(interaction) {
         await page.goto(FANTRAX_URL);
         await page.getByText('Live Scoring').waitFor({ state: 'visible' });
 
-        /* Uncomment when you want to remove buttons or save session state to be reused
-        await interaction.editReply('Page loaded. Waiting 5 seconds to capture session state...');
+        // This block runs only if the cookie file does not exist (first-time setup)
+        if (!fs.existsSync(COOKIE_FILE)) {
+            console.log('<Scores> First run: Handling cookie consent and saving session.');
+            await interaction.editReply('First-time setup: Handling cookie pop-ups...');
 
-        // Buttons to click
-        await page.getByRole("button", {name: 'Consent'}).click()
-        await page.getByRole("button", {name: 'Dismiss'}).click()
-        await page.waitForTimeout(5000);
+            // Click consent/dismiss buttons that may appear on the first visit
+            await page.getByRole("button", { name: 'Consent' }).click();
+            await page.getByRole("button", { name: 'Dismiss' }).click();
+            await page.waitForTimeout(2000); // Wait for any modals to close
 
-        await context.storageState({ path: COOKIE_FILE });
-        console.log('<Scores> Cookie state saved.');
+            // Save the session state for future runs
+            await context.storageState({ path: COOKIE_FILE });
+            console.log('<Scores> Cookie state saved.');
+        }
 
-        */
 
-        // Scroll through the page to load all dynamic content - necessary of the tab bar is in the middle of the page
+        // Scroll through the page to load all dynamic content
         await page.evaluate(async () => {
             const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
             for (let i = 0; i < document.body.scrollHeight; i += 100) {
@@ -48,7 +51,8 @@ async function scores(interaction) {
         });
 
         const screenshot = await page.screenshot({ type: 'png', fullPage: true });
-        await interaction.editReply({ files: [{ attachment: screenshot, name: 'screenshot.png' }] });
+        // Clear the "First-time setup" message if it was shown
+        await interaction.editReply({ content: null, files: [{ attachment: screenshot, name: 'screenshot.png' }] });
         console.log('<Scores> Screenshot sent');
 
     } catch (error) {
