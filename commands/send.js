@@ -22,11 +22,10 @@ module.exports = {
         const sendingChannel = interaction.guild.channels.cache.find(channel => channel.name === channelName);
 
         // Send the message to the channel
-        sendingChannel.send(messageToSend);
+        await sendingChannel.send(messageToSend);
         console.log(`<Send> Bot sent: '${messageToSend}' to #${sendingChannel.name}`);
 
         // No reply needed
-        interaction.deferReply();
-        interaction.deleteReply();
+       await interaction.reply({ content: `Message sent to #${sendingChannel.name}.`, ephemeral: true });
     }
 };
