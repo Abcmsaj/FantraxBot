@@ -1,8 +1,8 @@
 function emojiMapFromTag(tag) {
   const map = {
-    ARS: '⭕', AVL: '🟣', BRE: '🐝', BHA: '🕊', BOU: '🍒', BUR: '🍷', CHE: '🧿',
-    CRY: '🦅', EVE: '🍬', FUL: '⬜', IPS: '🚜', LEE: '', LEI: '🦊', LIV: '🔴', MCI: '🔵',
-    MUN: '👹', NEW: '⚫', NFO: '🌳', SHU: '', SOU: '😇', SUN: '🐈', TOT: '🐓', WHU: '⚒', WOL: '🐺'
+    ARS: '⭕', AVL: '🟣', BHA: '🕊', BOU: '🍒', BRE: '🐝', BUR: '🍷', CHE: '🧿',
+    CRY: '🦅', EVE: '🍬', FUL: '⬜', IPS: '🚜', LEE: '⚪', LEI: '🦊', LIV: '🔴', MCI: '🔵',
+    MUN: '👹', NEW: '⚫', NFO: '🌳', SOU: '😇', SUN: '🐈‍⬛', TOT: '🐓', WHU: '⚒', WOL: '🐺'
   };
   return map[tag.toUpperCase()] || '';
 }
