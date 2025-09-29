@@ -30,9 +30,30 @@ async function scores(interaction) {
             console.log('<Scores> First run: Handling cookie consent and saving session.');
             await interaction.editReply('First-time setup: Handling cookie pop-ups...');
 
-            // Click consent/dismiss buttons that may appear on the first visit
-            await page.getByRole("button", { name: 'Consent' }).click();
-            await page.getByRole("button", { name: 'Dismiss' }).click();
+            await page.waitForTimeout(2000);
+
+            // Define the iframe for buttons that appear within it
+            const frameLocator = page.frameLocator('iframe[title="SP Consent Message"]');
+
+            // List of potential buttons and the context to find them in (page or iframe)
+            const buttonsToClick = [
+                { name: 'Accept', context: frameLocator, location: 'iframe' },
+                { name: 'Consent', context: page, location: 'main page' },
+                { name: 'Dismiss', context: page, location: 'main page' }
+            ];
+
+            // Loop through each defined button and click if it's visible
+            for (const btn of buttonsToClick) {
+                const buttonLocator = btn.context.getByRole("button", { name: btn.name });
+                
+                if (await buttonLocator.isVisible({ timeout: 2500 })) {
+                    await buttonLocator.click();
+                    console.log(`<Scores> Clicked the "${btn.name}" button on the ${btn.location}.`);
+                } else {
+                    console.log(`<Scores> Did not find "${btn.name}" button on the ${btn.location}.`);
+                }
+            }
+
             await page.waitForTimeout(2000); // Wait for any modals to close
 
             // Save the session state for future runs
