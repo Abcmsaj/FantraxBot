@@ -5,12 +5,14 @@ async function skim(interaction) {
     const cmd = interaction.options.getString('service');
     const query = interaction.options.getString('query');
 
-    const waitingMessage = await interaction.deferReply({ fetchReply: true });
+    await interaction.deferReply();
+    const waitingMessage = await interaction.fetchReply();
+
     await processMessage(cmd, query, interaction, waitingMessage);
 }
 
 async function processMessage(cmd, query, interaction, waitingMessage) {
-    console.log(`<Skim> [${new Date().toLocaleString()}] ${interaction.user.username} invoked command: ${interaction}`);
+    console.log(`<Skim> [${new Date().toLocaleString()}] ${interaction.user.username} invoked command: ${cmd} ${query}`);
 
     switch (cmd) {
         case "help":
@@ -26,8 +28,7 @@ async function processMessage(cmd, query, interaction, waitingMessage) {
                         "\n`/skim google-images <query>`" +
                         "\n`/skim wikipedia <query>`" +
                         "\n`/skim wikipediaf <query>`" +
-                        "\n Each command has an abbreviated version." +
-                        "\n"
+                        "\n Each command has an abbreviated version.\n"
                 }]
             });
             return;
@@ -88,8 +89,10 @@ async function takeScreenshot(url, fullPage, cmd, query, interaction, waitingMes
         }
 
         if (url.includes('google.com')) {
-            const button = await page.locator('button:has-text("Accept")');
-            if (await button.count() > 0) await button.first().click();
+            const button = page.locator('button:has-text("Accept")');
+            if (await button.count() > 0) {
+                await button.first().click();
+            }
         }
 
         const screenshot = await page.screenshot({ type: 'png', fullPage });
@@ -98,7 +101,11 @@ async function takeScreenshot(url, fullPage, cmd, query, interaction, waitingMes
             files: [{ attachment: screenshot, name: 'screenshot.png' }]
         });
 
-        await waitingMessage.reactions.removeAll();
+        try {
+            await waitingMessage.reactions.removeAll();
+        } catch (err) {
+            console.warn('<Skim> Could not clear reactions:', err.message);
+        }
     } catch (err) {
         console.error(err);
         await interaction.editReply(`:warning: ${err.message}`);
@@ -116,7 +123,7 @@ module.exports = {
         .setDescription('Skims a website and produces a screenshot from the query created')
         .addStringOption((option) => option
             .setName('service')
-            .setDescription('The service you want to use to use for the skim (i.e. g, gi, ss, w)')
+            .setDescription('The service you want to use for the skim (i.e. g, gi, ss, w)')
             .setRequired(true))
         .addStringOption((option) => option
             .setName('query')

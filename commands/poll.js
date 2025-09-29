@@ -1,4 +1,4 @@
-const Discord = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 module.exports = {
@@ -24,64 +24,55 @@ module.exports = {
         const separator = '+';
 
         if (!options) {
-            const embed = new Discord.EmbedBuilder()
-                .setTitle('📊  Poll')
+            const embed = new EmbedBuilder()
+                .setTitle('📊 Poll')
                 .setDescription(question)
                 .setColor(embedColor)
-                .setAuthor({ name: `${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL({ format: "png", dynamic: true }) });
+                .setAuthor({
+                    name: interaction.user.username,
+                    iconURL: interaction.user.displayAvatarURL()
+                });
 
-            const msg = await interaction.reply({ embeds: [embed], fetchReply: true });
+            await interaction.reply({ embeds: [embed] });
+            const msg = await interaction.fetchReply();
 
-            msg.react('👍');
-            msg.react('👎');
+            await msg.react('👍');
+            await msg.react('👎');
 
             console.log(`<Poll> Yes/No poll by ${interaction.user.username}: '${question}' in the ${interaction.channel.name} channel`);
-        }
+        } else {
+            const embed = new EmbedBuilder();
 
-        else {
-            // Declare the question and options from the slash command
-            const embed = new Discord.EmbedBuilder();
-            const question = interaction.options.getString('question');
-            const options = interaction.options.getString('options');
+            let optionsArr = options.split(separator);
 
-            // Declare blank options array
-            var optionsArr = [];
+            const alphabet = [
+                '🇦', '🇧', '🇨', '🇩', '🇪', '🇫', '🇬', '🇭', '🇮', '🇯',
+                '🇰', '🇱', '🇲', '🇳', '🇴', '🇵', '🇶', '🇷', '🇸', '🇹'
+            ];
 
-            // Declare alphabet emojis (up to T as you can only add 20 reactions to a post)
-            const alphabet = ['🇦', '🇧', '🇨', '🇩', '🇪', '🇫', '🇬', '🇭', '🇮', '🇯', '🇰', '🇱',
-                '🇲', '🇳', '🇴', '🇵', '🇶', '🇷', '🇸', '🇹'];
-
-            // Split the options up by the separator character
-            optionsArr = options.split(separator);
-
-            // If more than 20 options, return error
             if (optionsArr.length > alphabet.length) {
-                return interaction.reply(`Please don't input more than 20 options.`);
+                return interaction.reply({ content: "Please don't input more than 20 options.", ephemeral: true });
             }
 
-            for (var i = 0; i < optionsArr.length; i++) {
-                // Trim the white space from each item in the array
-                // Add the alphabet emoji to the start of each option
-                optionsArr[i] = `${alphabet[i]} ${optionsArr[i].trim()}`;
-            }
+            optionsArr = optionsArr.map((opt, i) => `${alphabet[i]} ${opt.trim()}`);
 
-            // Add the question to the start of the options array (as all of this will be in the desc of the embed)
-            const arr = [question].concat(optionsArr);
+            const arr = [question, ...optionsArr];
 
-            // Create the embed
             embed
                 .setDescription(arr.join('\n\n'))
                 .setColor(embedColor)
-                .setAuthor({ name: `${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL({ format: "png", dynamic: true }) });
+                .setAuthor({
+                    name: interaction.user.username,
+                    iconURL: interaction.user.displayAvatarURL()
+                });
 
-            // Send message to channel and react with alphabet emojis
-            const msg = await interaction.reply({ embeds: [embed], fetchReply: true });
+            await interaction.reply({ embeds: [embed] });
+            const msg = await interaction.fetchReply();
 
             for (let i = 0; i < optionsArr.length; i++) {
-                msg.react(alphabet[i]);
+                await msg.react(alphabet[i]);
             }
 
-            // Log to console
             console.log(`<Poll> Multi choice poll created by ${interaction.user.username}: '${question}' in the ${interaction.channel.name} channel`);
         }
     },

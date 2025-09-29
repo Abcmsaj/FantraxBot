@@ -7,7 +7,9 @@ const FANTRAX_URL = `https://www.fantrax.com/fantasy/league/${LEAGUE_ID}/livesco
 const COOKIE_FILE = '.fantraxcookies';
 
 async function scores(interaction) {
-    const waitingMessage = await interaction.deferReply({ fetchReply: true });
+    await interaction.deferReply();
+    const waitingMessage = await interaction.fetchReply();
+
     console.log(`<Scores> [${new Date().toLocaleString()}] ${interaction.user.username} requested latest scores.`);
 
     let browser;
@@ -84,7 +86,13 @@ async function scores(interaction) {
         if (browser) {
             await browser.close();
             console.log('<Scores> Chromium closed');
-            await waitingMessage.reactions.removeAll();
+
+            try {
+                await waitingMessage.reactions.removeAll();
+            } catch (err) {
+                console.warn('<Scores> Failed to remove reactions:', err.message);
+            }
+
         }
     }
 }
