@@ -10,7 +10,22 @@ const birthdayCheckerFunction = require('./modules/birthdayChecker.js');
 const fixSocialsFunction = require('./modules/fixSocials.js');
 const createLineupChecker = require('./modules/lineupChecker');
 const { token, redCardChannel, approverId, adminId, monthlyCards, guildId } = require('./FantraxConfig/config.json');
-const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'], intents: [Discord.GatewayIntentBits.Guilds, Discord.GatewayIntentBits.GuildMessages, Discord.GatewayIntentBits.GuildMessageReactions, Discord.GatewayIntentBits.MessageContent] });
+const client = new Discord.Client({
+        intents: [
+        Discord.GatewayIntentBits.Guilds,
+        Discord.GatewayIntentBits.GuildMessages,
+        Discord.GatewayIntentBits.GuildMessageReactions,
+        Discord.GatewayIntentBits.MessageContent,
+        Discord.GatewayIntentBits.GuildMembers
+    ],
+    partials: [
+        Discord.Partials.Message,
+        Discord.Partials.Channel,
+        Discord.Partials.Reaction,
+        Discord.Partials.User,
+        Discord.Partials.GuildMember
+    ]
+});
 const fs = require('fs');
 
 // Create files if they don't exist
@@ -121,16 +136,13 @@ client.on('messageCreate', (message) => {
 // --------------------------------------------------------------------
 client.on('messageReactionAdd', async (reaction, user) => {
     // Pull in partial messages from before the bot was active
-    if (reaction.partial) {
-        // If the message this reaction belongs to was removed the fetching might result in an API error, which we need to handle
-        try {
-            await reaction.fetch();
-        } catch (error) {
-            console.log('Something went wrong when fetching the message: ', error);
-            // Return as `reaction.message.author` may be undefined/null
-            return;
-        };
-    };
+    try {
+        if (reaction.partial) await reaction.fetch();
+        if (user.partial) await user.fetch();
+    } catch (error) {
+        console.error('Failed to fetch partial reaction or user:', error);
+        return;
+    }
 
     // Get Red Card Channel
     const getRedCardChannel = client.channels.cache.get(redCardChannel);

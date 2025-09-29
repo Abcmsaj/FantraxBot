@@ -12,7 +12,7 @@
   "license": "ISC",
   "devDependencies": {
     "axios": "^1.9.0",
-    "discord.js": "^14.18.0",
+    "discord.js": "^14.22.1",
     "discord.js-poll": "^1.2.1",
     "luxon": "^3.2.1",
     "node": "^20.19.1",
