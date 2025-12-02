@@ -7,13 +7,15 @@ RUN apt-get update && apt-get install chromium -y
 RUN mkdir -p /usr/src/bot
 WORKDIR /usr/src/bot
 
-# Copy and install our bot's packages
-COPY package.json /usr/src/bot
+# Copy all of the bot files
+COPY . /usr/src/bot
+
+# Delete node_modules, if it exists
+RUN rm -rf node_modules
+
+# Install our bot's packages
 RUN npm install
 RUN npx playwright install chromium
-
-# Copy the rest of the bot files
-COPY . /usr/src/bot
 
 # Start node
 CMD ["node", "index.js"]
