@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const { ActionRowBuilder, SlashCommandBuilder, StringSelectMenuBuilder } = require('@discordjs/builders');
 
 module.exports = {
@@ -9,9 +10,10 @@ module.exports = {
         .setName('joy')
         .setDescription('Responds with a leaderboard of joy reactions in the Discord'),
     async execute(interaction) {
+        const joyPath = path.join(__dirname, '../json/joy.json');
         // Read the joy.json file
         try {
-            joy = JSON.parse(fs.readFileSync('./json/joy.json', 'utf8'));
+            joy = JSON.parse(fs.readFileSync(joyPath, 'utf8'));
         } catch (err) {
             console.error(err);
         }

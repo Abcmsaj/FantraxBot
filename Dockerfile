@@ -18,4 +18,4 @@ RUN npm install
 RUN npx playwright install chromium
 
 # Start node
-CMD ["node", "index.js"]
+CMD ["node", "src/index.js"]

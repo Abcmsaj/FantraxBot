@@ -9,9 +9,12 @@ const joyResponderFunction = require('./modules/joyTracker.js');
 const birthdayCheckerFunction = require('./modules/birthdayChecker.js');
 const fixSocialsFunction = require('./modules/fixSocials.js');
 const createLineupChecker = require('./modules/lineupChecker');
-const { token, redCardChannel, approverId, adminId, monthlyCards, guildId } = require('./FantraxConfig/config.json');
+const { token, redCardChannel, approverId, adminId, monthlyCards, guildId } = require('../FantraxConfig/config.json');
+const path = require('path');
+const fs = require('fs');
+
 const client = new Discord.Client({
-        intents: [
+    intents: [
         Discord.GatewayIntentBits.Guilds,
         Discord.GatewayIntentBits.GuildMessages,
         Discord.GatewayIntentBits.GuildMessageReactions,
@@ -26,21 +29,24 @@ const client = new Discord.Client({
         Discord.Partials.GuildMember
     ]
 });
-const fs = require('fs');
+
+// Helper to get full path inside src
+const srcPath = (dir) => path.join(__dirname, dir);
 
 // Create files if they don't exist
-checkFile.checkFile('json/birthdays.json');
-checkFile.checkFile('json/cards.json');
-checkFile.checkFile('json/reacts.json');
-checkFile.checkFile('json/ssn.json');
-checkFile.checkFile('json/ssnGiver.json');
-checkFile.checkFile('json/memes.json');
-checkFile.checkFile('json/joy.json');
+checkFile.checkFile(srcPath('json/birthdays.json'));
+checkFile.checkFile(srcPath('json/cards.json'));
+checkFile.checkFile(srcPath('json/reacts.json'));
+checkFile.checkFile(srcPath('json/ssn.json'));
+checkFile.checkFile(srcPath('json/ssnGiver.json'));
+checkFile.checkFile(srcPath('json/memes.json'));
+checkFile.checkFile(srcPath('json/joy.json'));
 
 // ----------------
 // Get a list of all command names
 // ----------------
-const commandNames = fs.readdirSync('./commands').filter((fileName) => fileName.endsWith('.js'));
+// Updated to look in the commands folder relative to index.js
+const commandNames = fs.readdirSync(srcPath('commands')).filter((fileName) => fileName.endsWith('.js'));
 const commands = {};
 
 for (const commandName of commandNames) {

@@ -1,6 +1,7 @@
 const { DateTime } = require('luxon');
-const { guildId } = require('../FantraxConfig/config.json');
+const { guildId } = require('../../FantraxConfig/config.json');
 const fs = require('fs');
+const path = require('path');
 
 /* The index.js will create a blank JSON for birthdays. It needs to be manually populated forEach person with the following info:
 
@@ -20,11 +21,14 @@ async function birthdayCheckerFunction(client) {
     const todayMonth = today.toFormat('MMMM');
     let birthdays;
 
+    // [FIX] Resolve path relative to this file
+    const birthdaysPath = path.join(__dirname, '../json/birthdays.json');
+
     console.log(`<BirthdayChecker> Triggered at ${today.toFormat('d MMMM yyyy HH:mm')}`);
 
     // Get the birthdays.json file
     try {
-        birthdays = JSON.parse(fs.readFileSync('./json/birthdays.json', "utf8"));
+        birthdays = JSON.parse(fs.readFileSync(birthdaysPath, "utf8"));
     } catch (err) {
         console.error(err);
     }
@@ -46,13 +50,13 @@ async function birthdayCheckerFunction(client) {
             console.log(`<BirthdayChecker> Resetting @${birthday.username} nickname to ${birthday.currentNickname}`);
 
             // Write changes to the JSON file
-            fs.writeFileSync('./json/birthdays.json', JSON.stringify(birthdays));
+            fs.writeFileSync(birthdaysPath, JSON.stringify(birthdays));
         }
 
         // Loop through every day and see if it matches today's date (use no padding day and long month)
         if (birthday.birthday === `${todayDay} ${todayMonth}`) {
             const member = await guild.members.fetch(userId);
-            
+
             // add the user to the birthday list
             birthday.isBirthdayToday = 1;
             console.log(`<BirthdayChecker> Resetting @${birthday.username}'s isBirthday = 1`);
@@ -74,7 +78,7 @@ async function birthdayCheckerFunction(client) {
             console.log(`<BirthdayChecker> Birthday message sent to #general for @${birthday.username}`);
 
             // Write changes to the JSON file
-            fs.writeFileSync('./json/birthdays.json', JSON.stringify(birthdays));
+            fs.writeFileSync(birthdaysPath, JSON.stringify(birthdays));
         }
     });
 }

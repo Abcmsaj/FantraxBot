@@ -1,10 +1,12 @@
 const fs = require('fs');
+const path = require('path');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 // Read from JSON files
 let reacts;
+const reactsPath = path.join(__dirname, '../json/reacts.json');
 try {
-    reacts = JSON.parse(fs.readFileSync("./json/reacts.json", "utf8"));
+    reacts = JSON.parse(fs.readFileSync(reactsPath, "utf8"));
 } catch (err) {
     console.log(`<React> ${err}`);
 }
@@ -52,7 +54,7 @@ module.exports = {
         };
 
         // Write to the file
-        fs.writeFileSync('./json/reacts.json', JSON.stringify(reacts), (err) => {
+        fs.writeFileSync(reactsPath, JSON.stringify(reacts), (err) => {
             if (err) console.error(err);
         });
         // Message channel to say it's been added

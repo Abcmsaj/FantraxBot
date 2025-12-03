@@ -1,39 +1,34 @@
 const fs = require('fs');
+const path = require('path');
 const { DateTime } = require('luxon');
+
+// [FIX] Resolve path relative to this file
+const joyPath = path.join(__dirname, '../json/joy.json');
 
 // Read from JSON files
 let joy;
 try {
-    joy = JSON.parse(fs.readFileSync('./json/joy.json', 'utf8'));
+    joy = JSON.parse(fs.readFileSync(joyPath, 'utf8'));
 } catch (err) {
     console.error(err);
 }
 
 function joyTrackerFunction(reaction, user) {
-    // ----------------
-    // Joy Counter
-    // ----------------
-
     const today = DateTime.now().setZone('Europe/London');
     const todayMonth = today.toFormat('MMMM');
     const todayYear = today.toFormat('yyyy');
 
     if (reaction.emoji.name === '😂') {
-        // Add datetime data to joy.json if they don't exist
-
-        // If the month doesn't exist in the file yet, add it
         if (!joy[`${todayMonth}/${todayYear}`]) joy[`${todayMonth}/${todayYear}`] = {};
 
-        // If the user reacting doesn't exist in the file yet, add them
         if (!joy[`${todayMonth}/${todayYear}`][user.id]) joy[`${todayMonth}/${todayYear}`][user.id] = {
             user: user.username,
             joy: 0
         };
 
-        // Increment the value of joy react for the user and write to the JSON file
         const joyData = joy[`${todayMonth}/${todayYear}`][user.id];
         joyData.joy++;
-        fs.writeFileSync('./json/joy.json', JSON.stringify(joy), (err) => {
+        fs.writeFileSync(joyPath, JSON.stringify(joy), (err) => {
             if (err) console.error(err);
         });
 
@@ -42,41 +37,26 @@ function joyTrackerFunction(reaction, user) {
 }
 
 async function joyResponderFunction(interaction, date) {
-    // ----------------
-    // Joy Responder
-    // ----------------
-
-    /* This function responds to the select menu from commands/joy.js via the interactionCreate event in index.js
-    It will send over the selected option from the menu and we'll update the interaction with the table for
-    the selected month */
-
     let spacing = '                ';
-
     function remainingSpacing(text) {
         return spacing.substring(0, (spacing.length - text.length));
     }
 
-    // Create new array to sort values
     var sortedArray = [];
-
-    // Populate it with each item
     Object.values(joy[date]).forEach(item => {
         sortedArray.push(item);
     });
 
-    // Actually sort the array in descending order
     sortedArray.sort(function (a, b) {
         return b.joy - a.joy;
     });
 
     var totalJoy = `User${remainingSpacing('User')}│ 😂 reacts\n`;
 
-    // Loop through the sorted array to get each username and SSN val, now in desc order
     Object.values(sortedArray).forEach(item => {
         totalJoy += `${item.user}${remainingSpacing(item.user)}│ ${item.joy}\n`;
     });
 
-    // Update the interaction with the month/year and a table of joy reacts for that month
     await interaction.update({ content: `😂 ${date.replace('/', ' ')} selected`, components: [] });
     await interaction.followUp({ content: `**Total 😂 reacts for ${date.replace('/', ' ')}**:\n\`\`\`json\n${totalJoy}\`\`\`\n`, ephemeral: false });
 

@@ -4,5 +4,7 @@ services:
     container_name: fantraxbot
     restart: unless-stopped
     volumes:
-      - .:/usr/src/bot
-      - /usr/src/bot/node_modules # needed for node modules
+      - ./src:/usr/src/bot/src
+      - ./FantraxConfig:/usr/src/bot/FantraxConfig
+      - ./package.json:/usr/src/bot/package.json
+      # - /usr/src/bot/node_modules # needed for node modules

@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 module.exports = {
@@ -9,10 +10,11 @@ module.exports = {
         .setName('totalcards')
         .setDescription('Show the number of cards for all users in the Discord'),
     async execute(interaction) {
-        const cards = JSON.parse(fs.readFileSync("./json/ards.json", "utf8"));
+        const cardsPath = path.join(__dirname, '../json/cards.json');
+        const cards = JSON.parse(fs.readFileSync(cardsPath, "utf8"));
 
         // Read cards.json file
-        fs.readFile('./json/cards.json', (err) => {
+        fs.readFile(cardsPath, (err) => {
             if (err) {
                 throw err;
             } else {

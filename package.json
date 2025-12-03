@@ -2,11 +2,11 @@
   "name": "discord-bot",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "start": "node ./index.js",
-    "test:lineups": "node ./modules/lineupChecker/test/formatter.test.js && node ./modules/lineupChecker/test/rssReader.test.js && node ./modules/lineupChecker/test/scheduler.test.js && node ./modules/lineupChecker/test/utils.test.js",
-    "test:lineups:integration": "node ./modules/lineupChecker/test/integration.test.js"
+    "start": "node ./src/index.js",
+    "test:lineups": "node ./src/modules/lineupChecker/test/formatter.test.js && node ./src/modules/lineupChecker/test/rssReader.test.js && node ./src/modules/lineupChecker/test/scheduler.test.js && node ./src/modules/lineupChecker/test/utils.test.js",
+    "test:lineups:integration": "node ./src/modules/lineupChecker/test/integration.test.js"
   },
   "author": "",
   "license": "ISC",

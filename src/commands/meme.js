@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 // Function to get a random number between 1 and the max provided
@@ -20,8 +21,9 @@ module.exports = {
     async execute(interaction) {
         // Read from JSON
         let memes;
+        const memesPath = path.join(__dirname, '../json/memes.json');
         try {
-            memes = JSON.parse(fs.readFileSync("./json/memes.json", "utf8"));
+            memes = JSON.parse(fs.readFileSync(memesPath, "utf8"));
         } catch (err) {
             console.error(err);
         }
@@ -31,7 +33,7 @@ module.exports = {
         if (memenumber) {
             // If the command has a number (i.e. /meme 45)
             // Read the file
-            fs.readFile('./json/memes.json', (err) => {
+            fs.readFile(memesPath, (err) => {
                 if (err) {
                     throw err;
                 } else {
@@ -54,7 +56,7 @@ module.exports = {
         } else {
             // If no number provided
             // Read the file
-            fs.readFile('./json/memes.json', (err) => {
+            fs.readFile(memesPath, (err) => {
                 if (err) {
                     throw err;
                 } else {

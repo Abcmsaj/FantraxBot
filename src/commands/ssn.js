@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 module.exports = {
@@ -9,9 +10,10 @@ module.exports = {
         .setName('ssn')
         .setDescription('Responds with a leaderboard SSNs in the Discord'),
     async execute(interaction) {
-        const ssn = JSON.parse(fs.readFileSync("./json/ssn.json", "utf8"));
+        const ssnPath = path.join(__dirname, '../json/ssn.json');
+        const ssn = JSON.parse(fs.readFileSync(ssnPath, "utf8"));
 
-        fs.readFile('./json/ssn.json', (err) => {
+        fs.readFile(ssnPath, (err) => {
             if (err) {
                 throw err;
             } else {

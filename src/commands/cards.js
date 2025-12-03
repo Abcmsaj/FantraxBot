@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 module.exports = {
@@ -9,7 +10,9 @@ module.exports = {
         .setDescription(`Returns the user's nominated reds, confirmed reds, and card allowance`),
     cooldown: 10,
     async execute(interaction) {
-        const cards = JSON.parse(fs.readFileSync("./json/cards.json", "utf8"));
+        const cardsPath = path.join(__dirname, '../json/cards.json');
+        const cards = JSON.parse(fs.readFileSync(cardsPath, "utf8"));
+
         const cardData = cards[interaction.user.id];
 
         var response = '';
