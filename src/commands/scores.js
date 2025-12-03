@@ -1,6 +1,8 @@
 const { chromium } = require('playwright');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const fs = require('fs');
+const fs = require('fs').promises;
+const { existsSync } = require('fs');
+const path = require('path');
 
 const LEAGUE_ID = '91o90a6ymd4fcwde';
 const FANTRAX_URL = `https://www.fantrax.com/fantasy/league/${LEAGUE_ID}/livescoring?mobileMatchupView=false&teamId=ALL&layout=STANDARD&mainView=MATCHUP&mobileView=MATCHUPS`;
@@ -9,62 +11,65 @@ const COOKIE_FILE = '.fantraxcookies';
 async function scores(interaction) {
     await interaction.deferReply();
     const waitingMessage = await interaction.fetchReply();
-
-    console.log(`<Scores> [${new Date().toLocaleString()}] ${interaction.user.username} requested latest scores.`);
+    console.log(`<Scores> ${interaction.user.username} requested scores.`);
 
     let browser;
     try {
         await waitingMessage.react('🆗');
         browser = await chromium.launch({ headless: true });
 
-        // Load cookies if the file exists to maintain the session
+        // Check if cookie file exists (Async)
+        let storageState;
+        try {
+            await fs.access(COOKIE_FILE);
+            storageState = COOKIE_FILE;
+        } catch {
+            storageState = undefined;
+        }
+
         const context = await browser.newContext({
             viewport: { width: 400, height: 600 },
-            storageState: fs.existsSync(COOKIE_FILE) ? COOKIE_FILE : undefined
+            storageState
         });
         const page = await context.newPage();
 
         await page.goto(FANTRAX_URL);
-        await page.getByText('Live Scoring').waitFor({ state: 'visible' });
 
-        // This block runs only if the cookie file does not exist (first-time setup)
-        if (!fs.existsSync(COOKIE_FILE)) {
-            console.log('<Scores> First run: Handling cookie consent and saving session.');
-            await interaction.editReply('First-time setup: Handling cookie pop-ups...');
+        // Wait for element instead of generic timeout if possible, but keeping logic similar
+        try {
+            await page.getByText('Live Scoring').waitFor({ state: 'visible', timeout: 10000 });
+        } catch (e) {
+            // Sometimes it might not appear if cookies need consent
+        }
 
-            await page.waitForTimeout(2000);
+        // First Run / Cookie Consent
+        if (!storageState) {
+            console.log('<Scores> First run setup...');
+            await interaction.editReply('First-time setup: Handling cookies...');
 
-            // Define the iframe for buttons that appear within it
+            // Replaces waitForTimeout(2000)
+            await new Promise(r => setTimeout(r, 2000));
+
             const frameLocator = page.frameLocator('iframe[title="SP Consent Message"]');
-
-            // List of potential buttons and the context to find them in (page or iframe)
-            const buttonsToClick = [
-                { name: 'Accept', context: frameLocator, location: 'iframe' },
-                { name: 'Consent', context: page, location: 'main page' },
-                { name: 'Dismiss', context: page, location: 'main page' }
+            const buttons = [
+                { name: 'Accept', locator: frameLocator.getByRole("button", { name: 'Accept' }) },
+                { name: 'Consent', locator: page.getByRole("button", { name: 'Consent' }) },
+                { name: 'Dismiss', locator: page.getByRole("button", { name: 'Dismiss' }) }
             ];
 
-            // Loop through each defined button and click if it's visible
-            for (const btn of buttonsToClick) {
-                const buttonLocator = btn.context.getByRole("button", { name: btn.name });
-                
-                if (await buttonLocator.isVisible({ timeout: 2500 })) {
-                    await buttonLocator.click();
-                    console.log(`<Scores> Clicked the "${btn.name}" button on the ${btn.location}.`);
-                } else {
-                    console.log(`<Scores> Did not find "${btn.name}" button on the ${btn.location}.`);
+            for (const btn of buttons) {
+                if (await btn.locator.isVisible({ timeout: 2500 })) {
+                    await btn.locator.click();
+                    console.log(`<Scores> Clicked ${btn.name}`);
                 }
             }
 
-            await page.waitForTimeout(2000); // Wait for any modals to close
-
-            // Save the session state for future runs
+            await new Promise(r => setTimeout(r, 2000));
             await context.storageState({ path: COOKIE_FILE });
-            console.log('<Scores> Cookie state saved.');
+            console.log('<Scores> Cookies saved.');
         }
 
-
-        // Scroll through the page to load all dynamic content
+        // Smooth Scroll
         await page.evaluate(async () => {
             const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
             for (let i = 0; i < document.body.scrollHeight; i += 100) {
@@ -74,35 +79,28 @@ async function scores(interaction) {
         });
 
         const screenshot = await page.screenshot({ type: 'png', fullPage: true });
-        // Clear the "First-time setup" message if it was shown
-        await interaction.editReply({ content: null, files: [{ attachment: screenshot, name: 'screenshot.png' }] });
-        console.log('<Scores> Screenshot sent');
+
+        await interaction.editReply({
+            content: null,
+            files: [{ attachment: screenshot, name: 'scores.png' }]
+        });
+        console.log('<Scores> Screenshot sent.');
 
     } catch (error) {
         console.error(error);
-        await interaction.editReply(`:warning: ${error.message}`);
-
+        await interaction.editReply(`:warning: Error: ${error.message}`);
     } finally {
-        if (browser) {
-            await browser.close();
-            console.log('<Scores> Chromium closed');
-
-            try {
-                await waitingMessage.reactions.removeAll();
-            } catch (err) {
-                console.warn('<Scores> Failed to remove reactions:', err.message);
-            }
-
-        }
+        if (browser) await browser.close();
+        waitingMessage.reactions.removeAll().catch(() => { });
     }
 }
 
 module.exports = {
     name: 'scores',
-    description: 'Logs into Fantrax and screenshots the scores to the Discord',
+    description: 'Get Fantrax scores',
     data: new SlashCommandBuilder()
         .setName('scores')
-        .setDescription('Request the latest scores for the current gameweek'),
+        .setDescription('Request the latest scores'),
     async execute(interaction) {
         await scores(interaction);
     }

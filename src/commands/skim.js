@@ -1,134 +1,92 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { chromium } = require('playwright');
+const { setTimeout } = require('timers/promises');
+
+const SERVICES = {
+    'screenshot': { url: (q) => getHttpUrl(q), fullPage: false },
+    'ss': { url: (q) => getHttpUrl(q), fullPage: false },
+    'screenshotf': { url: (q) => getHttpUrl(q), fullPage: true },
+    'ssf': { url: (q) => getHttpUrl(q), fullPage: true },
+
+    'google': { url: (q) => `https://www.google.com/search?q=${e(q)}`, fullPage: false },
+    'g': { url: (q) => `https://www.google.com/search?q=${e(q)}`, fullPage: false },
+
+    'google-images': { url: (q) => `https://www.google.com/search?q=${e(q)}&tbm=isch&safe=on`, fullPage: false },
+    'gi': { url: (q) => `https://www.google.com/search?q=${e(q)}&tbm=isch&safe=on`, fullPage: false },
+
+    'wikipedia': { url: (q) => `https://en.wikipedia.org/w/index.php?title=Special:Search&search=${e(q)}`, fullPage: false },
+    'w': { url: (q) => `https://en.wikipedia.org/w/index.php?title=Special:Search&search=${e(q)}`, fullPage: false },
+};
+
+const e = encodeURIComponent;
+const getHttpUrl = (q) => /^https?:\/\//.test(q) ? q : `http://${q}`;
 
 async function skim(interaction) {
-    const cmd = interaction.options.getString('service');
+    const serviceKey = interaction.options.getString('service');
     const query = interaction.options.getString('query');
 
-    await interaction.deferReply();
-    const waitingMessage = await interaction.fetchReply();
-
-    await processMessage(cmd, query, interaction, waitingMessage);
-}
-
-async function processMessage(cmd, query, interaction, waitingMessage) {
-    console.log(`<Skim> [${new Date().toLocaleString()}] ${interaction.user.username} invoked command: ${cmd} ${query}`);
-
-    switch (cmd) {
-        case "help":
-        case "h":
-            await interaction.editReply({
-                embeds: [{
-                    title: "Commands",
-                    description:
-                        "\n`/skim screenshot <url>`" +
-                        "\n`/skim screenshotf <url>`" +
-                        "\n`/skim google <query>`" +
-                        "\n`/skim google-im-feeling-lucky <query>`" +
-                        "\n`/skim google-images <query>`" +
-                        "\n`/skim wikipedia <query>`" +
-                        "\n`/skim wikipediaf <query>`" +
-                        "\n Each command has an abbreviated version.\n"
-                }]
-            });
-            return;
-
-        case "screenshot":
-        case "ss":
-            await takeScreenshot(getHttpUrl(query), false, cmd, query, interaction, waitingMessage);
-            break;
-        case "screenshotf":
-        case "ssf":
-            await takeScreenshot(getHttpUrl(query), true, cmd, query, interaction, waitingMessage);
-            break;
-        case "google":
-        case "g":
-            await takeScreenshot(`https://www.google.com/search?q=${encodeURIComponent(query)}`, false, cmd, query, interaction, waitingMessage);
-            break;
-        case "google-im-feeling-lucky":
-        case "gifl":
-            await takeScreenshot(`https://duckduckgo.com/?q=${encodeURIComponent(query)}`, true, cmd, query, interaction, waitingMessage);
-            break;
-        case "google-images":
-        case "gi":
-            await takeScreenshot(`https://www.google.com/search?q=${encodeURIComponent(query)}&tbm=isch&safe=on`, false, cmd, query, interaction, waitingMessage);
-            break;
-        case "wikipedia":
-        case "w":
-            await takeScreenshot(`https://en.wikipedia.org/w/index.php?title=Special:Search&search=${encodeURIComponent(query)}`, false, cmd, query, interaction, waitingMessage);
-            break;
-        case "wikipediaf":
-        case "wf":
-            await takeScreenshot(`https://en.wikipedia.org/w/index.php?title=Special:Search&search=${encodeURIComponent(query)}`, true, cmd, query, interaction, waitingMessage);
-            break;
+    // Handle Help
+    if (serviceKey === 'help' || serviceKey === 'h') {
+        return interaction.reply({
+            embeds: [{ title: "Commands", description: "Use /skim [service] [query]\nServices: ss, google, gi, wiki..." }]
+        });
     }
-}
 
-function getHttpUrl(query) {
-    return (query.startsWith("http://") || query.startsWith("https://")) ? query : `http://${query}`;
-}
+    const service = SERVICES[serviceKey];
+    if (!service) {
+        return interaction.reply({ content: `Unknown service: ${serviceKey}`, ephemeral: true });
+    }
 
-async function delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function takeScreenshot(url, fullPage, cmd, query, interaction, waitingMessage) {
-    const browser = await chromium.launch({ headless: true });
-    const context = await browser.newContext();
-    const page = await context.newPage();
-    await waitingMessage.react('🆗');
+    await interaction.deferReply();
+    const msg = await interaction.fetchReply();
 
     try {
-        await page.setViewportSize({ width: 1440, height: 900 });
-
-        const isTwitter = url.includes("twitter.com");
-        await page.goto(url, { waitUntil: isTwitter ? 'networkidle' : 'load' });
-
-        if (url.startsWith('https://duckduckgo.com/')) {
-            await delay(2000);
-        }
-
-        if (url.includes('google.com')) {
-            const button = page.locator('button:has-text("Accept")');
-            if (await button.count() > 0) {
-                await button.first().click();
-            }
-        }
-
-        const screenshot = await page.screenshot({ type: 'png', fullPage });
-        await interaction.editReply({
-            content: `**Skimmed:**\n\`${query} using ${cmd}\``,
-            files: [{ attachment: screenshot, name: 'screenshot.png' }]
-        });
-
-        try {
-            await waitingMessage.reactions.removeAll();
-        } catch (err) {
-            console.warn('<Skim> Could not clear reactions:', err.message);
-        }
+        await takeScreenshot(service.url(query), service.fullPage, serviceKey, query, interaction, msg);
     } catch (err) {
         console.error(err);
         await interaction.editReply(`:warning: ${err.message}`);
+    }
+}
+
+async function takeScreenshot(url, fullPage, cmd, query, interaction, waitingMessage) {
+    console.log(`<Skim> ${interaction.user.username} used ${cmd} on: ${query}`);
+    await waitingMessage.react('🆗');
+
+    const browser = await chromium.launch({ headless: true });
+    try {
+        const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+
+        // Twitter specific wait handling
+        const waitState = url.includes("twitter.com") ? 'networkidle' : 'load';
+        await page.goto(url, { waitUntil: waitState });
+
+        // Handle Cookie Popups
+        if (url.includes('google.com')) {
+            const btn = page.locator('button:has-text("Accept")').first();
+            if (await btn.count() > 0) await btn.click();
+        }
+
+        const screenshot = await page.screenshot({ type: 'png', fullPage });
+
+        await interaction.editReply({
+            content: `**Skimmed:** \`${query}\` via ${cmd}`,
+            files: [{ attachment: screenshot, name: 'skim.png' }]
+        });
+
+        waitingMessage.reactions.removeAll().catch(() => { });
     } finally {
         await browser.close();
-        console.log('<Skim> Chromium closed');
     }
 }
 
 module.exports = {
     name: 'skim',
-    description: 'Skims a website and produces a screenshot to be posted into Discord',
+    description: 'Skims a website and produces a screenshot',
     data: new SlashCommandBuilder()
         .setName('skim')
-        .setDescription('Skims a website and produces a screenshot from the query created')
-        .addStringOption((option) => option
-            .setName('service')
-            .setDescription('The service you want to use for the skim (i.e. g, gi, ss, w)')
-            .setRequired(true))
-        .addStringOption((option) => option
-            .setName('query')
-            .setDescription('The query you want to search, or URL if you provided ss as the service')
-            .setRequired(true)),
+        .setDescription('Screenshot a site or search result')
+        .addStringOption(o => o.setName('service').setDescription('Service (g, gi, ss, w)').setRequired(true))
+        .addStringOption(o => o.setName('query').setDescription('Search query or URL').setRequired(true)),
     async execute(interaction) {
         await skim(interaction);
     }

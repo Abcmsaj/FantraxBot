@@ -1,90 +1,60 @@
-// Define fs
-const fs = require('fs');
+const fs = require('fs').promises;
 const path = require('path');
 
-function reactFunction(message) {
-    // [FIX] Resolve path relative to this file
+async function reactFunction(message) {
+    // Ignore bots immediately to save resources
+    if (message.author.bot) return;
+
     const reactsPath = path.join(__dirname, '../json/reacts.json');
 
-    // Read from JSON files
     let reacts;
     try {
-        reacts = JSON.parse(fs.readFileSync(reactsPath, 'utf8'));
+        const data = await fs.readFile(reactsPath, 'utf8');
+        reacts = JSON.parse(data);
     } catch (err) {
-        console.error(err);
+        return console.error(`<Reactions> Error reading DB: ${err.message}`);
     }
 
-    // If the reaction comes from a bot then don't trigger - might end up in an infinite loop
-    if (message.author.bot) {
-        return 0;
-    } else {
-        // Read the file
-        fs.readFile(reactsPath, (err) => {
-            if (err) {
-                throw err;
-            } else {
-                // Iterate through all the keys in the reacts.json file
-                Object.keys(reacts).forEach(item => {
-                    // If any of the keys match with the message when both lower case, we need to check case sensitvitity
-                    if (message.content.toLowerCase().includes(item.toLowerCase())) {
-                        // Store all the vals from JSON as vars
-                        var matchedKey = reacts[item];
-                        var reply = matchedKey['reply'];
-                        var caseSensitivity = matchedKey['caseSensitivity'];
-                        var usedAnywhere = matchedKey['usedAnywhere'];
+    // Convert message to lower case once
+    const msgContentLower = message.content.toLowerCase();
+    const keys = Object.keys(reacts);
 
-                        // Get other vars from message content
-                        if (item.toLowerCase() === message.content.toLowerCase()) {
-                            // And "exact phrase" is where the key matches the message exactly, regardless of casing
-                            var exactPhrase = 1;
-                        } else {
-                            var exactPhrase = 0;
-                        }
+    for (const key of keys) {
+        const keyLower = key.toLowerCase();
 
-                        if (message.content.includes(item)) {
-                            // Case match
-                            var casesMatch = 1;
-                        } else {
-                            var casesMatch = 0;
-                        }
+        // Check if message contains the keyword
+        if (!msgContentLower.includes(keyLower)) continue;
 
-                        console.log(`<Reactions> Triggered message: ${message.content}`);
-                        console.log(`<Reactions> Does the phrase match: ${exactPhrase}`);
-                        console.log(`<Reactions> Do cases match: ${casesMatch}`);
+        const { reply, caseSensitivity, usedAnywhere } = reacts[key];
 
-                        if (caseSensitivity === 1 && casesMatch === 1) {
-                            //Case sens matters and cases match, proceed
-                            if (usedAnywhere === 1) {
-                                // Phrase can be used anywhere so send
-                                message.channel.send(reply);
-                                console.log('<Reactions> Bot replied to ' + item + '. Case-sensitivity = 1, Used Anywhere = 1');
-                            } else if (usedAnywhere === 0 && exactPhrase === 1) {
-                                // Phrase can't be used anywhere so has to be an exact match
-                                // If it is, we can send it
-                                message.channel.send(reply);
-                                console.log('<Reactions> Bot replied to ' + item + '. Case-sensitivity = 1, Used Anywhere = 0');
-                            }
-                        } else if (caseSensitivity === 0) {
-                            //Cases don't matter, proceed
-                            if (usedAnywhere === 1) {
-                                // Phrase can be used anywhere so send
-                                message.channel.send(reply);
-                                console.log('<Reactions> Bot replied to ' + item + '. Case-sensitivity = 0, Used Anywhere = 1');
-                            } else if (usedAnywhere === 0 && exactPhrase === 1) {
-                                // Phrase can't be used anywhere so has to be an exact match
-                                // If it is, we can send it
-                                message.channel.send(reply);
-                                console.log('<Reactions> Bot replied to ' + item + '. Case-sensitivity = 0, Used Anywhere = 0');
-                            }
-                        } else {
-                            // Cases DO matter, end
-                            console.log('<Reactions> Bot did not reply to ' + item + '. Case-sensitivity did not match');
-                            return 0;
-                        }
-                    }
-                });
+        // Logic checks
+        const exactPhrase = msgContentLower === keyLower; // Exact match ignoring case
+        const exactCase = message.content.includes(key);  // Exact match including case
+
+        let shouldReply = false;
+
+        if (caseSensitivity === 1) {
+            // Case matters: must match casing
+            if (exactCase) {
+                if (usedAnywhere === 1) shouldReply = true;
+                else if (exactPhrase) shouldReply = true; // Implicitly true if exactCase is true and strings are equal length, but keeping logic clear
             }
-        });
+        } else {
+            // Case doesn't matter
+            if (usedAnywhere === 1) shouldReply = true;
+            else if (exactPhrase) shouldReply = true;
+        }
+
+        if (shouldReply) {
+            console.log(`<Reactions> Triggered by "${key}". Replying.`);
+            try {
+                await message.channel.send(reply);
+            } catch (e) {
+                console.error(`<Reactions> Failed to send reply: ${e.message}`);
+            }
+            // Stop after one match? Remove break if we want multiple reactions per message
+            return;
+        }
     }
 }
 

@@ -1,15 +1,10 @@
-const fs = require("fs");
+const fs = require("fs").promises;
 const path = require("path");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { AttachmentBuilder } = require("discord.js");
 
 const memesPath = path.join(__dirname, "../json/memes.json");
 const memesDir = path.join(__dirname, "../images/memes");
-
-// Function to get a random number between 1 and the max provided
-function getRandomInt(max) {
-    return Math.floor(Math.random() * max) + 1;
-}
 
 module.exports = {
     name: "meme",
@@ -24,18 +19,18 @@ module.exports = {
 
     async execute(interaction) {
         let memes = {};
-
-        // Log invocation
         const inputNum = interaction.options.getNumber("number");
-        const requestType = inputNum ? `ID: ${inputNum}` : 'Random';
-        console.log(`<Meme> ${interaction.user.username} requested meme (${requestType}) in #${interaction.channel.name}`);
 
+        // Log intent
+        console.log(`<Meme> ${interaction.user.username} requested ${inputNum ? `ID: ${inputNum}` : 'Random'}`);
+
+        // 1. NON-BLOCKING READ
         try {
-            memes = JSON.parse(fs.readFileSync(memesPath, "utf8"));
+            const data = await fs.readFile(memesPath, "utf8");
+            memes = JSON.parse(data);
         } catch (err) {
-            console.error(`<Meme> Error: Failed to read memes.json: ${err.message}`);
-            interaction.reply("No memes found.");
-            return;
+            console.error(`<Meme> Error reading DB: ${err.message}`);
+            return interaction.reply({ content: "Database error.", ephemeral: true });
         }
 
         let id;
@@ -44,48 +39,35 @@ module.exports = {
         if (inputNum) {
             id = String(inputNum);
             if (!memes[id]) {
-                console.log(`<Meme> Failed: ID ${id} not found in database.`);
-                interaction.reply("No meme with that ID exists.");
-                return;
+                return interaction.reply({ content: "No meme with that ID exists.", ephemeral: true });
             }
         } else {
-            const count = Object.keys(memes).length;
-            id = String(getRandomInt(count));
-            randomPick = true; // Mark that this was a random meme
+            // 2. ROBUST RANDOM LOGIC
+            // Instead of 1-Count, we pick from actual existing keys. 
+            // This prevents errors if 'Meme #2' is deleted but still have 'Meme #3'.
+            const keys = Object.keys(memes);
+            if (keys.length === 0) return interaction.reply("No memes available.");
+
+            id = keys[Math.floor(Math.random() * keys.length)];
+            randomPick = true;
         }
 
         const meme = memes[id];
-        // Guard against meme object being undefined if something weird happened with ID generation
-        if (!meme) {
-            console.log(`<Meme> Failed: Generated ID ${id} does not exist in object keys.`);
-            interaction.reply("Error finding meme.");
-            return;
-        }
-
         const filePath = path.join(memesDir, meme.file);
 
-        if (!fs.existsSync(filePath)) {
-            console.error(`<Meme> Error: File missing at path ${filePath}`);
-            interaction.reply("Meme file missing.");
-            return;
+        // Check if file exists
+        try {
+            await fs.access(filePath);
+        } catch {
+            console.error(`<Meme> Missing file: ${filePath}`);
+            return interaction.reply({ content: "Meme image file is missing.", ephemeral: true });
         }
 
-        // Spoiler support
-        let fileName = meme.file;
-        if (meme.nsfw) {
-            fileName = `SPOILER_${fileName}`;
-        }
-
+        let fileName = meme.nsfw ? `SPOILER_${meme.file}` : meme.file;
         const attachment = new AttachmentBuilder(filePath, { name: fileName });
-
-        // Add dice emoji if meme was randomly selected
         const content = `${randomPick ? "🎲 " : ""}Meme #${id}`;
 
-        await interaction.reply({
-            content,
-            files: [attachment]
-        });
-
-        console.log(`<Meme> Sent meme #${id} to ${interaction.user.username}`);
+        await interaction.reply({ content, files: [attachment] });
+        console.log(`<Meme> Sent meme #${id}`);
     }
 };
