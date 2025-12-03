@@ -1,73 +1,128 @@
 const fs = require('fs');
 const path = require('path');
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const fetch = require('node-fetch');
+const { ContextMenuCommandBuilder, ApplicationCommandType, ActionRowBuilder, ButtonBuilder, ButtonStyle, AttachmentBuilder, MessageFlags } = require('discord.js');
 
-// Read from JSON files
-let memes;
 const memesPath = path.join(__dirname, '../json/memes.json');
+const memesDir = path.join(__dirname, '../images/memes');
+
+// Ensure memes.json exists
+let memes = {};
 try {
-    memes = JSON.parse(fs.readFileSync(memesPath, "utf8"));
-} catch (err) {
-    console.log(err);
+    memes = JSON.parse(fs.readFileSync(memesPath, 'utf8'));
+} catch { }
+
+async function downloadImage(url, outPath) {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('Failed to download image');
+    const fileStream = fs.createWriteStream(outPath);
+    await new Promise((resolve, reject) => {
+        res.body.pipe(fileStream);
+        res.body.on('end', resolve);
+        res.body.on('error', reject);
+    });
 }
 
 module.exports = {
-    name: 'addmeme',
-    description: 'Adds a meme to the memes.json file',
-    data: new SlashCommandBuilder()
-        .setName('addmeme')
-        .setDescription('Adds a meme (URL) to the JSON file')
-        .addStringOption((option) => option
-            .setName('url')
-            .setDescription('The URL of the image')
-            .setRequired(true))
-        .addBooleanOption((option) => option
-            .setName('nsfw')
-            .setDescription('Is the image considered NSFW?')
-            .setRequired(false))
-        .setDefaultMemberPermissions(0), // Admin only
+    data: new ContextMenuCommandBuilder()
+        .setName('Add Meme')
+        .setType(ApplicationCommandType.Message)
+        .setDefaultMemberPermissions(0),
+
     async execute(interaction) {
-        const url = interaction.options.getString('url');
-        const nsfw = interaction.options.getBoolean('nsfw');
+        console.log(`<AddMeme> ${interaction.user.username} invoked 'Add Meme' in #${interaction.channel.name}`);
 
-        if (!url.includes('https://') && !url.includes('http://')) {
-            // If no link provided, inform user
-            console.log('<AddMeme> No valid URL detected on command');
-            interaction.reply('Provide a valid URL');
-            return;
-        } else {
-            var lastKey = Object.keys(memes).pop();  // Get the last key
+        const targetMessage = interaction.targetMessage;
 
-            if (!lastKey) {
-                lastKey = '0'; // Set last key to 0 if one doesn't exist
-            }
-
-            var newKey = (parseInt(lastKey) + 1); // Add one onto the last in the list
-
-            // If the image is marked as NSFW
-            if (nsfw) {
-                // Add meme to memes.json with spoiler tags around the url
-                if (!memes[newKey]) memes[newKey] = {
-                    url: `||${url}||`
-                };
-            } else {
-                // Add meme to memes.json
-                if (!memes[newKey]) memes[newKey] = {
-                    url: url
-                };
-            }
-
-            // Write to the file
-            fs.writeFileSync(memesPath, JSON.stringify(memes), (err) => {
-                if (err) console.error(err);
-            });
-
-            const memeLibraryCh = interaction.guild.channels.cache.find(channel => channel.name === 'meme-library');
-
-            interaction.reply(`Meme #${newKey} added.`);
-            console.log(`<AddMeme> Added meme #${newKey} to memes.json`);
-            memeLibraryCh.send(`Meme #${newKey}: ` + url);
+        if (!targetMessage) {
+            console.log(`<AddMeme> Failed: No target message found.`);
+            interaction.reply({ content: 'Reply to a message with an image.', ephemeral: true });
             return;
         }
+
+        const attachment = targetMessage.attachments.first();
+        if (!attachment || !attachment.contentType?.startsWith('image')) {
+            console.log(`<AddMeme> Failed: Target message has no image attachment.`);
+            interaction.reply({ content: 'The target message does not contain an image.', ephemeral: true });
+            return;
+        }
+
+        // Get next ID
+        const lastKey = Object.keys(memes).pop() || '0';
+        const newKey = String(parseInt(lastKey) + 1);
+
+        const ext = path.extname(attachment.name || '.jpg');
+        const filename = `${newKey}${ext}`;
+        const fullPath = path.join(memesDir, filename);
+
+        try {
+            await downloadImage(attachment.url, fullPath);
+            console.log(`<AddMeme> Image downloaded successfully: ${filename}`);
+        } catch (err) {
+            console.error(`<AddMeme> Error downloading image: ${err.message}`);
+            interaction.reply({ content: "Couldn't download the image.", ephemeral: true });
+            return;
+        }
+
+        // Default NSFW false
+        memes[newKey] = {
+            file: filename,
+            nsfw: false
+        };
+        fs.writeFileSync(memesPath, JSON.stringify(memes, null, 2));
+        console.log(`<AddMeme> Meme #${newKey} metadata saved to memes.json`);
+
+        // Post to meme-library channel
+        const memeLibraryCh = interaction.guild.channels.cache.find(channel => channel.name === 'meme-library');
+        if (!memeLibraryCh) {
+            console.log(`<AddMeme> Warning: 'meme-library' channel not found.`);
+            interaction.reply({ content: 'Meme library channel not found.', ephemeral: true });
+            return;
+        }
+
+        const memeAttachment = new AttachmentBuilder(fullPath);
+        await memeLibraryCh.send({ content: `Meme #${newKey}`, files: [memeAttachment] });
+        console.log(`<AddMeme> Meme #${newKey} posted to #meme-library`);
+
+        // Ask if NSFW
+        const row = new ActionRowBuilder().addComponents(
+            new ButtonBuilder()
+                .setCustomId(`nsfw_yes_${newKey}`)
+                .setLabel('Yes')
+                .setStyle(ButtonStyle.Success),
+            new ButtonBuilder()
+                .setCustomId(`nsfw_no_${newKey}`)
+                .setLabel('No')
+                .setStyle(ButtonStyle.Danger)
+        );
+
+        await interaction.reply({
+            content: `Meme #${newKey} added! Do you want to mark it as NSFW?`,
+            components: [row],
+            flags: MessageFlags.Ephemeral
+        });
+
+        // Listen for button presses *only for this interaction*
+        const filter = i => i.customId.endsWith(`_${newKey}`) && i.user.id === interaction.user.id;
+        const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60_000 });
+
+        collector.on('collect', async i => {
+            const isYes = i.customId.startsWith('nsfw_yes');
+            memes[newKey].nsfw = isYes;
+            fs.writeFileSync(memesPath, JSON.stringify(memes, null, 2));
+
+            console.log(`<AddMeme> NSFW status for Meme #${newKey} set to: ${isYes} by ${i.user.username}`);
+
+            const status = isYes ? 'Marked as NSFW ✅' : 'Not marked as NSFW ❌';
+            await i.update({ content: status, components: [] });
+            collector.stop();
+        });
+
+        collector.on('end', collected => {
+            if (collected.size === 0) {
+                console.log(`<AddMeme> No NSFW selection made for Meme #${newKey}. Defaulting to false.`);
+                interaction.editReply({ content: 'No NSFW selection made. Meme added with default NSFW: false.', components: [] });
+            }
+        });
     }
 };
