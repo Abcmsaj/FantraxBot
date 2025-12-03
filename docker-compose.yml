@@ -1,10 +1,10 @@
 services:
   fantraxbot:
     build: .
+    working_dir: /usr/src/bot
     container_name: fantraxbot
     restart: unless-stopped
     volumes:
-      - ./src:/usr/src/bot/src
-      - ./FantraxConfig:/usr/src/bot/FantraxConfig
-      - ./package.json:/usr/src/bot/package.json
-      # - /usr/src/bot/node_modules # needed for node modules
+      - .:/usr/src/bot
+      - /usr/src/bot/node_modules # needed for node modules
+    command: node src/index.js
