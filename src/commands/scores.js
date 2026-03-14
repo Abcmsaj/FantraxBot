@@ -95,13 +95,13 @@ async function scores(interaction) {
     }
 }
 
-module.exports = {
-    name: 'scores',
-    description: 'Get Fantrax scores',
-    data: new SlashCommandBuilder()
-        .setName('scores')
-        .setDescription('Request the latest scores'),
-    async execute(interaction) {
-        await scores(interaction);
-    }
-};
+// module.exports = {
+//     name: 'scores',
+//     description: 'Get Fantrax scores',
+//     data: new SlashCommandBuilder()
+//         .setName('scores')
+//         .setDescription('Request the latest scores'),
+//     async execute(interaction) {
+//         await scores(interaction);
+//     }
+// };
