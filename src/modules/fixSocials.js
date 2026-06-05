@@ -21,10 +21,10 @@ function fixSocialsFunction(message) {
     const matchedXURLs = message.content.match(xPattern) || [];
 
     const modifiedTwitterURLs = modifyURLs(matchedTwitterURLs, 'https://fxtwitter.com');
-    const modifiedInstagramURLs = modifyURLs(matchedInstagramURLs, 'https://ddinstagram.com');
+    const modifiedInstagramURLs = modifyURLs(matchedInstagramURLs, 'https://kkinstagram.com');
     const modifiedRedditURLs = modifyURLs(matchedRedditURLs, 'https://rxyddit.com');
     const modifiedTikTokURLs = modifyURLs(matchedTikTokURLs, 'https://tiktxk.com');
-    const modifiedVmTikTokURLs = modifyURLs(matchedVmTikTokURLs, 'https://vm.tiktxk.com');
+    const modifiedVmTikTokURLs = modifyURLs(matchedVmTikTokURLs, 'https://kktiktok.com');
     const modifiedXURLs = modifyURLs(matchedXURLs, 'https://fxtwitter.com');
 
     // Construct a new message containing only the modified URLs
