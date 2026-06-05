@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node ./src/index.js",
+    "addCommands": "node addCommands.js",
     "test:lineups": "node ./src/modules/lineupChecker/test/formatter.test.js && node ./src/modules/lineupChecker/test/rssReader.test.js && node ./src/modules/lineupChecker/test/scheduler.test.js && node ./src/modules/lineupChecker/test/utils.test.js",
     "test:lineups:integration": "node ./src/modules/lineupChecker/test/integration.test.js"
   },

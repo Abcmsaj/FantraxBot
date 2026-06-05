@@ -9,6 +9,7 @@ const joyResponderFunction = require('./modules/joyTracker.js');
 const birthdayCheckerFunction = require('./modules/birthdayChecker.js');
 const fixSocialsFunction = require('./modules/fixSocials.js');
 const createLineupChecker = require('./modules/lineupChecker');
+const createAlbumClubScheduler = require('./modules/albumClub').createAlbumClubScheduler;
 const { token, redCardChannel, approverId, adminId, monthlyCards } = require('../FantraxConfig/config.json');
 const path = require('path');
 const fs = require('fs');
@@ -20,7 +21,8 @@ const client = new Discord.Client({
     intents: [
         Discord.GatewayIntentBits.Guilds,
         Discord.GatewayIntentBits.GuildMessages,
-        Discord.GatewayIntentBits.GuildMessageReactions,
+        Discord.GatewayIntentBits.GuildMessageReactions,    
+        Discord.GatewayIntentBits.DirectMessages,
         Discord.GatewayIntentBits.MessageContent,
         Discord.GatewayIntentBits.GuildMembers
     ],
@@ -46,7 +48,10 @@ const srcPath = (dir) => path.join(__dirname, dir);
     'ssn.json',
     'ssnGiver.json',
     'memes.json',
-    'joy.json'
+    'joy.json',
+    'albumRecent.json',
+    'albumPending.json',
+    'albumHistory.json'
 ].forEach(file => checkFile.checkFile(srcPath(`json/${file}`)));
 
 // --------------------
@@ -79,6 +84,7 @@ client.once('ready', () => {
     if (adminChannel) adminChannel.send('Online!');
 
     createLineupChecker(client);
+    createAlbumClubScheduler(client);
 });
 
 // --------------------
@@ -112,6 +118,7 @@ client.on('interactionCreate', async (interaction) => {
 cron.schedule('0 0 * * *', () => {
     birthdayCheckerFunction.birthdayCheckerFunction(client);
     createLineupChecker(client);
+    createAlbumClubScheduler(client);
 });
 
 // --------------------
