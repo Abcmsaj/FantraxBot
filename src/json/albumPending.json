@@ -1,4 +1,19 @@
 {
   "items": [
+    {
+      "id": "1512789116197146765",
+      "guildId": "440856114678988861",
+      "forumChannelId": "1512427755478847539",
+      "threadId": "1512789116197146765",
+      "pollMessageId": "1512789118663397376",
+      "starterMessageId": "1512789116197146765",
+      "pickedUserId": "446225421621526529",
+      "pickedUserTag": "admmorris",
+      "artist": "Hot chip",
+      "album": "The warning",
+      "createdAt": "2026-06-06T12:03:52.314Z",
+      "dueAt": "2026-06-13T12:03:52.309+00:00",
+      "finalised": false
+    }
   ]
 }

@@ -1,6 +1,6 @@
 const { parseLinks } = require('./formatter');
 
-const QUESTION_TIMEOUT = 60 * 60 * 1000; // 60 minutes
+const QUESTION_TIMEOUT = 24 * 60 * 60 * 1000; // 24 hours
 
 async function collectSingleAnswer(
 dmChannel,

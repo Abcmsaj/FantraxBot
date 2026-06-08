@@ -20,7 +20,7 @@ module.exports = {
     RECENT_FILE: path.join(__dirname, '../../json/albumRecent.json'),
     PENDING_FILE: path.join(__dirname, '../../json/albumPending.json'),
     HISTORY_FILE: path.join(__dirname, '../../json/albumHistory.json'),
-    RECENT_LIMIT: Number(fromConfigOrEnv('albumClubRecentLimit', 'ALBUM_CLUB_RECENT_LIMIT', 5)),
+    RECENT_LIMIT: Number(fromConfigOrEnv('albumClubRecentLimit', 'ALBUM_CLUB_RECENT_LIMIT', 7)),
     ROUND_DAYS: Number(fromConfigOrEnv('albumClubRoundDays', 'ALBUM_CLUB_ROUND_DAYS', 7)),
     SELECTION_CRON: fromConfigOrEnv('albumClubSelectionCron', 'ALBUM_CLUB_SELECTION_CRON', '0 12 * * 6'),
     FINALIZE_CRON: fromConfigOrEnv('albumClubFinalizeCron', 'ALBUM_CLUB_FINALIZE_CRON', '15 0 * * *'),
