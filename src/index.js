@@ -130,8 +130,11 @@ client.on('messageCreate', (message) => {
     // React triggers
     reactFunction.reactFunction(message);
 
-    // Fix Twitter/X links
-    if (message.content.match(/https:\/\/(?:www\.)?(x\.com|twitter\.com)/)) {
+    // Fix Twitter/Instagram/Tiktok links
+    const socialPattern =
+        /https?:\/\/(?:www\.)?(?:twitter\.com|x\.com|instagram\.com|vm\.tiktok\.com|tiktok\.com)/i;
+
+    if (socialPattern.test(message.content)) {
         fixSocialsFunction.fixSocialsFunction(message);
     }
 });
