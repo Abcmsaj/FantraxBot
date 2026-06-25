@@ -132,7 +132,7 @@ client.on('messageCreate', (message) => {
 
     // Fix Twitter/Instagram/Tiktok links
     const socialPattern =
-        /https?:\/\/(?:www\.)?(?:twitter\.com|x\.com|instagram\.com|vm\.tiktok\.com|tiktok\.com)/i;
+        /https?:\/\/(?:www\.)?(?:twitter\.com|x\.com|instagram\.com)/i;
 
     if (socialPattern.test(message.content)) {
         fixSocialsFunction.fixSocialsFunction(message);
