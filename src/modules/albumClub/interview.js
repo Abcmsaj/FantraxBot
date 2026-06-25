@@ -30,7 +30,7 @@ if (!answer) {
     await dmChannel.send([
         '⏰ Album Club interview timed out.',
         '',
-        'No answer was received within 60 minutes.',
+        'No answer was received within 24 hours.',
         'This album selection has been cancelled.',
     ].join('\n'));
 
@@ -50,7 +50,7 @@ const dmChannel = await user.createDM();
         `You have been picked for this week's album club round.`,
         `Reply to each message with your answer.`,
         `You cannot change an answer after submitting it.`,
-        `The bot will wait up to 60 minutes for each answer.`,
+        `The bot will wait up to 24 hours for each answer.`,
     ].join('\n'));
 
     console.log('asking artist');

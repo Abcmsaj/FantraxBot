@@ -296,7 +296,14 @@ async function finalizeDueRounds(client) {
             const finalTagIds = pickFinalTags(forumChannel, averageRating);
 
             if (finalTagIds.length && thread.setAppliedTags) {
-                await thread.setAppliedTags(finalTagIds, 'Album club final rating');
+                const existingTagIds = thread.appliedTags || [];
+
+                const mergedTagIds = [...new Set([
+                    ...existingTagIds,
+                    ...finalTagIds
+                ])];
+
+                await thread.setAppliedTags(mergedTagIds, 'Album club final rating');
             }
 
             appendHistoryEntry(HISTORY_FILE, {
