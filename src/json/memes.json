@@ -1466,5 +1466,21 @@
   "367": {
     "file": "367.png",
     "nsfw": false
+  },
+  "368": {
+    "file": "368.jpg",
+    "nsfw": false
+  },
+  "369": {
+    "file": "369.png",
+    "nsfw": false
+  },
+  "370": {
+    "file": "370.png",
+    "nsfw": false
+  },
+  "371": {
+    "file": "371.jpg",
+    "nsfw": true
   }
 }

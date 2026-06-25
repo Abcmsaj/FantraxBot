@@ -1,1 +1,26 @@
-{}
+{
+  "entries": [
+    {
+      "userId": "196045564129968128",
+      "userTag": ".xad.",
+      "artist": "Foxy Shazam",
+      "album": "Foxy Shazam",
+      "date": "2026-06-20T18:17:00.609Z",
+      "rating": 2.58,
+      "tag": "Not for us",
+      "threadId": "1515343181879971841",
+      "pollMessageId": "1515343183901626469"
+    },
+    {
+      "userId": "446225421621526529",
+      "userTag": "admmorris",
+      "artist": "Hot chip",
+      "album": "The warning",
+      "date": "2026-06-14T00:15:05.945Z",
+      "rating": 3.57,
+      "tag": "Recommended",
+      "threadId": "1512789116197146765",
+      "pollMessageId": "1512789118663397376"
+    }
+  ]
+}

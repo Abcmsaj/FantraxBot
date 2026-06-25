@@ -13,6 +13,42 @@
       "album": "The warning",
       "createdAt": "2026-06-06T12:03:52.314Z",
       "dueAt": "2026-06-13T12:03:52.309+00:00",
+      "finalised": true,
+      "finalisedAt": "2026-06-14T00:15:05.948Z",
+      "rating": 3.57,
+      "tag": "Recommended"
+    },
+    {
+      "id": "1515343181879971841",
+      "guildId": "440856114678988861",
+      "forumChannelId": "1512427755478847539",
+      "threadId": "1515343181879971841",
+      "pollMessageId": "1515343183901626469",
+      "starterMessageId": "1515343181879971841",
+      "pickedUserId": "196045564129968128",
+      "pickedUserTag": ".xad.",
+      "artist": "Foxy Shazam",
+      "album": "Foxy Shazam",
+      "createdAt": "2026-06-13T13:12:48.901Z",
+      "dueAt": "2026-06-20T13:12:48.891+00:00",
+      "finalised": true,
+      "finalisedAt": "2026-06-20T18:17:00.613Z",
+      "rating": 2.58,
+      "tag": "Not for us"
+    },
+    {
+      "id": "1517955383103066384",
+      "guildId": "440856114678988861",
+      "forumChannelId": "1512427755478847539",
+      "threadId": "1517955383103066384",
+      "pollMessageId": "1517955385317658624",
+      "starterMessageId": "1517955383103066384",
+      "pickedUserId": "445993888021348372",
+      "pickedUserTag": "ejfreeman",
+      "artist": "Andy Shauf",
+      "album": "The Party",
+      "createdAt": "2026-06-20T18:12:46.318Z",
+      "dueAt": "2026-06-27T18:12:46.311+00:00",
       "finalised": false
     }
   ]
