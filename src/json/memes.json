@@ -1482,5 +1482,13 @@
   "371": {
     "file": "371.jpg",
     "nsfw": true
+  },
+  "372": {
+    "file": "372.png",
+    "nsfw": false
+  },
+  "373": {
+    "file": "373.png",
+    "nsfw": false
   }
 }

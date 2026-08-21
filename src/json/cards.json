@@ -18,7 +18,7 @@
     "provisional": 31,
     "confirmed": 2,
     "cardAllowance": 4,
-    "monthReset": 6
+    "monthReset": 8
   },
   "459845343111020547": {
     "username": "mjh1857",
@@ -45,8 +45,8 @@
     "username": "elrevert",
     "provisional": 7,
     "confirmed": 2,
-    "cardAllowance": 1,
-    "monthReset": 6
+    "cardAllowance": 4,
+    "monthReset": 7
   },
   "293477911955243008": {
     "username": "freshimitsu",
@@ -66,8 +66,8 @@
     "username": "_maiku_",
     "provisional": 1,
     "confirmed": 0,
-    "cardAllowance": 5,
-    "monthReset": 8
+    "cardAllowance": 4,
+    "monthReset": 7
   },
   "196045564129968128": {
     "username": ".xad.",
@@ -80,8 +80,8 @@
     "username": "beaker2505",
     "provisional": 5,
     "confirmed": 0,
-    "cardAllowance": 4,
-    "monthReset": 6
+    "cardAllowance": 3,
+    "monthReset": 7
   },
   "446350112663273473": {
     "username": "nesteroid.",
