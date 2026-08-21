@@ -21,7 +21,7 @@ async function parseICSAndScheduleRSSChecks(client) {
     for (const key in events) {
       const event = events[key];
       if (event.type !== 'VEVENT') continue;
-      if (!event.summary?.startsWith('⚽️')) continue;
+      if (!event.summary?.includes('⚽️')) continue;
 
       const eventDate = event.start.toISOString().slice(0, 10);
       if (eventDate !== today) continue;
