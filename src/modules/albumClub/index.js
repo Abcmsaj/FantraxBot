@@ -167,7 +167,10 @@ async function createAlbumClubRound(client) {
     const createOptions = {
         name: threadName,
         message: {
-            content: postBody,
+            content: `@everyone ${postBody}`,
+            allowedMentions: {
+                parse: ['everyone'],
+            },
         },
     };
 

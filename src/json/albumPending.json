@@ -193,6 +193,24 @@
       "album": "Father, Son, Holy Ghost",
       "createdAt": "2026-08-15T12:52:58.320Z",
       "dueAt": "2026-08-22T12:52:58.318+00:00",
+      "finalised": true,
+      "finalisedAt": "2026-08-23T00:15:05.618Z",
+      "rating": 3.21,
+      "tag": "Recommended"
+    },
+    {
+      "id": "1540693385118093315",
+      "guildId": "440856114678988861",
+      "forumChannelId": "1512427755478847539",
+      "threadId": "1540693385118093315",
+      "pollMessageId": "1540693386938286133",
+      "starterMessageId": "1540693385118093315",
+      "pickedUserId": "446217265722163201",
+      "pickedUserTag": "realrorylewis",
+      "artist": "Poppy",
+      "album": "Empty Hands",
+      "createdAt": "2026-08-22T12:05:28.287Z",
+      "dueAt": "2026-08-29T12:05:28.284+00:00",
       "finalised": false
     }
   ]

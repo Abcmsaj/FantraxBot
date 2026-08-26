@@ -19,7 +19,7 @@ async function checkRSSAndSend(client) {
       const content = item.content || '';
       const pubDate = new Date(item.isoDate).getTime();
 
-      if (content.trim().startsWith('LINE-UPS') && pubDate <= now && now - pubDate <= 65000) {
+      if (content.trim().includes('LINE-UPS') && pubDate <= now && now - pubDate <= 65000) {
         const message = formatLineupMessage(content);
         await channel.send(message);
         console.log(`<Lineup Checker> [SEND] Sent LINE-UPS post published at ${item.pubDate}`);
