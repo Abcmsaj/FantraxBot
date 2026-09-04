@@ -73,8 +73,8 @@
     "username": ".xad.",
     "provisional": 21,
     "confirmed": 1,
-    "cardAllowance": 4,
-    "monthReset": 6
+    "cardAllowance": 3,
+    "monthReset": 8
   },
   "446367658099605504": {
     "username": "beaker2505",
@@ -88,7 +88,7 @@
     "provisional": 2,
     "confirmed": 0,
     "cardAllowance": 4,
-    "monthReset": 2
+    "monthReset": 8
   },
   "446225347805970433": {
     "username": "pearcy8177",

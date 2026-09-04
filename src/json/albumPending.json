@@ -211,6 +211,24 @@
       "album": "Empty Hands",
       "createdAt": "2026-08-22T12:05:28.287Z",
       "dueAt": "2026-08-29T12:05:28.284+00:00",
+      "finalised": true,
+      "finalisedAt": "2026-08-30T00:15:06.006Z",
+      "rating": 3.5,
+      "tag": "Recommended"
+    },
+    {
+      "id": "1543520255840878623",
+      "guildId": "440856114678988861",
+      "forumChannelId": "1512427755478847539",
+      "threadId": "1543520255840878623",
+      "pollMessageId": "1543520259145990215",
+      "starterMessageId": "1543520255840878623",
+      "pickedUserId": "459845343111020547",
+      "pickedUserTag": "mjh1857",
+      "artist": "Jamie XX",
+      "album": "In Colour",
+      "createdAt": "2026-08-30T07:18:27.477Z",
+      "dueAt": "2026-09-06T07:18:27.469+00:00",
       "finalised": false
     }
   ]
