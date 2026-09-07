@@ -17,6 +17,7 @@ const {
     ensureJsonFile,
     getRecentState,
     saveRecentUser,
+    saveShuffleQueue,
     getPendingState,
     upsertPendingItem,
     removePendingItem,
@@ -104,19 +105,48 @@ function pickFinalTags(forumChannel, rating) {
     return id ? [id] : [];
 }
 
-async function getEligibleMembers(forumChannel) {
-    const recentState = getRecentState(RECENT_FILE);
-    const recentUsers = new Set(recentState.users || []);
-
+async function getAlbumClubMembers(forumChannel) {
     const fetched = await forumChannel.guild.members.fetch();
 
     return [...fetched.values()].filter(member => {
         return (
             !member.user.bot &&
-            member.permissionsIn(forumChannel).has(PermissionsBitField.Flags.ViewChannel) &&
-            !recentUsers.has(member.id)
+            member.permissionsIn(forumChannel).has(PermissionsBitField.Flags.ViewChannel)
         );
     });
+}
+
+function shuffleArray(array) {
+    const shuffled = [...array];
+
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+
+    return shuffled;
+}
+
+async function getEligibleMembers(forumChannel) {
+    const members = await getAlbumClubMembers(forumChannel);
+    const memberIds = new Set(members.map(member => member.id));
+
+    const recentState = getRecentState(RECENT_FILE);
+
+    // Remove anyone from the queue who is no longer in the Album Club.
+    let queue = recentState.queue.filter(id => memberIds.has(id));
+
+    // If the queue is empty, everyone in the current cycle has been picked.
+    // Build a brand-new shuffled queue from the current Discord members.
+    if (!queue.length) {
+        queue = shuffleArray(members.map(member => member.id));
+
+        saveShuffleQueue(RECENT_FILE, queue);
+    }
+
+    const nextUserId = queue[0];
+
+    return members.filter(member => member.id === nextUserId);
 }
 
 async function pickMember(forumChannel) {
@@ -128,27 +158,32 @@ async function pickMember(forumChannel) {
 async function createAlbumClubRound(client) {
     const forumChannel = getForumChannel(client);
     const eligibleMembers = await getEligibleMembers(forumChannel);
-    console.log('Eligible members:', eligibleMembers.map(m => `${m.user.tag} (${m.id})`));
+
+    console.log(
+        '<AlbumClub> Next member:',
+        eligibleMembers.map(m => `${m.user.tag} (${m.id})`)
+    );
+
     if (!eligibleMembers.length) {
         console.log('<AlbumClub> No eligible members found for a new round.');
         return null;
     }
 
-    const remaining = [...eligibleMembers];
-    let selectedMember = null;
+    const selectedMember = eligibleMembers[0];
     let answers = null;
 
-    while (remaining.length) {
-        const index = Math.floor(Math.random() * remaining.length);
-        const candidate = remaining.splice(index, 1)[0];
+    try {
+        answers = await interviewAlbumOwner(
+            selectedMember.user,
+            client,
+            QUESTIONS
+        );
+    } catch (err) {
+        console.warn(
+            `<AlbumClub> Failed to interview ${selectedMember.user.tag}: ${err.message}`
+        );
 
-        try {
-            answers = await interviewAlbumOwner(candidate.user, client, QUESTIONS);
-            selectedMember = candidate;
-            break;
-        } catch (err) {
-            console.warn(`<AlbumClub> Skipping ${candidate.user.tag}: ${err.message}`);
-        }
+        return null;
     }
 
     if (!selectedMember || !answers) {
@@ -167,7 +202,7 @@ async function createAlbumClubRound(client) {
     const createOptions = {
         name: threadName,
         message: {
-            content: `@everyone ${postBody}`,
+            content: `${postBody} \n @everyone `,
             allowedMentions: {
                 parse: ['everyone'],
             },

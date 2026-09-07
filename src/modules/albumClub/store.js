@@ -21,15 +21,34 @@ function writeJson(filePath, data) {
 }
 
 function getRecentState(filePath) {
-    const data = readJson(filePath, { users: [] });
+    const data = readJson(filePath, {
+        queue: [],
+        users: [],
+    });
+
+    if (!Array.isArray(data.queue)) data.queue = [];
     if (!Array.isArray(data.users)) data.users = [];
+
     return data;
 }
 
-function saveRecentUser(filePath, userId, limit = 5) {
+function saveRecentUser(filePath, userId, limit = 7) {
     const data = getRecentState(filePath);
+
+    // Keep the old recent-user history for status/debugging.
     const unique = [userId, ...data.users.filter(id => id !== userId)];
     data.users = unique.slice(0, limit);
+
+    // Remove the selected user from the shuffle bag.
+    data.queue = data.queue.filter(id => id !== userId);
+
+    writeJson(filePath, data);
+    return data;
+}
+
+function saveShuffleQueue(filePath, queue) {
+    const data = getRecentState(filePath);
+    data.queue = queue;
     writeJson(filePath, data);
     return data;
 }
@@ -80,6 +99,7 @@ module.exports = {
     writeJson,
     getRecentState,
     saveRecentUser,
+    saveShuffleQueue,
     getPendingState,
     upsertPendingItem,
     removePendingItem,
