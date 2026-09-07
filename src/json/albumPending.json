@@ -229,6 +229,24 @@
       "album": "In Colour",
       "createdAt": "2026-08-30T07:18:27.477Z",
       "dueAt": "2026-09-06T07:18:27.469+00:00",
+      "finalised": true,
+      "finalisedAt": "2026-09-07T00:15:06.098Z",
+      "rating": 4,
+      "tag": "Recommended"
+    },
+    {
+      "id": "1546104972154896384",
+      "guildId": "440856114678988861",
+      "forumChannelId": "1512427755478847539",
+      "threadId": "1546104972154896384",
+      "pollMessageId": "1546104973383962636",
+      "starterMessageId": "1546104972154896384",
+      "pickedUserId": "435219560678031371",
+      "pickedUserTag": "_maiku_",
+      "artist": "Interpol",
+      "album": "This Mirror Weighs a Ton",
+      "createdAt": "2026-09-06T10:29:11.065Z",
+      "dueAt": "2026-09-13T10:29:11.053+00:00",
       "finalised": false
     }
   ]
