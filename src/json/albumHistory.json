@@ -1,6 +1,28 @@
 {
   "entries": [
     {
+      "userId": "446367658099605504",
+      "userTag": "beaker2505",
+      "artist": "Shapeshifter",
+      "album": "Delta",
+      "date": "2026-09-20T00:15:06.487Z",
+      "rating": 2.83,
+      "tag": "Not for us",
+      "threadId": "1548395526053953698",
+      "pollMessageId": "1548395529417785437"
+    },
+    {
+      "userId": "435219560678031371",
+      "userTag": "_maiku_",
+      "artist": "Interpol",
+      "album": "This Mirror Weighs a Ton",
+      "date": "2026-09-14T00:15:05.947Z",
+      "rating": 3.6,
+      "tag": "Recommended",
+      "threadId": "1546104972154896384",
+      "pollMessageId": "1546104973383962636"
+    },
+    {
       "userId": "459845343111020547",
       "userTag": "mjh1857",
       "artist": "Jamie XX",
