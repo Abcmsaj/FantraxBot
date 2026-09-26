@@ -16,10 +16,10 @@ const {
 const {
     ensureJsonFile,
     getRecentState,
-    saveRecentUser,
     saveShuffleQueue,
     getPendingState,
     upsertPendingItem,
+    removeFromShuffleQueue,
     removePendingItem,
     appendHistoryEntry,
 } = require('./store');
@@ -238,7 +238,7 @@ async function createAlbumClubRound(client) {
         },
     });
 
-    saveRecentUser(RECENT_FILE, selectedMember.id, RECENT_LIMIT);
+    removeFromShuffleQueue(RECENT_FILE, selectedMember.id);
 
     const dueAt = DateTime.now().plus({ days: ROUND_DAYS }).toISO();
     upsertPendingItem(PENDING_FILE, {
@@ -373,7 +373,7 @@ async function finalizeDueRounds(client) {
 }
 
 function ensureAlbumClubFiles() {
-    ensureJsonFile(RECENT_FILE, { users: [] });
+    ensureJsonFile(RECENT_FILE, { queue: [] });
     ensureJsonFile(PENDING_FILE, { items: [] });
     ensureJsonFile(HISTORY_FILE, { entries: [] });
 }

@@ -23,26 +23,10 @@ function writeJson(filePath, data) {
 function getRecentState(filePath) {
     const data = readJson(filePath, {
         queue: [],
-        users: [],
     });
 
     if (!Array.isArray(data.queue)) data.queue = [];
-    if (!Array.isArray(data.users)) data.users = [];
 
-    return data;
-}
-
-function saveRecentUser(filePath, userId, limit = 7) {
-    const data = getRecentState(filePath);
-
-    // Keep the old recent-user history for status/debugging.
-    const unique = [userId, ...data.users.filter(id => id !== userId)];
-    data.users = unique.slice(0, limit);
-
-    // Remove the selected user from the shuffle bag.
-    data.queue = data.queue.filter(id => id !== userId);
-
-    writeJson(filePath, data);
     return data;
 }
 
@@ -73,6 +57,16 @@ function upsertPendingItem(filePath, item) {
     return data;
 }
 
+function removeFromShuffleQueue(filePath, userId) {
+    const recentState = getRecentState(filePath);
+
+    recentState.queue = recentState.queue.filter(
+        id => id !== userId
+    );
+
+    saveShuffleQueue(filePath, recentState.queue);
+}
+
 function removePendingItem(filePath, id) {
     const data = getPendingState(filePath);
     data.items = data.items.filter(item => item.id !== id);
@@ -98,10 +92,10 @@ module.exports = {
     readJson,
     writeJson,
     getRecentState,
-    saveRecentUser,
     saveShuffleQueue,
     getPendingState,
     upsertPendingItem,
+    removeFromShuffleQueue,
     removePendingItem,
     getHistoryState,
     appendHistoryEntry,
