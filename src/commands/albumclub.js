@@ -9,13 +9,19 @@ module.exports = {
         .setDescription('Manage the album club flow')
         .addSubcommand(subcommand => subcommand
             .setName('start')
-            .setDescription('Pick the next album club user and start a new round'))
+            .setDescription('Pick the next album club user and start a new round')
+            .addUserOption(option =>
+                option.setName('user')
+                    .setDescription('Optional: The specific user to pick for this round')
+                    .setRequired(false)
+            ))
         .addSubcommand(subcommand => subcommand
             .setName('finalise')
             .setDescription('Check due album club polls and write results to history'))
         .addSubcommand(subcommand => subcommand
             .setName('status')
             .setDescription('Show the recent, pending, and finished album club state')),
+            
     async execute(interaction) {
         const subcommand = interaction.options.getSubcommand();
 
@@ -23,9 +29,12 @@ module.exports = {
 
         try {
             if (subcommand === 'start') {
-                const result = await forceStartAlbumClubRound(interaction.client);
+                const targetUser = interaction.options.getUser('user');
+                const userId = targetUser ? targetUser.id : null;
+
+                const result = await forceStartAlbumClubRound(interaction.client, userId);
                 if (!result) {
-                    return interaction.editReply('No eligible members were found.');
+                    return interaction.editReply('No eligible members were found or the user could not be interviewed.');
                 }
                 return interaction.editReply(`Started a new round for ${result.selectedMember.user.tag}.`);
             }
@@ -38,6 +47,7 @@ module.exports = {
             if (subcommand === 'status') {
                 const status = getAlbumClubStatus();
                 const recent = (status.recent.users || []).join(', ') || 'none';
+            
                 const pending = (status.pending.items || []).map(item => `${item.artist} - ${item.album}`).join('\n') || 'none';
 
                 return interaction.editReply([
