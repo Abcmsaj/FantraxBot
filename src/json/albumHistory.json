@@ -1,6 +1,28 @@
 {
   "entries": [
     {
+      "userId": "446225421621526529",
+      "userTag": "admmorris",
+      "artist": "Waxatachee",
+      "album": "Saint Cloud",
+      "date": "2026-10-04T00:15:06.142Z",
+      "rating": 3.75,
+      "tag": "Recommended",
+      "threadId": "1553417690792853638",
+      "pollMessageId": "1553417692667449422"
+    },
+    {
+      "userId": "446284106800693248",
+      "userTag": "elrevert",
+      "artist": "Slint",
+      "album": "Spiderland",
+      "date": "2026-09-27T00:15:06.620Z",
+      "rating": 3.58,
+      "tag": "Recommended",
+      "threadId": "1550850315098656798",
+      "pollMessageId": "1550850316541370540"
+    },
+    {
       "userId": "446367658099605504",
       "userTag": "beaker2505",
       "artist": "Shapeshifter",

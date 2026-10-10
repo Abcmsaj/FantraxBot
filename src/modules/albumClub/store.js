@@ -59,11 +59,13 @@ function upsertPendingItem(filePath, item) {
 
 function removeFromShuffleQueue(filePath, userId) {
     const recentState = getRecentState(filePath);
-
+    const originalLength = recentState.queue.length;
+    
     recentState.queue = recentState.queue.filter(
         id => id !== userId
     );
 
+    console.log(`<AlbumClubStore> Removed user ${userId}. Queue went from ${originalLength} to ${recentState.queue.length} users.`);
     saveShuffleQueue(filePath, recentState.queue);
 }
 

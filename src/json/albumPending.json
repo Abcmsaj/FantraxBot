@@ -283,7 +283,10 @@
       "album": "Spiderland",
       "createdAt": "2026-09-19T12:45:29.126Z",
       "dueAt": "2026-09-26T12:45:29.121+00:00",
-      "finalised": false
+      "finalised": true,
+      "finalisedAt": "2026-09-27T00:15:06.622Z",
+      "rating": 3.58,
+      "tag": "Recommended"
     },
     {
       "id": "1553417690792853638",
@@ -298,6 +301,24 @@
       "album": "Saint Cloud",
       "createdAt": "2026-09-26T14:47:19.245Z",
       "dueAt": "2026-10-03T14:47:19.228+00:00",
+      "finalised": true,
+      "finalisedAt": "2026-10-04T00:15:06.145Z",
+      "rating": 3.75,
+      "tag": "Recommended"
+    },
+    {
+      "id": "1556041265781416037",
+      "guildId": "440856114678988861",
+      "forumChannelId": "1512427755478847539",
+      "threadId": "1556041265781416037",
+      "pollMessageId": "1556041267077451962",
+      "starterMessageId": "1556041265781416037",
+      "pickedUserId": "446284106800693248",
+      "pickedUserTag": "elrevert",
+      "artist": "Regina Spektor",
+      "album": "Soviet Kitsch",
+      "createdAt": "2026-10-03T20:32:28.086Z",
+      "dueAt": "2026-10-10T20:32:28.082+00:00",
       "finalised": false
     }
   ]

@@ -4,6 +4,8 @@ services:
     working_dir: /usr/src/bot
     container_name: fantraxbot
     restart: unless-stopped
+    environment:
+      - TZ=Europe/London
     volumes:
       - .:/usr/src/bot
       - /usr/src/bot/node_modules # needed for node modules

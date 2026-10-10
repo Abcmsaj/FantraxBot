@@ -155,23 +155,31 @@ async function pickMember(forumChannel) {
     return eligibleMembers[Math.floor(Math.random() * eligibleMembers.length)];
 }
 
-async function createAlbumClubRound(client) {
+async function createAlbumClubRound(client, userId = null) {
     const forumChannel = getForumChannel(client);
-    const eligibleMembers = await getEligibleMembers(forumChannel);
+    let selectedMember;
 
-    console.log(
-        '<AlbumClub> Next member:',
-        eligibleMembers.map(m => `${m.user.tag} (${m.id})`)
-    );
-
-    if (!eligibleMembers.length) {
-        console.log('<AlbumClub> No eligible members found for a new round.');
-        return null;
+    // Fetch specific user if ID is provided, otherwise fallback to the queue
+    if (userId) {
+        selectedMember = await forumChannel.guild.members.fetch(userId).catch(() => null);
+        if (!selectedMember) {
+            console.log(`<AlbumClub> Could not find user with ID ${userId} for forced round.`);
+            return null;
+        }
+    } else {
+        const eligibleMembers = await getEligibleMembers(forumChannel);
+        console.log(
+            '<AlbumClub> Next member:',
+            eligibleMembers.map(m => `${m.user.tag} (${m.id})`)
+        );
+        if (!eligibleMembers.length) {
+            console.log('<AlbumClub> No eligible members found for a new round.');
+            return null;
+        }
+        selectedMember = eligibleMembers[0];
     }
 
-    const selectedMember = eligibleMembers[0];
     let answers = null;
-
     try {
         answers = await interviewAlbumOwner(
             selectedMember.user,
@@ -182,7 +190,6 @@ async function createAlbumClubRound(client) {
         console.warn(
             `<AlbumClub> Failed to interview ${selectedMember.user.tag}: ${err.message}`
         );
-
         return null;
     }
 
@@ -195,10 +202,8 @@ async function createAlbumClubRound(client) {
         requestedBy: selectedMember.user,
         answers,
     });
-
     const threadName = buildThreadName(answers.artist, answers.album);
     const initialTags = pickInitialTags(forumChannel, answers.genre);
-
     const createOptions = {
         name: threadName,
         message: {
@@ -210,12 +215,9 @@ async function createAlbumClubRound(client) {
     };
 
     if (initialTags) createOptions.appliedTags = initialTags;
-
     const thread = await forumChannel.threads.create(createOptions);
-
     const safeArtist = answers.artist.slice(0, 80);
     const safeAlbum = answers.album.slice(0, 80);
-
     const pollQuestion = `How would you rate "${safeAlbum}" by ${safeArtist}?`;
 
     const pollMessage = await thread.send({
@@ -238,9 +240,10 @@ async function createAlbumClubRound(client) {
         },
     });
 
+    // Remove the member from the queue regardless of how they were selected
     removeFromShuffleQueue(RECENT_FILE, selectedMember.id);
-
     const dueAt = DateTime.now().plus({ days: ROUND_DAYS }).toISO();
+
     upsertPendingItem(PENDING_FILE, {
         id: thread.id,
         guildId: thread.guildId,
@@ -403,9 +406,9 @@ function createAlbumClubScheduler(client) {
     console.log(`<AlbumClub> Scheduler started. Selection: ${SELECTION_CRON} Finalize: ${FINALIZE_CRON}`);
 }
 
-async function forceStartAlbumClubRound(client) {
+async function forceStartAlbumClubRound(client, userId = null) {
     ensureAlbumClubFiles();
-    return createAlbumClubRound(client);
+    return createAlbumClubRound(client, userId);
 }
 
 async function forceFinalizeAlbumClubRounds(client) {
